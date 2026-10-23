@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>线上服务 · 方案1</title>
+<style>
+/* ============================================================
+   卓正 · 线上服务（方案1）  还原自 MasterGo
+   fileId 134385500956539 / layer 3744:93767
+   设计稿 750×1624 (2x) → 本次实现 375×812 CSS px
+   ------------------------------------------------------------
+   设计 token（源自 DSL styles，注释为 token key）
+   ============================================================ */
+:root{
+  /* paint_383:23614 */ --c-page:            #F2F5F6;
+  /* paint_3238:96616 */ --c-head-grad:       linear-gradient(180deg,#CDF3FC 0%,#F2F5F6 100%);
+  /* paint_96:5537    */ --c-title:           #333333;
+  /* paint_3408:90758 */ --c-text-2:          #666666;
+  /* paint_633:28297  */ --c-text-3:          #999999;
+  /* paint_350:12096  */ --c-brand:           #009BBF;
+  /* paint_1:2737     */ --c-link:            #00A0B5;
+  /* paint_3408:90725 */ --c-surface:         #FFFFFF;
+  /* effect_3344:006513 */ --sh-inset:        inset 0 1px 0 0 #FFFFFF;
+  /* paint_1:0623     */ --c-hairline:        #EAEAEA;
+  /* paint_677:71207  */ --c-divider:         #E1E1E1;
+
+  /* 订阅卡：主题色 */
+  /* paint_3235:97433 */ --sub-green-title:   #19997C;
+  /* paint_3231:84240 */ --sub-green-bg:      linear-gradient(160deg,#F2FCF9 0%,#E4F8F2 100%);
+  /* paint_3238:81616 */ --sub-green-badge:   linear-gradient(160deg,#5FE9CC 0%,#3AC2A2 100%);
+  /* paint_3408:95109 */ --sub-pink-title:    #E5687D;
+  /* paint_3614:94810 */ --sub-pink-bg:       linear-gradient(160deg,#FFF8FA 0%,#FFEBF0 100%);
+  /* paint_3682:93441 */ --sub-pink-badge:    linear-gradient(160deg,#FF9DB4 0%,#FF7D9C 100%);
+  /* paint_3235:89445 */ --sub-cyan-title:    #16959E;
+  /* paint_3344:000672 */ --sub-cyan-bg:      linear-gradient(160deg,#F0FDFF 0%,#D7F9FF 100%);
+  /* paint_3238:80010 */ --sub-cyan-badge:    linear-gradient(160deg,#5AE2EA 0%,#31C0C8 100%);
+  /* paint_4141:98728 */ --sub-sand-title:    #E47B2D;
+  /* paint_4141:99563 */ --sub-sand-bg:      linear-gradient(160deg,#FEFBF0 0%,#FFEFD6 100%);
+  /* paint_4141:98866 */ --sub-sand-badge:    linear-gradient(160deg,#FFC57F 0%,#FF822B 100%);
+  /* paint_677:70882  */ --c-new:             #FF5B4C;
+
+  /* 科学减重卡（wcard 组件）依赖的卓正 VI 变量 */
+  --zz-blue-1: #006F8A;  --zz-blue-2: #00809E;  --zz-blue-3: #009BBF;
+  --zz-cyan: #00BED6;    --zz-accent-yellow: #FFEE6F;  --zz-accent-orange: #F18E1D;
+  --icon-ink: #333333;
+  --teal: #00809E;  --teal-deep: #006F8A;  --teal-soft: #D9EEF2;  --teal-tint: #EDF7FA;
+  --line-soft: #F0F0F0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:#E9ECEE;
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  display:grid;place-items:center;
+  -webkit-font-smoothing:antialiased;
+  color:var(--c-title);
+}
+.phone{
+  position:relative;width:375px;min-height:100vh;overflow:visible;
+  background:var(--c-page);
+  box-shadow:0 24px 64px rgba(0,0,0,.14);
+}
+@media (max-width:420px){
+  body{display:block;background:var(--c-page)}
+  .phone{width:100vw;min-height:100vh;box-shadow:none}
+  .tabbar{left:0;transform:none;width:100vw}
+}
+
+/* ---------- 顶部渐变底 (矩形 750×480) ---------- */
+.bg-grad{position:absolute;left:0;top:0;width:100%;height:240px;background:var(--c-head-grad);pointer-events:none}
+
+/* ---------- 状态栏 (01顶部/XBars) ---------- */
+.statusbar{
+  position:absolute;left:0;top:0;width:100%;height:44px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 24px;font-size:15px;font-weight:600;letter-spacing:.02em;
+  color:#0D0D0D;z-index:6;
+}
+.statusbar .icons{display:flex;align-items:center;gap:5px}
+.statusbar svg{display:block}
+
+/* ---------- 导航 (01/导航nav 1) ---------- */
+.navbar{position:absolute;left:0;top:44px;width:100%;height:44px;z-index:6}
+.navbar .page-title{
+  position:absolute;left:20px;top:4px;font-size:20px;font-weight:600;line-height:28px;color:#0D0D0D;
+}
+.qr-btn{
+  position:absolute;left:241px;top:6px;width:31px;height:31px;border-radius:20px;
+  background:rgba(255,255,255,.7);border:1px solid var(--c-hairline);
+  display:grid;place-items:center;backdrop-filter:blur(6px);
+}
+.capsule{
+  position:absolute;left:282px;top:6px;width:87px;height:31px;border-radius:15.5px;
+  background:rgba(255,255,255,.6);border:1px solid var(--c-hairline);
+  display:flex;align-items:center;justify-content:center;gap:0;
+}
+.capsule .dots{display:flex;align-items:center;gap:2px;margin-right:7px}
+.capsule .dots i{display:block;border-radius:50%;background:#000}
+.capsule .dots i:nth-child(1){width:4.5px;height:4.5px}
+.capsule .dots i:nth-child(2){width:6.5px;height:6.5px}
+.capsule .dots i:nth-child(3){width:4.5px;height:4.5px}
+.capsule .vline{width:1px;height:18.5px;background:#CCC;margin-right:8px}
+.capsule .target{position:relative;width:17px;height:17px;border:1.6px solid #000;border-radius:50%}
+.capsule .target::after{content:"";position:absolute;inset:4.5px;border-radius:50%;background:#000}
+
+/* ---------- 卡片通用 ---------- */
+.card{
+  position:absolute;background:var(--c-surface);border-radius:8px;
+  box-shadow:var(--sh-inset);
+}
+.card.subscribe{left:15px;top:98px;width:345px;border-radius:8px;height:auto;overflow:hidden}
+
+/* 健康订阅 表头 */
+.sub-head{position:absolute;left:12px;top:13px;width:193px}   /* 04-3/4：左轴与卡内边距统一 12 */
+.sub-head h2{font-size:18px;font-weight:600;line-height:20px;color:var(--c-title)}
+.sub-head ul{list-style:none;margin-top:6px;display:flex;flex-direction:column;gap:2px}
+.sub-head li{display:flex;align-items:center;gap:4px;height:18px;font-size:13px;line-height:18px;color:var(--c-text-2);white-space:nowrap}
+.sub-head li svg{flex:0 0 15px}
+
+/* 健康订阅 插画（容器229） */
+.sub-art{position:absolute;left:223px;top:5px;width:122px;height:96px}
+
+/* 订阅小卡样式已移除：红框区域替换为「科学减重」服务卡（wcard 组件） */
+
+/* ---------- 科学减重 · 服务卡（按《健康订阅区 · 视觉规范》校） ----------
+   字号五档：18/600/20 · 16/600/22.5 · 14/400/15 · 13/400/18 · 12/400/17，不新增档
+   间距：卡之间 10 · 卡内边距 12 · 标题块 15
+   圆角三档：8（一级卡）· 4（卡内块 / 按钮 / 徽章取 6）· 0（线性图标）
+   色彩：标题 #333 · 次级 #4C575C · 描述 #666；主题色只给标题文字与图形，文字用深阶
+        禁用 #999999 与 #00A0B5（对比度不足）
+        当前用「卓正蓝」套：图形 #67C6DF→#009BBF · 文字 / 主操作 #006F8A
+   R1 表面上限 3 层：白卡 →（卡底）→ 文字；新元素零表面（无底色 / 描边 / 投影）
+   ------------------------------------------------------------------------ */
+.wl-embed{margin:43px 0 0;width:345px}
+
+/* 卡内统一 12（规范 04-3）；顶部细线把「健康订阅」标题与内容分开 */
+.wl-block{
+  position:relative;
+  background:#FFFFFF;
+  padding:14px 12px 14px;
+}
+.wl-block::before{
+  content:"";position:absolute;left:12px;right:12px;top:0;height:1px;
+  background:#E1E1E1;transform:scaleY(.5);transform-origin:top;
+}
+
+/* 表头：图标 33（圆形浅底 + 单色线稿，与页面其他插图同风） + 名称 16/600/22.5 + 状态胶囊 */
+.wl-hd{display:flex;align-items:center;gap:10px}
+.wl-badge{
+  width:33px;height:33px;border-radius:50%;flex-shrink:0;
+  background:#EAF7FA;
+  display:grid;place-items:center;
+}
+.wl-badge svg{width:19px;height:19px;stroke:#16959E}
+.wl-nm{
+  flex:1;min-width:0;font-size:16px;font-weight:600;line-height:22.5px;
+  color:#006F8A;                    /* 白底 5.4:1，主题色只作图形，文字走深阶 */
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* 状态胶囊：浅底 + 圆点，与文字拉开层级 */
+.wl-st{
+  flex-shrink:0;display:inline-flex;align-items:center;gap:4px;
+  font-size:12px;font-weight:400;line-height:17px;padding:3px 8px;
+  font-family:inherit;cursor:pointer;border:none;
+  background:#EDF8FB;color:#16959E;border-radius:4px;
+}
+.wl-st::before{content:"";width:5px;height:5px;border-radius:50%;background:#22AEBB}
+.wl-st--grey{background:#F2F5F6;color:#4C575C}
+.wl-st--grey::before{background:#C9D3D6}
+
+/* 副文 / 进展：12/400/17 #666，强调取 #333 */
+.wl-ds{margin-top:12px;font-size:12px;font-weight:400;line-height:17px;color:#666666}
+.wl-ds b{font-weight:600;color:#333333}
+
+/* 进度条：高 4 · 圆角 2 · 槽中性 · 进度主题绿（图形） · 右侧 12/400/17 */
+.wl-prog{display:flex;align-items:center;gap:8px;margin-top:12px}
+.wl-prog__bar{flex:1;height:4px;border-radius:2px;background:#E6EBEC;overflow:hidden}
+.wl-prog__fill{display:block;height:100%;border-radius:2px;background:#009BBF}
+.wl-prog__n{flex-shrink:0;font-size:12px;font-weight:400;line-height:17px;color:#4C575C}
+
+/* ---------- 分区细线：层级靠字号与颜色，需要分隔时用 0.5px 发丝线（规范 05） ---------- */
+.wl-sep{height:1px;background:#E1E1E1;transform:scaleY(.5);transform-origin:top;margin-top:12px}
+
+/* ---------- 提醒行：恢复卡片样式（浅青底 · 圆角 10），右上角两枚小圆钮 ---------- */
+.wl-rk{
+  position:relative;margin-top:12px;padding:10px 56px 10px 12px;
+  background:#EDF8FB;border-radius:10px;
+}
+.wl-rk__t{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;line-height:20px;color:#333333}
+.wl-rk__t svg{width:15px;height:15px;flex:0 0 15px;color:#16959E}
+.wl-rk__d{margin-top:2px;font-size:12px;font-weight:400;line-height:17px;color:#666666}
+.wl-rk__sw,.wl-rk__ask{
+  position:absolute;top:8px;width:24px;height:24px;border-radius:999px;padding:0;
+  display:grid;place-items:center;border:none;cursor:pointer;text-decoration:none;
+  background:rgba(255,255,255,.9);color:#4C575C;
+}
+.wl-rk__sw{right:8px}
+.wl-rk__ask{right:36px}
+.wl-rk__sw svg,.wl-rk__ask svg{width:13px;height:13px}
+
+/* ---------- 维持期数据带（还原 demo 阶段⑤）：青渐变 + 白字数据 ---------- */
+.wl-band{
+  margin-top:12px;border-radius:10px;padding:14px 14px 12px;color:#FFFFFF;
+  background:linear-gradient(135deg,#22AEBB 0%,#0E8494 100%);
+}
+.wl-band__t{font-size:10px;font-weight:500;letter-spacing:1.5px;opacity:.85}
+.wl-band__n{margin-top:4px;font-size:26px;font-weight:600;line-height:30px}
+.wl-band__n i{font-style:normal;font-size:13px;font-weight:400;margin-left:2px;opacity:.9}
+.wl-band__s{margin-top:2px;font-size:12px;font-weight:400;line-height:17px;opacity:.9}
+.wl-band__m{margin-top:10px;display:flex;align-items:center;gap:14px}
+.wl-band__m > div{display:flex;flex-direction:column}
+.wl-band__m b{font-size:13px;font-weight:600;line-height:18px}
+.wl-band__m b i{font-style:normal;font-size:10px;font-weight:400;margin-left:1px;opacity:.85}
+.wl-band__m em{font-size:10px;font-style:normal;line-height:14px;opacity:.82}
+.wl-band__open{
+  margin-left:auto;font-size:12px;font-weight:400;color:#FFFFFF;white-space:nowrap;
+  text-decoration:none;border-bottom:1px solid rgba(255,255,255,.55);padding-bottom:1px;
+}
+
+/* ---------- 数据行：已减体重（18/600/20）+ 记录数据（14/400/15） ---------- */
+.wl-wld{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.wl-wld__n{font-size:18px;font-weight:600;line-height:20px;color:#333333}
+.wl-wld__n i{font-style:normal;font-size:12px;font-weight:400;color:#4C575C;margin-left:2px}
+.wl-wld__btn{
+  border:none;background:none;padding:0;font-family:inherit;cursor:pointer;
+  font-size:14px;font-weight:400;line-height:20px;color:#16959E;
+}
+
+/* ---------- 关心点跑马灯（购前 / 知识库共用）：单行「快速了解：+ 轮播」 ---------- */
+.wl-edu{display:flex;align-items:center;gap:4px;margin-top:12px}
+.wl-edu__h{
+  flex-shrink:0;display:inline-flex;align-items:center;gap:2px;
+  font-size:13px;font-weight:400;line-height:18px;color:#4C575C;text-decoration:none;
+}
+.wl-edu__h span{font-size:13px;line-height:18px;color:#4C575C}
+.wl-edu .wl-roll,.wl-kb .wl-roll{flex:1;min-width:0}
+.wl-roll{position:relative;height:17px;overflow:hidden;margin-top:0}
+.wl-roll__t{
+  position:absolute;left:0;right:0;line-height:17px;font-size:12px;
+  text-decoration:none;color:#666666;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .45s ease,transform .45s ease;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:11px;
+}
+.wl-roll__t::before{
+  content:"";position:absolute;left:0;top:50%;margin-top:-2.5px;
+  width:5px;height:5px;border-radius:1.5px;background:#67C6DF;
+}
+.wl-roll__t.is-on{opacity:1;transform:none}
+.wl-roll__t.is-out{opacity:0;transform:translateY(-6px)}
+
+/* 知识库入口行 */
+.wl-kb{display:flex;align-items:center;gap:6px;margin-top:12px}
+.wl-kb__i{flex:0 0 15px;color:#4C575C;display:grid;place-items:center}
+.wl-kb__i svg{width:15px;height:15px}
+
+/* 四个分类入口：零表面，格间竖细线 */
+.wl-cats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:12px}
+.wl-cat{
+  position:relative;padding:8px 2px 9px;text-align:center;text-decoration:none;
+  font-size:12px;font-weight:400;line-height:17px;color:#666666;
+}
+.wl-cat + .wl-cat::before{
+  content:"";position:absolute;left:0;top:9px;bottom:9px;width:1px;
+  background:#E1E1E1;transform:scaleX(.5);
+}
+.wl-cat b{display:block;font-size:13px;font-weight:600;line-height:18px;color:#16959E}
+
+/* 双按钮（对齐现网按钮规范）：高 44 · 圆角 12 · 15/500
+   次操作 = 浅青底 + 细描边 + 青字（同「预约详情 / 添加日历」）；主操作 = 青渐变实底白字 */
+.wl-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.wl-btn{
+  display:flex;align-items:center;justify-content:center;height:38px;
+  border-radius:10px;font-size:14px;font-weight:500;line-height:1;
+  text-decoration:none;cursor:pointer;font-family:inherit;
+}
+.wl-btn--ghost{border:1px solid #BFE3E8;background:#EDF8FB;color:#16959E}
+.wl-btn--solid{border:none;background:linear-gradient(180deg,#22AEBB 0%,#0E8494 100%);color:#FFFFFF}
+
+/* ---------- 其他专项入口（demo 文字标签：减重 / 过敏 / 痤疮 / 心理）----------
+   零表面：无底色无描边；14/400/15 · 选中态只换文字色（同色相深绿） */
+.wl-tags{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px 12px 12px}
+.wl-tags::before{
+  content:"";position:absolute;left:12px;right:12px;top:0;height:1px;
+  background:#E1E1E1;transform:scaleY(.5);transform-origin:top;
+}
+.wl-tag{
+  display:inline-flex;align-items:center;justify-content:center;width:100%;
+  padding:8px 4px;border-radius:8px;
+  border:none;background:#F2F5F6;
+  font-family:inherit;font-size:14px;font-weight:400;line-height:20px;color:#4C575C;
+  cursor:pointer;text-decoration:none;
+}
+.wl-tag:hover{color:#16959E}
+.wl-tag.is-on{background:#D6F0F5;color:#16959E;font-weight:600}
+
+/* 旧 demo 卡片样式（白卡壳 / 44px 实心按钮 / 32px 大数字等）已整体移除，改用上方现网皮肤 */
+
+/* 轻提示 */
+.toast{
+  position:absolute;left:50%;bottom:130px;transform:translateX(-50%);
+  background:rgba(51,51,51,.92);color:#fff;font-size:13px;line-height:1;
+  padding:11px 18px;border-radius:999px;white-space:nowrap;z-index:99;
+  animation:toastIn .22s ease;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ---------- 线上问诊 (容器 34 / 一级科室) ---------- */
+.card.consult{left:15px;top:420.5px;width:345px;height:160px;border-radius:8px;overflow:hidden}
+.avatar{position:absolute;border-radius:50%;overflow:hidden;background:#E7F3F6}
+.av-consult{left:15px;top:15px;width:50px;height:50px}
+.cta-block{position:absolute}
+.cta-block .t{font-size:18px;font-weight:600;line-height:24px;color:var(--c-title)}
+.cta-block .d{font-size:13px;line-height:18px;color:var(--c-text-3);margin-top:3px;white-space:nowrap}
+.chev{position:absolute;width:15px;height:15px;opacity:.55}
+
+/* 科室行 */
+.depts{position:absolute;left:0;top:83px;width:100%;height:57px}
+.dept{position:absolute;top:0;width:78px;height:57px;display:flex;flex-direction:column;align-items:center}
+.dept .ic{width:34px;height:34px;display:grid;place-items:center}
+.dept .lb{font-size:13px;line-height:18px;color:var(--c-title);margin-top:5px;white-space:nowrap}
+
+/* ---------- 金刚位（视频心理咨询 / 家庭私人医生） ---------- */
+.card.kf{left:15px;width:345px;height:130px;border-radius:8px;overflow:hidden}
+.kf-1{top:590.5px}
+.kf-2{top:730.5px}
+.kf .avatar{left:15px;top:15px;width:50px;height:50px}
+.kf .cta-block{left:76px;top:19px;width:170px}
+.kf .go{position:absolute;right:15px;top:32.5px;display:flex;align-items:center;gap:2px}
+.kf .go span{font-size:14px;line-height:20px;color:var(--c-link);white-space:nowrap}
+.kf .rule{position:absolute;left:15px;right:15px;top:80px;height:1px;background:var(--c-divider);transform:scaleY(.5);transform-origin:top}
+.chips{position:absolute;left:0;right:0;top:80.5px;height:49.5px;display:flex}
+.chip{flex:1;display:grid;place-items:center;font-size:14px;line-height:20px;color:var(--c-text-2);position:relative}
+.chip + .chip::before{content:"";position:absolute;left:0;top:14px;width:1px;height:15px;background:var(--c-divider);transform:scaleX(.5);transform-origin:left}
+
+/* ---------- 底部 tab (组件 2) ---------- */
+.tabbar{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:375px;height:111px;z-index:10;
+  background:#fff;box-shadow:0 -1px 0 rgba(0,0,0,.04),0 -8px 24px rgba(0,0,0,.05);
+  display:flex;padding-top:6px;
+}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.tab .ti{width:24px;height:24px;display:grid;place-items:center;color:#9AA3A6}
+.tab .tl{font-size:10px;line-height:13px;color:#9AA3A6;white-space:nowrap}
+.tab.on .ti,.tab.on .tl{color:#00A0B5}
+.tab.fab .ti{
+  width:42px;height:42px;border-radius:12px;margin-top:-16px;
+  background:linear-gradient(180deg,#40DCEE 0%,#0FA9C4 100%);
+  color:#fff;box-shadow:0 0 0 4px #fff,0 6px 14px rgba(15,169,196,.35);
+}
+.tab.fab .tl{margin-top:1px}
+.homebar{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#000}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bg-grad"></div>
+
+  <!-- 状态栏 -->
+  <header class="statusbar">
+    <span>9:41</span>
+    <span class="icons">
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="#0D0D0D"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.5" y="5.5" width="3" height="5.5" rx="1"/><rect x="9" y="3" width="3" height="8" rx="1"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="1"/></svg>
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="#0D0D0D"><path d="M8 10.2 5.9 7.8a3.1 3.1 0 0 1 4.2 0L8 10.2Zm-4-4.6L2.3 3.7a8.2 8.2 0 0 1 11.4 0L12 5.6a5.7 5.7 0 0 0-8 0Z"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="#0D0D0D" stroke-opacity=".38"/><rect x="2" y="2" width="18" height="8" rx="2" fill="#0D0D0D"/><path d="M23 4.2v3.6a2 2 0 0 0 0-3.6Z" fill="#0D0D0D" fill-opacity=".4"/></svg>
+    </span>
+  </header>
+
+  <!-- 导航 -->
+  <nav class="navbar">
+    <div class="page-title">线上服务</div>
+    <div class="qr-btn" aria-hidden="true">
+      <svg width="19" height="19" viewBox="0 0 19 19" fill="none" stroke="#333" stroke-width="1.6">
+        <rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="12" y="1" width="6" height="6" rx="1.2"/>
+        <rect x="1" y="12" width="6" height="6" rx="1.2"/><path d="M12 12h2.5v2.5H12zM15.5 15.5H18V18h-2.5z" fill="#333" stroke="none"/>
+      </svg>
+    </div>
+    <div class="capsule" aria-hidden="true">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="vline"></span>
+      <span class="target"></span>
+    </div>
+  </nav>
+
+  <!-- 健康订阅 -->
+  <section class="card subscribe">
+    <div class="sub-head">
+      <h2>健康订阅</h2>
+    </div>
+
+    <!-- 科学减重 · 服务卡（现网「健康订阅」皮肤 · 阶段可切换：购前 → 决策 → 陪跑 → 续费 → 回顾） -->
+    <div class="wl-embed" data-wlcard data-start-stage="1">
+      <div class="wl-block">
+        <div class="wl-hd">
+          <span class="wl-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16959E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 14.2a7.2 7.2 0 0 1 14.4 0"/><path d="M12 14.2 9.5 9.9"/><path d="M6 17.8h12"/></svg>
+          </span>
+          <h3 class="wl-nm">科学减重</h3>
+          <button type="button" class="wl-st wl-st--grey" data-stage-toggle title="点击切换减重阶段（购前 → 决策 → 陪跑 → 续费 → 回顾）">未开始</button>
+        </div>
+
+        <!-- 阶段核心区：由脚本按阶段重绘；以下为初始阶段（① 购前）静态兜底 -->
+        <div data-stage-body>
+          <div class="wl-edu">
+            <a class="wl-edu__h" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">快速了解：</a>
+            <div class="wl-roll" data-roll>
+              <a class="wl-roll__t is-on" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">GLP-1 到底是怎么起作用的</a>
+              <a class="wl-roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">没明显副作用，是不是药没效果</a>
+              <a class="wl-roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">减重期间能喝酒吗</a>
+              <a class="wl-roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">漏服了一次怎么办</a>
+              <a class="wl-roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">平台期怎么判断，要紧吗</a>
+            </div>
+          </div>
+          <div class="wl-cats">
+            <a class="wl-cat" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>效果</b>多久有变化</a>
+            <a class="wl-cat" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>安全</b>副作用说明</a>
+            <a class="wl-cat" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>花费</b>价格说明</a>
+            <a class="wl-cat" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>使用</b>操作方法</a>
+          </div>
+          <div class="wl-btns">
+            <a class="wl-btn wl-btn--ghost" href="https://lipulin222.github.io/online-health-care/weight-management/Weight-loss-assistant/index.html?entry=1">AI 减重助理</a>
+            <a class="wl-btn wl-btn--solid" href="https://lipulin222.github.io/online-health-care/weight-management/Medication-eligibility-assessment/index.html">定制减重方案</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 其他专项入口（demo 文字标签）：点标签只切换选中态 -->
+      <div class="wl-tags" data-spec-tags>
+        <button type="button" class="wl-tag is-on">减重</button>
+        <button type="button" class="wl-tag">过敏</button>
+        <button type="button" class="wl-tag">痤疮</button>
+        <button type="button" class="wl-tag">心理</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 线上问诊 -->
+  <section class="card consult">
+    <div class="avatar av-consult">
+      <svg width="50" height="50" viewBox="0 0 50 50">
+        <defs><linearGradient id="avA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAF6F9"/><stop offset="1" stop-color="#D2EAF1"/></linearGradient></defs>
+        <rect width="50" height="50" fill="url(#avA)"/>
+        <path d="M7 50c0-8.4 7.2-13.2 18-13.2S43 41.6 43 50Z" fill="#FFFFFF"/>
+        <path d="M21.8 36.8h6.4v5.4a3.2 3.2 0 0 1-6.4 0Z" fill="#EAF5F8"/>
+        <path d="M21.8 30.4h6.4v6.3h-6.4z" fill="#EBD0C0"/>
+        <ellipse cx="25" cy="21.6" rx="8" ry="8.9" fill="#F3DACA"/>
+        <path d="M17 21.8c-.6-6.2 3.3-9.6 8-9.6s8.6 3.4 8 9.6c-1-4.1-3.4-5.6-8-5.6s-7 1.5-8 5.6Z" fill="#3B3B3B"/>
+        <circle cx="22.2" cy="22" r=".95" fill="#5A4941"/><circle cx="27.8" cy="22" r=".95" fill="#5A4941"/>
+        <path d="M23.6 25.6c.9.7 1.9.7 2.8 0" stroke="#D8B4A4" stroke-width=".9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="cta-block" style="left:76px;top:19px;width:150px">
+      <div class="t">线上问诊</div>
+      <div class="d">7*24h图文/电话问诊</div>
+    </div>
+    <svg class="chev" style="right:15px;top:32.5px" viewBox="0 0 15 15" fill="none" stroke="#B0B8BB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 2.5 11 7.5l-5.5 5"/></svg>
+
+    <div class="depts">
+      <div class="dept" style="left:0">
+        <div class="ic"><svg width="27" height="27" viewBox="0 0 28 28" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11.2 4.4h5.6v3.4c0 1.2.9 2 2 2h.7c1.1 0 2 .9 2 2v9.4a2.4 2.4 0 0 1-2.4 2.4H10.9a2.4 2.4 0 0 1-2.4-2.4V9.8c0-1.1.9-2 2-2h.7c1.1 0 2-.8 2-2V4.4Z"/>
+          <path d="M12.6 13.4h4.8M12.6 17.2h4.8"/>
+        </svg></div>
+        <div class="lb">儿科</div>
+      </div>
+      <div class="dept" style="left:78px">
+        <div class="ic"><svg width="27" height="27" viewBox="0 0 28 28" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5.5 9.2c0-2 1.8-3.4 4-3.4 2.6 0 3.6 1.5 4.5 1.5s1.9-1.5 4.5-1.5c2.2 0 4 1.4 4 3.4 0 5.8-3.4 12.6-8.5 12.6S5.5 15 5.5 9.2Z"/>
+          <path d="M10 8.4v3.4"/>
+        </svg></div>
+        <div class="lb">皮肤科</div>
+      </div>
+      <div class="dept" style="left:156px">
+        <div class="ic"><svg width="27" height="27" viewBox="0 0 28 28" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6.5c0-1.4 1.2-2.5 2.7-2.5 2.6 0 3.8 2.4 3.8 5.4 0 2.3 1.2 3.4 3.1 4.2 2 .8 3.4 2.2 3.4 4.4 0 2.6-2 4.5-4.7 4.5-3.3 0-5.2-2-6.6-4.4C9.5 15.8 9 13 9 10.6V6.5Z"/>
+          <path d="M11.6 9.8c.8 1.4 1.9 2 3.1 2.2"/>
+        </svg></div>
+        <div class="lb">耳鼻喉科</div>
+      </div>
+      <div class="dept" style="left:234px">
+        <div class="ic"><svg width="27" height="27" viewBox="0 0 28 28" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8v5a8 8 0 0 0 16 0V8"/>
+          <rect x="4" y="11" width="4" height="7" rx="2"/>
+          <rect x="20" y="11" width="4" height="7" rx="2"/>
+          <path d="M22 19.5c0 2.6-2.6 3.6-5 3.6"/>
+        </svg></div>
+        <div class="lb">内</div>
+      </div>
+      <div class="dept" style="left:267px">
+        <div class="ic"><svg width="27" height="27" viewBox="0 0 28 28" fill="none" stroke="#333" stroke-width="1.6">
+          <rect x="5" y="5" width="7.2" height="7.2" rx="1.8"/><rect x="15.8" y="5" width="7.2" height="7.2" rx="1.8"/>
+          <rect x="5" y="15.8" width="7.2" height="7.2" rx="1.8"/><rect x="15.8" y="15.8" width="7.2" height="7.2" rx="1.8"/>
+        </svg></div>
+        <div class="lb">全部</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 视频心理咨询 -->
+  <section class="card kf kf-1">
+    <div class="avatar">
+      <svg width="50" height="50" viewBox="0 0 50 50">
+        <defs><linearGradient id="avB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5F1EA"/><stop offset="1" stop-color="#E8E0D4"/></linearGradient></defs>
+        <rect width="50" height="50" fill="url(#avB)"/>
+        <path d="M6 50c0-8.6 7.4-13.4 19-13.4S44 41.4 44 50Z" fill="#FFFFFF"/>
+        <path d="M18 34.6c4.5 2.6 9.5 2.6 14 0v6.6c-4.5 2-9.5 2-14 0Z" fill="#EFE8DE"/>
+        <path d="M21.9 29.8h6.2v6.4h-6.2z" fill="#EBCFBE"/>
+        <ellipse cx="25" cy="21.4" rx="7.8" ry="8.7" fill="#F4DCCB"/>
+        <path d="M17.2 23c-1.6-8.6 1.4-11.6 7.8-11.6 6.5 0 9.4 3 7.8 11.6-1.3-1.6-2.2-4-2.4-6.6-1.6 1.6-3.2 2.4-5.4 2.4s-3.8-.8-5.4-2.4c-.2 2.6-1.1 5-2.4 6.6Z" fill="#3A3226"/>
+        <circle cx="22.3" cy="21.8" r=".9" fill="#5A4941"/><circle cx="27.7" cy="21.8" r=".9" fill="#5A4941"/>
+        <path d="M23.7 25.3c.8.6 1.8.6 2.6 0" stroke="#D7B3A2" stroke-width=".85" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="cta-block">
+      <div class="t">视频心理咨询</div>
+      <div class="d">排解负面情绪 解决内心困境</div>
+    </div>
+    <div class="go"><span>去咨询</span>
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="#00A0B5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 2.5 11 7.5l-5.5 5"/></svg>
+    </div>
+    <div class="rule"></div>
+    <div class="chips"><div class="chip">情绪困扰</div><div class="chip">心理创伤</div><div class="chip">亲子关系</div></div>
+  </section>
+
+  <!-- 家庭私人医生 -->
+  <section class="card kf kf-2">
+    <div class="avatar">
+      <svg width="50" height="50" viewBox="0 0 50 50">
+        <defs><linearGradient id="avC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDF6F8"/><stop offset="1" stop-color="#D8EAF0"/></linearGradient></defs>
+        <rect width="50" height="50" fill="url(#avC)"/>
+        <path d="M28 50c0-6.6 4.6-10.2 10.5-10.2S49 43.4 49 50Z" fill="#E9F3F7"/>
+        <path d="M31.5 41.6h6v4.6a3 3 0 0 1-6 0Z" fill="#DCEBF1"/>
+        <ellipse cx="34.6" cy="22.6" rx="5.2" ry="5.9" fill="#F2D8C8"/>
+        <path d="M29.4 23.4c-.5-4.4 1.6-6.6 5.2-6.6s5.7 2.2 5.2 6.6c-.8-2.6-2.3-3.6-5.2-3.6s-4.4 1-5.2 3.6Z" fill="#3B3B3B"/>
+        <path d="M3 50c0-8 6.6-12.6 16-12.6S35 42 35 50Z" fill="#FFFFFF"/>
+        <path d="M16.5 37.8h5v5.2a2.5 2.5 0 0 1-5 0Z" fill="#EDF6F8"/>
+        <path d="M16.5 31.4h5v6.2h-5z" fill="#EBD0C0"/>
+        <ellipse cx="19" cy="22.8" rx="6.6" ry="7.4" fill="#F3DACA"/>
+        <path d="M12.4 23.8c-.6-5.4 2.4-8.2 6.6-8.2s7.2 2.8 6.6 8.2c-.9-3.4-2.7-4.7-6.6-4.7s-5.7 1.3-6.6 4.7Z" fill="#3B3B3B"/>
+        <circle cx="16.7" cy="23.2" r=".8" fill="#5A4941"/><circle cx="21.3" cy="23.2" r=".8" fill="#5A4941"/>
+      </svg>
+    </div>
+    <div class="cta-block">
+      <div class="t">家庭私人医生</div>
+      <div class="d">365天微信群服务 随时问医生</div>
+    </div>
+    <div class="go"><span>去签约</span>
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="#00A0B5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 2.5 11 7.5l-5.5 5"/></svg>
+    </div>
+    <div class="rule"></div>
+    <div class="chips"><div class="chip">情绪困扰</div><div class="chip">心理创伤</div><div class="chip">亲子关系</div></div>
+  </section>
+
+  <!-- 底部 tab -->
+  <nav class="tabbar">
+    <div class="tab">
+      <div class="ti"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="4" y="3.2" width="16" height="17.6" rx="3"/><path d="M8 8.4h5M8 12.4h8" stroke-linecap="round"/></svg></div>
+      <div class="tl">预约门诊</div>
+    </div>
+    <div class="tab on">
+      <div class="ti"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.6" r="3.4"/><path d="M5 20.4c0-3.9 3.1-6.2 7-6.2s7 2.3 7 6.2"/></svg></div>
+      <div class="tl">线上服务</div>
+    </div>
+    <div class="tab fab">
+      <div class="ti"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6a6 6 0 0 0-6 6v3.1l-1.7 3a.9.9 0 0 0 .8 1.4h13.8a.9.9 0 0 0 .8-1.4l-1.7-3V9.6a6 6 0 0 0-6-6Z"/><path d="M9.8 19.4a2.4 2.4 0 0 0 4.4 0"/></svg></div>
+      <div class="tl">消息</div>
+    </div>
+    <div class="tab">
+      <div class="ti"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg></div>
+      <div class="tl">健康工具</div>
+    </div>
+    <div class="tab">
+      <div class="ti"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.4c0-3.9 3.2-6.2 7.2-6.2s7.2 2.3 7.2 6.2"/></svg></div>
+      <div class="tl">我的</div>
+    </div>
+    <div class="homebar"></div>
+  </nav>
+</div>
+
+<!-- 轻提示 -->
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- 轻提示 ---------- */
+(function () {
+  const el = document.getElementById('toast');
+  let timer = null;
+  window.toast = function (msg) {
+    el.textContent = msg;
+    el.hidden = false;
+    clearTimeout(timer);
+    timer = setTimeout(() => { el.hidden = true; }, 1800);
+  };
+  document.querySelectorAll('[data-toast]').forEach((n) => {
+    n.addEventListener('click', () => toast(n.dataset.toast));
+  });
+})();
+
+/* ==========================================================================
+   科学减重卡 · 阶段切换（自 demo online-service.js 移植）
+   点击卡片右上角状态标签，按「购前 → 决策 → 陪跑 → 续费 → 回顾」循环切换并重绘核心区
+   ========================================================================== */
+(function () {
+  const card = document.querySelector('[data-wlcard]');
+  if (!card) return;
+  const chip = card.querySelector('[data-stage-toggle]');
+  const body = card.querySelector('[data-stage-body]');
+  if (!chip || !body) return;
+
+  card.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-toast]');
+    if (t && card.contains(t)) toast(t.dataset.toast);
+  });
+
+  const BASE = 'https://lipulin222.github.io/online-health-care/';
+  const AGENT = BASE + 'weight-management/Weight-loss-assistant/index.html';
+  const U = {
+    edu: BASE + 'patient-education/index.html',
+    assess: BASE + 'weight-management/Medication-eligibility-assessment/index.html',
+    plan: BASE + 'weight-management-plan/index.html',
+    pay: BASE + 'Invoice-Review-Page/index.html',
+    recap: BASE + 'Journey-Recap/index.html',
+    followup: BASE + 'weight-management/Follow-up-assessment/index.html'
+  };
+  const PLAN_NAME = 'GLP-1 标准方案';
+
+  const agentHref = () => {
+    const st = stage || 1;
+    const p = new URLSearchParams();
+    if (st <= 2) p.set('entry', '1');
+    else {
+      p.set('entry', '4');
+      p.set('planStage', (CHIP[st] || [])[0] || '进行中');
+      p.set('week', st === 5 ? '24' : '4');
+      p.set('totalWeeks', '24');
+    }
+    if (st >= 2) p.set('planName', PLAN_NAME);
+    return AGENT + '?' + p.toString();
+  };
+  const rkAgentHref = () => {
+    const r = RK[rkIndex] || {};
+    const p = new URLSearchParams();
+    p.set('entry', '5');
+    if (r.t) p.set('remindTitle', r.t);
+    return AGENT + '?' + p.toString();
+  };
+
+  const ICO = {
+    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>',
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13"/><path d="m13.5 5.5 3.5 3.5-3.5 3.5"/><path d="M20 15H7"/><path d="m10.5 11.5-3.5 3.5 3.5 3.5"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4 3v-4.6A7.5 7.5 0 0 1 4 11.5 7.5 7.5 0 0 1 11.5 4h1A7.5 7.5 0 0 1 20 11.5Z"/><path d="M9.5 11.5h5"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2.5 2.5 0 0 1 2 1 2.5 2.5 0 0 1 2-1h4.5A1.5 1.5 0 0 1 20 5.5v12a1.5 1.5 0 0 1-1.5 1.5H14a2.5 2.5 0 0 0-2 1 2.5 2.5 0 0 0-2-1H5.5A1.5 1.5 0 0 1 4 17.5Z"/><path d="M12 5v14"/></svg>'
+  };
+
+  const ds = (html) => '<p class="wl-ds">' + html + '</p>';
+  const sep = () => '<div class="wl-sep"></div>';
+
+  /* 进度：高 4 圆角 2，右侧「第 N / 总周」 */
+  const prog = (cur, total) =>
+    '<div class="wl-prog">' +
+    '<span class="wl-prog__bar"><i class="wl-prog__fill" style="width:' + Math.round(cur / total * 100) + '%"></i></span>' +
+    '<span class="wl-prog__n">第 ' + cur + ' / ' + total + ' 周</span>' +
+    '</div>';
+
+  /* 数据行：已减体重 + 记录数据 */
+  const wld = () =>
+    '<div class="wl-wld"><span class="wl-wld__n">-3.2<i>kg</i></span>' +
+    '<button type="button" class="wl-wld__btn" data-toast="正在打开数据记录">记录数据</button></div>' +
+    '<p class="wl-ds">已坚持 <b>28</b> 天 · 体重 71.6kg → <b>68.4kg</b></p>';
+
+  /* 提醒行（续费阶段）：右上角可切换 8 条提醒 / 问 AI 助理 */
+  const RK = [
+    { t: '随访提醒', b: '体重下降偏快是常见情况，有不适可预约面诊。' },
+    { t: '随访提醒', b: '近三周体重变化很小，可做一次体成分检测。' },
+    { t: '问卷提醒', b: '第 12 周该复评了，1 分钟问卷，医生据此定下阶段方案。' },
+    { t: '饮食提醒', b: '食欲下降时更要保证营养密度，已为你备好饮食建议。' },
+    { t: '运动提醒', b: '力量训练能减少肌肉流失，已为你备好运动建议。' },
+    { t: '续药提醒', b: '药品预计两周内用完，现在续药，冷链送药到家。' },
+    { t: '面部评估提醒', b: '体重下降快易出现「司美脸」，可提前干预，需皮肤科面诊。' },
+    { t: '运动康复提醒', b: '训练时留意关节防护，疼痛不适可到院做运动康复。' }
+  ];
+  let rkIndex = 5;
+  const rkCard = () => {
+    const r = RK[rkIndex];
+    return '<div class="wl-rk" data-rk>' +
+      '<button type="button" class="wl-rk__sw" data-rk-switch title="切换提醒" aria-label="切换提醒">' + ICO.swap + '</button>' +
+      '<a class="wl-rk__ask" href="' + rkAgentHref() + '" title="问 AI 减重助理" aria-label="问 AI 减重助理">' + ICO.chat + '</a>' +
+      '<div class="wl-rk__t">' + ICO.bell + '<span data-rk-title>' + r.t + '</span></div>' +
+      '<p class="wl-rk__d" data-rk-desc>' + r.b + '</p>' +
+      '</div>';
+  };
+
+  /* 关心点轮播（购前科普） */
+  const ROLL = [
+    'GLP-1 到底是怎么起作用的',
+    '没明显副作用，是不是药没效果',
+    '减重期间能喝酒吗',
+    '漏服了一次怎么办',
+    '平台期怎么判断，要紧吗'
+  ];
+  const CATS = [
+    ['效果', '多久有变化'],
+    ['安全', '副作用说明'],
+    ['花费', '价格说明'],
+    ['使用', '操作方法']
+  ];
+  const eduBlock = () =>
+    '<div class="wl-edu">' +
+    '<a class="wl-edu__h" href="' + U.edu + '">快速了解：</a>' +
+    '<div class="wl-roll" data-roll>' +
+    ROLL.map((t, i) => '<a class="wl-roll__t' + (i ? '' : ' is-on') + '" href="' + U.edu + '">' + t + '</a>').join('') +
+    '</div></div>' +
+    '<div class="wl-cats">' +
+    CATS.map((c) => '<a class="wl-cat" href="' + U.edu + '"><b>' + c[0] + '</b>' + c[1] + '</a>').join('') +
+    '</div>';
+
+  /* 知识库入口轮播（陪跑 / 续费阶段关心点） */
+  const KB_ROLL = {
+    2: [
+      { id: 'who', t: '什么样的人适合医疗级减重' },
+      { id: 'expect', t: '效果怎么看，多久算有变化' },
+      { id: 'journey', t: '一个完整疗程是怎么进行的' },
+      { id: 'glp1', t: 'GLP-1 是怎么帮你减重的' }
+    ],
+    3: [
+      { id: 'noreact', t: '没明显副作用，是不是药没效果' },
+      { id: 'missed', t: '漏服了一次怎么办' },
+      { id: 'plateau', t: '平台期怎么判断，要紧吗' },
+      { id: 'eat', t: '减重期间怎么吃才不掉肌肉' }
+    ],
+    4: [
+      { id: 'stop', t: '什么时候可以停药' },
+      { id: 'maintain', t: '结束之后怎么维持住' },
+      { id: 'recheck', t: '复查都看哪些指标' },
+      { id: 'doctor', t: '哪些情况要马上联系医生' }
+    ]
+  };
+  const kbMarquee = (st) => {
+    const list = KB_ROLL[st] || [];
+    if (!list.length) return '';
+    return '<div class="wl-kb"><span class="wl-kb__i">' + ICO.book + '</span>' +
+      '<span class="wl-roll" data-kbroll>' +
+      list.map((o, i) => '<a class="wl-roll__t' + (i ? '' : ' is-on') + '" href="' + U.edu +
+        '?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
+      '</span></div>';
+  };
+
+  /* 双按钮：次操作描边 + 主操作实底（行动色 #009BBF，规范 02 / 按钮稿） */
+  const btns = (rHref, rText, rToast) =>
+    '<div class="wl-btns">' +
+    '<a class="wl-btn wl-btn--ghost" href="' + agentHref() + '">AI 减重助理</a>' +
+    (rToast
+      ? '<button type="button" class="wl-btn wl-btn--solid" data-toast="' + rToast + '">' + rText + '</button>'
+      : '<a class="wl-btn wl-btn--solid" href="' + rHref + '">' + rText + '</a>') +
+    '</div>';
+
+  /* 还原 demo 的信息结构：提醒 → 数据 / 进度 → 知识库 → 双按钮 */
+  const STAGE = {
+    1: () => eduBlock() + btns(U.assess, '定制减重方案'),
+    2: () => ds('定制方案已生成 · <b>' + PLAN_NAME + ' 24 周</b>') +
+      prog(1, 24) + kbMarquee(2) + btns(U.plan, '查看减重方案'),
+    3: () => wld() + prog(4, 24) + kbMarquee(3) +
+      btns('', '记录数据', '正在打开数据记录'),
+    4: () => rkCard() + sep() + wld() + prog(4, 24) + kbMarquee(4) +
+      btns(U.pay, '线上续药'),
+    5: () =>
+      '<div class="wl-band">' +
+      '<div class="wl-band__t">YOUR 24 WEEKS</div>' +
+      '<div class="wl-band__n">-8.6<i>kg</i></div>' +
+      '<div class="wl-band__s">71.6kg → 63.0kg · 24 周</div>' +
+      '<div class="wl-band__m">' +
+      '<div><b>78<i>次</i></b><em>打卡</em></div>' +
+      '<div><b>-9.5<i>cm</i></b><em>腰围</em></div>' +
+      '<div><b>3<i>次</i></b><em>复查</em></div>' +
+      '<a class="wl-band__open" href="' + U.recap + '">打开回顾 ›</a>' +
+      '</div></div>' +
+      btns(U.recap, '打开回顾')
+  };
+
+  const CHIP = {
+    1: ['未开始', 'wl-st--grey'], 2: ['未开始', 'wl-st--grey'],
+    3: ['进行中', ''], 4: ['进行中', ''],
+    5: ['维持期', '']
+  };
+
+  let stage = 0;
+
+  /* 提醒切换：右上角图标 → 按规格顺序轮换，就地更新不重绘整块 */
+  card.addEventListener('click', (e) => {
+    const sw = e.target.closest('[data-rk-switch]');
+    if (!sw) return;
+    e.preventDefault();
+    rkIndex = (rkIndex + 1) % RK.length;
+    const r = RK[rkIndex];
+    const box = sw.closest('[data-rk]');
+    box.querySelector('[data-rk-title]').textContent = r.t;
+    box.querySelector('[data-rk-desc]').textContent = r.b;
+    const ask = box.querySelector('.wl-rk__ask');
+    if (ask) ask.setAttribute('href', rkAgentHref());
+  });
+
+  /* 关心点轮播：购前科普区 / 知识库入口 */
+  let rollTimer = null;
+  function startRoll() {
+    clearInterval(rollTimer);
+    clearInterval(kbTimer);
+    const roll = card.querySelector('[data-roll]');
+    if (roll) {
+      const items = roll.querySelectorAll('.wl-roll__t');
+      if (items.length > 1) {
+        let i = 0;
+        rollTimer = setInterval(() => {
+          items[i].classList.remove('is-on');
+          i = (i + 1) % items.length;
+          items[i].classList.add('is-on');
+        }, 2600);
+      }
+    }
+    const box = card.querySelector('[data-kbroll]');
+    if (box) {
+      const items = box.querySelectorAll('.wl-roll__t');
+      if (items.length > 1) {
+        items.forEach((el, k) => el.classList.toggle('is-on', k === 0));
+        let k = 0;
+        kbTimer = setInterval(() => {
+          const cur = items[k];
+          cur.classList.remove('is-on');
+          cur.classList.add('is-out');
+          setTimeout(() => cur.classList.remove('is-out'), 520);
+          k = (k + 1) % items.length;
+          items[k].classList.add('is-on');
+        }, 3000);
+      }
+    }
+  }
+  let kbTimer = null;
+
+  /* 页面是绝对定位的设计稿：卡片高度随阶段变化，下方卡片位置在这里跟随重排 */
+  function relayout() {
+    const sub = document.querySelector('.card.subscribe');
+    const consult = document.querySelector('.card.consult');
+    const kf1 = document.querySelector('.kf-1');
+    const kf2 = document.querySelector('.kf-2');
+    if (!sub || !consult || !kf1 || !kf2) return;
+    let y = sub.offsetTop + sub.offsetHeight + 9.5;
+    consult.style.top = y + 'px';
+    y += consult.offsetHeight + 10;
+    kf1.style.top = y + 'px';
+    y += kf1.offsetHeight + 10;
+    kf2.style.top = y + 'px';
+  }
+
+  function render(n) {
+    stage = n;
+    body.innerHTML = STAGE[n]();
+    const c = CHIP[n];
+    chip.textContent = c[0];
+    chip.className = 'wl-st' + (c[1] ? ' ' + c[1] : '');
+    card.setAttribute('data-stage', String(n));
+    startRoll();
+    relayout();
+  }
+
+  chip.addEventListener('click', () => render(stage % 5 + 1));
+  render(parseInt(card.getAttribute('data-start-stage'), 10) || 1);
+})();
+
+/* ---------- 专项标签：只切换选中态（「全部」自带 data-toast） ---------- */
+(function () {
+  const tags = document.querySelector('[data-spec-tags]');
+  if (!tags) return;
+  tags.addEventListener('click', (e) => {
+    const btn = e.target.closest('.wl-tag');
+    if (!btn || btn.classList.contains('wl-tag--all')) return;
+    tags.querySelectorAll('.wl-tag').forEach((b) => b.classList.toggle('is-on', b === btn));
+  });
+})();
+</script>
+</body>
+</html>
