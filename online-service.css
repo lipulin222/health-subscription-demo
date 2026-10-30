@@ -826,17 +826,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   margin-top: 20px;
 }
 .wcard .rk__link {
-  display: block; text-decoration: none; color: inherit; padding-right: 26px;
+  display: block; text-decoration: none; color: inherit;
 }
-.wcard .rk__switch {
-  position: absolute; top: 8px; right: 8px;
-  width: 24px; height: 24px; border: none; border-radius: 999px;
-  display: flex; align-items: center; justify-content: center;
-  background: none; color: var(--ink-3); cursor: pointer;
-  transition: color .16s ease, transform .12s ease;
-}
-.wcard .rk__switch svg { width: 13px; height: 13px; }
-.wcard .rk__switch:active { color: var(--brand); transform: scale(.9); }
 .wcard .rk__hd { display: flex; align-items: center; gap: 2px; }
 .wcard .rk__ico { width: 19px; height: 18px; flex-shrink: 0; color: var(--warning); display: inline-flex; }
 .wcard .rk__ico svg { width: 19px; height: 18px; }

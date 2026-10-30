@@ -66,19 +66,6 @@ if (stateMenu && moreBtn) {
     render(3);
   });
 
-  /* 提醒卡片：右上角切换图标 → 按规格顺序循环切换提醒内容（就地更新，不重绘整卡） */
-  card.addEventListener('click', (e) => {
-    const sw = e.target.closest('[data-rk-switch]');
-    if (!sw) return;
-    e.preventDefault();
-    rkIndex = (rkIndex + 1) % RK.length;
-    const box = sw.closest('[data-rk]');
-    const r = RK[rkIndex];
-    box.querySelector('.rk__link').setAttribute('href', r.url);
-    box.querySelector('.rk__hd b').textContent = r.t;
-    box.querySelector('.rk__tx').innerHTML = rkBody(r);
-  });
-
   /* 站点根：空串＝相对当前页面跳转（本地 / 离线 file:// / GitHub Pages 均可用，本页固定在仓库根） */
   const BASE = '';
   /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
@@ -218,7 +205,6 @@ if (stateMenu && moreBtn) {
       '<a class="rk__link" href="' + r.url + '">' +
       '<span class="rk__hd"><span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span><b>' + r.t + '</b></span>' +
       '<p class="rk__tx">' + rkBody(r) + '</p></a>' +
-      '<button type="button" class="rk__switch" data-rk-switch title="切换提醒" aria-label="切换提醒">' + ICO.swap + '</button>' +
       '</div>';
   };
 
