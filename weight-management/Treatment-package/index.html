@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>体重管理首诊套餐 · 体重管理</title>
+  <meta name="description" content="体重管理首诊用药套餐：套餐内容、支付后就诊流程与常见问题。" />
+  <link rel="icon" href="../../branding-pic/icon.png" />
+  <link rel="stylesheet" href="package.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">体重管理首诊套餐</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <main class="page" id="view">
+        <!-- 用户基础信息 + 套餐匹配度（JS 按 sessionStorage 渲染，兜底演示人设） -->
+        <section class="hero" id="hero"></section>
+
+        <!-- 套餐介绍：专业 / 科学 / 性价比 -->
+        <section class="mod card">
+          <button class="mod__h" type="button" aria-expanded="true">
+            <span class="mod__no">01</span>
+            <span class="mod__t">套餐介绍</span>
+            <span class="mod__arw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="mod__b"><div class="mod__b-in">
+            <p class="tail">减重是一个复杂、系统性工程，卓正专业的服务能够帮助你的减重过程更加安全、有效。</p>
+            <div class="svc-grid">
+              <div class="svc">
+                <img src="../../assets/pkg/减重套餐01-内科减重女医生科学诊断（精简版）.png" alt="专业医生的科学诊断" loading="lazy" />
+                <b>专业医生的科学诊断</b>
+              </div>
+              <div class="svc">
+                <img src="../../assets/pkg/减重套餐02-循证依据充分的正规针剂.png" alt="循证充分的正规药物" loading="lazy" />
+                <b>循证充分的正规药物</b>
+              </div>
+              <div class="svc">
+                <img src="../../assets/pkg/减重套餐03-营养比例示意（无人物）.png" alt="营养师制定饮食方案" loading="lazy" />
+                <b>营养师制定饮食方案</b>
+              </div>
+              <div class="svc">
+                <img src="../../assets/pkg/减重套餐04-医护助理线上1v1指导（修订）.png" alt="医护助理1v1的服务指导" loading="lazy" />
+                <b>医护助理1v1的服务指导</b>
+              </div>
+            </div>
+            <!-- 套餐卡：浅底子卡片，区隔正文 -->
+            <div class="pkg">
+              <div class="pkg__t">卓正医疗-减重管理首诊套餐</div>
+              <ul class="pkg__list">
+                <li class="pkg__i">
+                  <div class="pkg__r"><span class="svc__n">医生制定减重方案</span><span class="svc__p">¥400</span></div>
+                  <p class="svc__d">含减重方案评估、营养支持方案评估、处方开具</p>
+                </li>
+                <li class="pkg__i">
+                  <div class="pkg__r"><span class="svc__n">药物支持：替尔泊肽注射液</span><span class="svc__p">¥580</span></div>
+                  <p class="svc__d">GIP / GLP-1 双受体激动剂 · 目标剂量档 · 每周 1 次 · 4 支</p>
+                </li>
+                <li class="pkg__i">
+                  <div class="pkg__r"><span class="svc__n">专属医疗助理服务</span><span class="svc__p">¥300</span></div>
+                  <p class="svc__d">1 个月内，线上 1 对 1 真人护士对接</p>
+                </li>
+                <li class="pkg__i">
+                  <div class="pkg__r"><span class="svc__n">AI 智能减重陪跑服务</span><span class="svc__p">¥100</span></div>
+                  <p class="svc__d">全天候在线，随时响应需求、解答疑问</p>
+                </li>
+              </ul>
+              <div class="pkg__p">
+                <span class="pkg__lab">套餐价</span>
+                <b>¥790</b>
+                <s>¥1,380</s>
+                <em class="pkg__save">立省 ¥590</em>
+              </div>
+            </div>
+          </div></div>
+        </section>
+
+        <!-- 支付后就诊流程 -->
+        <section class="mod card">
+          <button class="mod__h" type="button" aria-expanded="true">
+            <span class="mod__no">02</span>
+            <span class="mod__t">支付后流程</span>
+            <span class="mod__arw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="mod__b"><div class="mod__b-in">
+            <div class="flow">
+              <div class="flow__i"><span class="flow__n">1</span><span class="flow__tx"><b>用户提交订单并支付</b></span></div>
+              <div class="flow__i"><span class="flow__n">2</span><span class="flow__tx"><b>医生线上评估开具处方</b><em>若医生评估需要面诊，助理将电话联系用户</em></span></div>
+              <div class="flow__i"><span class="flow__n">3</span><span class="flow__tx"><b>用户填写收货信息<a class="flow__lnk" href="../../Delivery-Info/fill.html">现在填写</a></b></span></div>
+              <div class="flow__i"><span class="flow__n">4</span><span class="flow__tx"><b>同城顺丰冷链发货</b></span></div>
+            </div>
+          </div></div>
+        </section>
+
+      </main>
+
+      <!-- 吸底：购买协议勾选 + 进入线上订阅下单页 -->
+      <footer class="paybar" id="paybar">
+        <button class="btn fixbar__btn" id="buyBtn" type="button">购买套餐</button>
+        <label class="agr">
+          <input type="checkbox" id="agrChk" />
+          <span>我已阅读并同意<i>《减重管理服务知情同意书》</i>，确认提供的问卷信息真实，知悉医生将据此判断并开具处方</span>
+        </label>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../shared.js"></script>
+  <script src="package.js"></script>
+</body>
+</html>
