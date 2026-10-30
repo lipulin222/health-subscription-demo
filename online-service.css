@@ -83,7 +83,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   .phone { margin: 24px 0; min-height: calc(100vh - 48px); border-radius: var(--radius-panel); box-shadow: 0 0 40px rgba(0, 0, 0, .08); }
 }
 
-/* ---------- 顶部渐变头部背景（设计稿：#CDF3FC→#F2F5F6 渐变 + 两张装饰云图） ---------- */
+/* ---------- 顶部渐变头部背景（设计稿：#CDF3FC→#F2F5F6 渐变；装饰云图已移除，防 webview 破图占位） ---------- */
 .hero {
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -94,8 +94,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   overflow: hidden;
 }
 .hero img { position: absolute; display: block; }
-.hero__deco1 { top: 0; left: 0; width: 319px; height: 282px; transform: rotate(180deg); }
-.hero__deco2 { top: 130px; left: 0; width: 375px; height: 185px; opacity: .2; }
 
 /* ---------- 顶部标题区：标题 / 搜索圆钮 / 机器人圆钮 / 小程序胶囊 同一行垂直居中（设计稿 nav 行 y 中心 65px） ---------- */
 .hd { position: relative; z-index: 2; height: 98px; flex-shrink: 0; }
