@@ -15,6 +15,15 @@
   var FALLBACK = { name: '王倩', age: 35, gender: '女', height: 168, weight: 80, bmi: '28.3' };
 
   var toast = ZZ.toast;
+  var esc = ZZ.esc;
+
+  /* 报告生成时间：取当前打开时刻（演示口径），精确到分 */
+  var GEN_TIME = (function () {
+    var n = new Date();
+    function p2(x) { return (x < 10 ? '0' : '') + x; }
+    return n.getFullYear() + '-' + p2(n.getMonth() + 1) + '-' + p2(n.getDate()) +
+      ' ' + p2(n.getHours()) + ':' + p2(n.getMinutes());
+  })();
 
   /* 结论头：用户基础信息 + 套餐匹配度（读取报告页写入的问卷结果） */
   function readUser() {
@@ -36,8 +45,15 @@
     var u = readUser();
     var bmi = parseFloat(u.bmi) || (u.weight / Math.pow(u.height / 100, 2)).toFixed(1);
     el.innerHTML =
-      '<span class="hero__s">' + u.name + ' · ' + u.age + ' 岁 · ' + u.gender + ' · ' +
+      '<div class="hero__hd">' +
+      '<span class="hero__name">' + esc(u.name) + '</span>' +
+      '<span class="hero__meta">' + esc(u.gender || '') + ' · ' + u.age + ' 岁 · ' +
       u.height + 'cm / ' + u.weight + 'kg · BMI ' + Number(bmi).toFixed(1) + '</span>' +
+      '<button type="button" class="hero__info" id="genInfoBtn" aria-label="查看生成时间" aria-expanded="false">' +
+      '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 11.2v4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></svg>' +
+      '</button>' +
+      '<span class="hero__tip" id="genTip" hidden>生成时间：' + GEN_TIME + '</span>' +
+      '</div>' +
       '<div class="mbar">' +
       '<span class="mbar__lab">套餐匹配度</span>' +
       '<span class="mbar__lv">较高</span>' +
@@ -64,8 +80,26 @@
     }
   }
 
+  /* 生成时间气泡：点右上角 info 图标显示，点外面/再点一次收起（与评估报告页同实现） */
+  function initGenInfo() {
+    var btn = document.getElementById('genInfoBtn');
+    var tip = document.getElementById('genTip');
+    if (!btn || !tip) return;
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      tip.hidden = !tip.hidden;
+      btn.setAttribute('aria-expanded', String(!tip.hidden));
+    });
+    document.addEventListener('click', function (e) {
+      if (tip.hidden || tip.contains(e.target)) return;
+      tip.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
   function init() {
     renderHero();
+    initGenInfo();
 
     /* 模块折叠 */
     document.querySelectorAll('.mod').forEach(function (mod) {
