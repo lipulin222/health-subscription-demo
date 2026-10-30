@@ -97,6 +97,14 @@
   var BMI_NUM = parseFloat(D.bmi) || (D.weight / Math.pow(D.height / 100, 2));
   var BMI = (parseFloat(D.bmi) || BMI_NUM).toFixed(1);
 
+  /* 报告生成时间：取当前打开时刻（演示口径），精确到分 */
+  var GEN_TIME = (function () {
+    var n = new Date();
+    function p2(x) { return (x < 10 ? '0' : '') + x; }
+    return n.getFullYear() + '-' + p2(n.getMonth() + 1) + '-' + p2(n.getDate()) +
+      ' ' + p2(n.getHours()) + ':' + p2(n.getMinutes());
+  })();
+
   var meta = Array.isArray(D.meta) ? D.meta : [];
   var hasAny = meta.some(function (m) { return m !== '都没有' && m !== '不确定'; });
   /* 确诊慢病（合并症）：报告按「线下优先」处置 */
@@ -379,6 +387,7 @@
       '<span class="hero__rule" aria-hidden="true"></span>' +
       '<span class="hero__s">' + esc(D.name || FALLBACK.name) + ' · ' + (D.age || FALLBACK.age) + ' 岁 · ' +
       D.height + 'cm / ' + D.weight + 'kg · BMI ' + BMI + '</span>' +
+      '<span class="hero__time">生成时间：' + GEN_TIME + '</span>' +
       '<div class="grade">' +
       '<div class="grade__h">' +
       '<span>' + GRADE.lab + '</span>' +

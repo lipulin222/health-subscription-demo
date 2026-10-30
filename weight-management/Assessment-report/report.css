@@ -173,6 +173,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .hero__rule { display: none; }        /* 品牌强调条：同上 */
 
 .hero__s { display: block; font-size: var(--fs-2); color: var(--t-placeholder); line-height: 18px; }
+/* 报告生成时间：档案行下方独立一行（医疗内容须可见日期口径） */
+.hero__time { display: block; margin-top: 3px; font-size: var(--fs-1); color: var(--t-placeholder); line-height: 16px; }
 
 /* 建议等级刻度：品牌浅底面板 */
 .grade {
@@ -223,9 +225,9 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod.is-fold .mod__b { max-height: 0; opacity: 0; }
 .mod__b-in { padding: 0 15px 15px; }
 
-/* 正文：与结论头建议行同规格 —— 12px / 行高 21 / 次要灰 #666
+/* 正文：14px / 行高 24 / 次要灰 #666（原 12px 过小，2026-10-30 上调）
    模块内所有相邻块统一 10px 间距，行距节奏一致 */
-.mod__b-in p { font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
+.mod__b-in p { font-size: var(--fs-3); line-height: 24px; color: var(--t-secondary); }
 .mod__b-in > * + * { margin-top: 10px; }
 
 .lead {
@@ -236,17 +238,17 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   display: block;
   font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 20px;
 }
-/* 备注小字：11px / #999999（上间距由模块统一节奏控制） */
+/* 备注小字：12px / #999999（与正文拉开一档） */
 .mod__b-in .note {
-  font-size: var(--fs-1); line-height: 18px; color: var(--t-placeholder);
+  font-size: var(--fs-2); line-height: 19px; color: var(--t-placeholder);
 }
 .mt { margin-top: 8px; }
 
-/* 要点列表：与正文同规格（12px / 21 / #666），圆点用品牌色 */
+/* 要点列表：与正文同规格（14px / 24 / #666），圆点用品牌色 */
 .ul { list-style: none; }
 .ul li {
   position: relative; padding-left: 16px;
-  font-size: var(--fs-2); color: var(--t-secondary); line-height: 21px;
+  font-size: var(--fs-3); color: var(--t-secondary); line-height: 24px;
 }
 /* 条目间不加额外间距，与正文段落保持同一行距节奏 */
 .ul li + li { margin-top: 0; }
@@ -272,10 +274,10 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .callout--warn .ul { margin-top: 6px; }
 
-/* 线下优先建议（刻度区下方）：普通灰字说明，不用品牌色 */
+/* 线下优先建议（刻度区下方）：普通灰字说明，不用品牌色（与正文同规格） */
 .hero__hint {
   display: block; margin-top: 10px;
-  font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); text-align: left;
+  font-size: var(--fs-3); line-height: 23px; color: var(--t-secondary); text-align: left;
 }
 
 /* ============================ 6. 匹配度条 ============================ */
@@ -305,7 +307,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* ============================ 8. 表格 ============================ */
 /* 灰白弱化配色：表头浅灰底 + 次要灰字，行底纯白，分隔线 #E8E8E8 */
-.tb { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: var(--space-card-gap); font-size: var(--fs-2); }
+.tb { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: var(--space-card-gap); font-size: 13px; }
 .tb th, .tb td { padding: 9px 11px; text-align: left; vertical-align: top; line-height: 1.7; }
 .tb th {
   background: var(--bg-page); color: var(--t-secondary);
