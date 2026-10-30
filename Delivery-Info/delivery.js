@@ -60,6 +60,22 @@
     });
   }
 
+  /* ---------------- 订单信息卡（所有环节置顶展示） ---------------- */
+  /* 商品与金额与 Payment-Page/pay.js 的 ORDER 保持一致（改价时两处同步） */
+  var ORDER_NO = 'ZZ2026103018260042';
+  var ORDER_TIME = '2026-10-30 17:26';
+
+  function orderCard() {
+    return '' +
+      '<section class="card info">' +
+      '<div class="row"><span class="row__k">商品</span><span class="row__v">体重管理首诊套餐（【穆峰达】替尔泊肽注射液）</span></div>' +
+      '<div class="row"><span class="row__k">订单编号</span><span class="row__v">' + ORDER_NO + '</span></div>' +
+      '<div class="row"><span class="row__k">支付金额</span><span class="row__v">¥790.00</span></div>' +
+      '<div class="row"><span class="row__k">支付方式</span><span class="row__v">微信支付</span></div>' +
+      '<div class="row"><span class="row__k">支付时间</span><span class="row__v">' + ORDER_TIME + '</span></div>' +
+      '</section>';
+  }
+
   /* ---------------- 就诊人卡（必有、不可改） ---------------- */
   function patientCard() {
     return '' +
@@ -120,7 +136,7 @@
   /* ---------------- 各环节正文 ---------------- */
   function render(stage, sub) {
     var data = readData();
-    var h = '';
+    var h = orderCard();
 
     if (stage === 'assess') {
       /* 医生评估进行中：无卡片，页面居中展示 */
@@ -220,10 +236,7 @@
     render(p.stage, p.sub);
 
     var view = $('view');
-    if (view) {
-      if (p.stage !== 'logistics') view.classList.add('is-center');
-      view.classList.add('view-in');
-    }
+    if (view) view.classList.add('view-in');
   }
 
   document.addEventListener('DOMContentLoaded', init);
