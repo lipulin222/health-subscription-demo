@@ -172,9 +172,34 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .hero__deco { display: none; }        /* 卓正菱水印：DistinctUI 平铺风，不保留 */
 .hero__rule { display: none; }        /* 品牌强调条：同上 */
 
-.hero__s { display: block; font-size: var(--fs-2); color: var(--t-placeholder); line-height: 18px; }
-/* 报告生成时间：档案行下方独立一行（医疗内容须可见日期口径） */
-.hero__time { display: block; margin-top: 3px; font-size: var(--fs-1); color: var(--t-placeholder); line-height: 16px; }
+/* 版头：名字独立一行粗体，下面是 性别·年龄·身高体重·BMI；
+   右上角圆形 info 图标，点击弹「生成时间」小气泡 */
+.hero__hd { position: relative; }
+.hero__name { display: block; font-size: 17px; font-weight: 600; color: var(--t-title); line-height: 24px; }
+.hero__meta { display: block; margin-top: 4px; padding-right: 32px; font-size: var(--fs-2); color: var(--t-placeholder); line-height: 17px; }
+.hero__info {
+  position: absolute; top: 1px; right: 0;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; border-radius: 50%;
+  color: var(--t-placeholder); cursor: pointer;
+  transition: color .16s var(--ease);
+}
+.hero__info:active { color: var(--brand); }
+.hero__info svg { width: 17px; height: 17px; display: block; }
+.hero__tip {
+  position: absolute; top: 32px; right: 0; z-index: 5;
+  background: rgba(26, 26, 26, .88); color: #FFFFFF;
+  font-size: var(--fs-1); line-height: 16px;
+  padding: 7px 11px; border-radius: 8px; white-space: nowrap;
+}
+.hero__tip[hidden] { display: none; }
+/* 小气泡尾巴 */
+.hero__tip::before {
+  content: ""; position: absolute; top: -4px; right: 9px;
+  width: 8px; height: 8px; background: inherit;
+  transform: rotate(45deg); border-radius: 1px;
+}
 
 /* 建议等级刻度：品牌浅底面板 */
 .grade {

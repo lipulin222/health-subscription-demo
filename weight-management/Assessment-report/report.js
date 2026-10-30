@@ -385,9 +385,15 @@
       '<section class="hero">' +
       '<span class="hero__deco" aria-hidden="true"></span>' +
       '<span class="hero__rule" aria-hidden="true"></span>' +
-      '<span class="hero__s">' + esc(D.name || FALLBACK.name) + ' · ' + (D.age || FALLBACK.age) + ' 岁 · ' +
+      '<div class="hero__hd">' +
+      '<span class="hero__name">' + esc(D.name || FALLBACK.name) + '</span>' +
+      '<span class="hero__meta">' + esc(D.gender || FALLBACK.gender) + ' · ' + (D.age || FALLBACK.age) + ' 岁 · ' +
       D.height + 'cm / ' + D.weight + 'kg · BMI ' + BMI + '</span>' +
-      '<span class="hero__time">生成时间：' + GEN_TIME + '</span>' +
+      '<button type="button" class="hero__info" id="genInfoBtn" aria-label="查看生成时间" aria-expanded="false">' +
+      '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 11.2v4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></svg>' +
+      '</button>' +
+      '<span class="hero__tip" id="genTip" hidden>生成时间：' + GEN_TIME + '</span>' +
+      '</div>' +
       '<div class="grade">' +
       '<div class="grade__h">' +
       '<span>' + GRADE.lab + '</span>' +
@@ -558,6 +564,23 @@
     });
   }
 
+  /* 生成时间气泡：点右上角 info 图标显示，点外面/再点一次收起 */
+  function initGenInfo() {
+    var btn = document.getElementById('genInfoBtn');
+    var tip = document.getElementById('genTip');
+    if (!btn || !tip) return;
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      tip.hidden = !tip.hidden;
+      btn.setAttribute('aria-expanded', String(!tip.hidden));
+    });
+    document.addEventListener('click', function (e) {
+      if (tip.hidden || tip.contains(e.target)) return;
+      tip.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
   function init() {
     var view = document.getElementById('view');
     if (!view) return;
@@ -568,6 +591,7 @@
     initNav();
     initDispSw();
     initFixbar();
+    initGenInfo();
   }
 
   document.addEventListener('DOMContentLoaded', init);
