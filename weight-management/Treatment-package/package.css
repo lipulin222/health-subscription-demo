@@ -84,10 +84,10 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .page::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
-/* 开场导语：与模块正文同规格 */
+/* 开场导语：与模块正文同规格（14px / 24） */
 .lead-p {
   margin: 10px 2px 0;
-  font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary);
+  font-size: var(--fs-3); line-height: 24px; color: var(--t-secondary);
 }
 
 /* 结论头：档案行 + 套餐匹配度 */
@@ -122,7 +122,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   width: 8px; height: 8px; background: inherit;
   transform: rotate(45deg); border-radius: 1px;
 }
-.hero__d { margin-top: 10px; font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
+.hero__d { margin-top: 10px; font-size: var(--fs-3); line-height: 23px; color: var(--t-secondary); }
 .mbar { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
 .mbar__lab { font-size: var(--fs-2); color: var(--t-secondary); flex-shrink: 0; }
 .mbar__lv { font-size: var(--fs-3); font-weight: 600; color: var(--brand); flex-shrink: 0; }
@@ -168,8 +168,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod__b { overflow: hidden; max-height: none; opacity: 1; transition: max-height .32s var(--ease), opacity .22s var(--ease); }
 .mod.is-fold .mod__b { max-height: 0; opacity: 0; }
 .mod__b-in { padding: 0 15px 15px; }
-/* 模块正文与全站同规格：12px / 行高 21 / #666，相邻块 10px */
-.mod__b-in p { font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
+/* 模块正文与评估报告页同规格：14px / 行高 24 / #666，相邻块 10px */
+.mod__b-in p { font-size: var(--fs-3); line-height: 24px; color: var(--t-secondary); }
 .mod__b-in > * + * { margin-top: 10px; }
 .mod__b-in p b { color: inherit; font-weight: 500; }
 /* 高亮句：品牌青色文字，无底色 */
@@ -182,23 +182,23 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .svc img { width: 96px; height: 96px; object-fit: contain; }
 .svc b { margin-top: 6px; font-size: 12px; font-weight: 400; color: var(--brand); line-height: 19px; }
-/* 引言备注：浅色小字，位于卖点图上方 */
-.mod__b-in .tail { margin: 0 0 2px; font-size: 12px; font-weight: 400; line-height: 19px; color: var(--t-placeholder); }
+/* 引言备注：浅色小字（12px），位于卖点图上方 */
+.mod__b-in .tail { margin: 0 0 2px; font-size: var(--fs-2); font-weight: 400; line-height: 19px; color: var(--t-placeholder); }
 /* 分点展示：青色要点，每行一个，行首带段落符 */
 .mod__b-in .hl-list { margin: 2px 0 10px; padding: 0; list-style: none; }
 .mod__b-in .hl-list li {
   position: relative;
   padding-left: 15px;
   margin-top: 6px;
-  font-size: var(--fs-2);
-  line-height: 21px;
+  font-size: var(--fs-3);
+  line-height: 24px;
   color: var(--brand);
 }
 .mod__b-in .hl-list li::before {
   content: '';
   position: absolute;
   left: 2px;
-  top: 9px;
+  top: 10px;
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -238,20 +238,20 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   font-size: var(--fs-1); font-weight: 500;
   display: flex; align-items: center; justify-content: center; margin-top: 2px;
 }
-.flow__tx { flex: 1; min-width: 0; font-size: var(--fs-2); line-height: 19px; color: var(--t-secondary); }
-.flow__tx b { display: block; font-size: var(--fs-2); font-weight: 500; color: var(--t-primary); }
+.flow__tx { flex: 1; min-width: 0; font-size: 13px; line-height: 20px; color: var(--t-secondary); }
+.flow__tx b { display: block; font-size: 13px; font-weight: 500; color: var(--t-primary); }
 .flow__tx em { display: block; font-style: normal; font-size: var(--fs-1); color: var(--t-placeholder); margin-top: 1px; }
 /* 步骤右侧「现在填写」文字链：品牌青色 */
 .flow__lnk { margin-left: 8px; font-size: var(--fs-2); font-weight: 400; color: var(--brand); text-decoration: none; vertical-align: 1px; }
 .flow__lnk:active { opacity: .7; }
 
 /* 备注 / 常见问题 */
-.note { margin-top: 10px; font-size: var(--fs-1); line-height: 18px; color: var(--t-placeholder); }
+.note { margin-top: 10px; font-size: var(--fs-2); line-height: 19px; color: var(--t-placeholder); }
 .qa { margin-top: 0; }
 .qa__i { padding: 10px 0; border-top: 1px solid var(--divider); }
 .qa__i:first-child { border-top: none; padding-top: 0; }
-.qa__q { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 22px; }
-.qa__a { font-size: var(--fs-2); color: var(--t-secondary); line-height: 21px; margin-top: 3px; }
+.qa__q { font-size: 15px; font-weight: 500; color: var(--t-primary); line-height: 23px; }
+.qa__a { font-size: var(--fs-3); color: var(--t-secondary); line-height: 24px; margin-top: 3px; }
 
 /* 合规声明 */
 .disc { margin-top: var(--space-card-gap); padding: 0 2px 4px; font-size: var(--fs-1); color: var(--t-placeholder); line-height: 18px; }
