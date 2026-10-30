@@ -4,14 +4,14 @@
    结构来源：用户提供的第三方支付成功页截图
      ① 顶栏：返回 / 居中「支付成功」/ 右侧胶囊
      ② 绿色圆形对勾 + 星点 + 「支付成功」
-     ③ 浅绿提示块：倒计时文案（5 秒后自动跳转完善收货信息页面）
+     ③ 浅绿提示块：倒计时文案（5 秒后自动跳转订单详情页）
      ④ 提示块下方文字链：订单可在 我的-已购套餐及代金券 内查看
-     跳转：倒计时结束进入完善收货信息页（DELIVERY_URL）
+     跳转：倒计时结束进入订单详情页（ORDER_URL → Delivery-Info/index.html）
      ============================================================================= */
      (function () {
      'use strict';
 
-     /* 完善收货信息页（Delivery-Info） */
+     /* 订单详情页（Delivery-Info/index.html，顶栏标题「订单详情」） */
      var DELIVERY_URL = '../Delivery-Info/index.html';
 
   /* 返回兜底：本页由支付页进入，无历史记录时回到支付页 */
@@ -21,7 +21,7 @@
   var ORDER_URL = '../Order-Records/index.html';
 
   var COUNT = 5;             /* 倒计时秒数 */
-  var TIP = '秒后自动跳转完善收货信息页面。';
+  var TIP = '秒后自动跳转订单详情页。';
 
   var left = COUNT;
   var timer = null;
@@ -32,7 +32,7 @@
       left -= 1;
       if (left <= 0) {
         clearInterval(timer);
-        if (t) t.textContent = '正在进入完善收货信息页面…';
+        if (t) t.textContent = '正在进入订单详情页…';
         location.href = DELIVERY_URL;
         return;
       }
