@@ -194,15 +194,6 @@
 
     $('view').innerHTML = h;
 
-    /* 吸底按钮：仅填写物流环节 */
-    var bar = $('paybar');
-    if (stage === 'logistics') {
-      bar.hidden = false;
-      $('goBtn').textContent = data ? '修改收货信息' : '去填写收货信息';
-    } else {
-      bar.hidden = true;
-    }
-
     /* 物流卡点击 → 二级编辑页（现成的 fill.html） */
     var lg = $('lgCard');
     if (lg) {
@@ -243,11 +234,6 @@
         toast('药品将由冷链配送，收货后请立即冷藏（2–8℃）');
       });
     }
-
-    /* 吸底出口：二级填写页 */
-    $('goBtn').addEventListener('click', function () {
-      location.href = FILL_URL;
-    });
 
     var p = parseStage();
     renderSteps(CUR[p.stage]);

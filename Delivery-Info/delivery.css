@@ -206,7 +206,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   width: 16px; height: 16px; color: var(--t-placeholder);
 }
 .lg-card.is-link .row { padding-right: 26px; }
-.row__v.is-empty { color: var(--t-placeholder); font-weight: 400; }
+.row__v.is-empty { color: var(--brand); font-weight: 400; }
 
 /* 物流单号 + 复制 */
 .copy-btn {
