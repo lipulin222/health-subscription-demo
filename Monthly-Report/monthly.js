@@ -179,6 +179,8 @@
 
   /* ------------------------------------------------------------ 月报页 ---- */
   var emptyEl = document.getElementById('empty');
+  var listEl = document.getElementById('listView');
+  var listCta = document.getElementById('listCta');
   var reportEl = document.getElementById('report');
   var gateEl = document.getElementById('gate');
   var topTitle = document.getElementById('topTitle');
@@ -259,9 +261,45 @@
     return h;
   }
 
+  /* ---------------- 月报列表页（默认落地页） ---------------- */
+  function listHTML() {
+    var h = '<div class="mlist">';
+    for (var i = REPORTS.length - 1; i >= 0; i--) {
+      var r = REPORTS[i];
+      var done = r.status !== 'pending';
+      h += '<button type="button" class="mlist__i' + (done ? '' : ' is-pending') + '" data-no="' + r.no + '">' +
+        '<span class="mlist__no">第 ' + r.no + ' 期 · ' + esc(r.range) + '</span>' +
+        '<span class="mlist__m">' + (done ? esc(r.title) : esc(r.tag) + '，' + esc(r.eta) + '生成') + '</span>' +
+        '<em class="mlist__s">' + (done ? '已生成' : esc(r.tag)) + '</em>' +
+        '</button>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  function showList() {
+    gateEl.hidden = true;
+    emptyEl.hidden = true;
+    reportEl.hidden = true;
+    listEl.hidden = false;
+    if (listCta) listCta.hidden = false;
+    exitHero();
+    if (topTitle) topTitle.textContent = '减重月报';
+    listEl.innerHTML = listHTML();
+    listEl.scrollTop = 0;
+    [].slice.call(listEl.querySelectorAll('.mlist__i')).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (listCta) listCta.hidden = true;
+        show(parseInt(b.getAttribute('data-no'), 10));
+      });
+    });
+  }
+
   function show(no) {
     var r = byNo(no);
     if (!r) return;
+    if (listEl) listEl.hidden = true;
+    if (listCta) listCta.hidden = true;
     gateEl.hidden = true;
     emptyEl.hidden = true;
     reportEl.hidden = false;
@@ -312,6 +350,8 @@
     gateEl.hidden = false;
     reportEl.hidden = true;
     emptyEl.hidden = true;
+    if (listEl) listEl.hidden = true;
+    if (listCta) listCta.hidden = true;
     var mn = quizMonthName();
     if (topTitle) topTitle.textContent = mn + '状态';
     var ttl = document.getElementById('gateTtl');
@@ -385,6 +425,8 @@
     emptyEl.hidden = false;
     reportEl.hidden = true;
     gateEl.hidden = true;
+    if (listEl) listEl.hidden = true;
+    if (listCta) listCta.hidden = true;
     exitHero();
   }
 
@@ -414,14 +456,17 @@
       topbarEl.classList.toggle('solid', reportEl.scrollTop > 140);
     });
 
-    /* 入口规则：?data=none 显示空状态；?report=1 跳过快问快答直接看月报（回看/演示用）；
-       其余一律先进快问快答，提交后生成月报（不再按 localStorage 记忆跳过） */
+    /* 入口规则：默认进月报列表页；点列表下方「生成最新月报」才进快问快答。
+       ?m=N 直接看指定期；?report=1 直接看最新一期（回看/演示用）；
+       ?data=none 显示空状态 */
+    var gen = document.getElementById('genBtn');
+    if (gen) gen.addEventListener('click', function () { openGate(4); });
+
     if (q.data === 'none' && !q.m) { showEmpty(); return; }
     var no = parseInt(q.m, 10);
-    if (!no || !byNo(no)) no = 4;
-    var r = byNo(no);
-    if (q.report === '1' || r.status === 'pending') show(no);
-    else openGate(no);
+    if (no && byNo(no)) { show(no); return; }
+    if (q.report === '1') { show(4); return; }
+    showList();
   }
 
   document.addEventListener('DOMContentLoaded', init);

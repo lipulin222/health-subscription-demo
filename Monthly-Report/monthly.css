@@ -451,6 +451,39 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   text-decoration: none;
 }
 
+/* ============================ 月报列表页 ============================ */
+.mlist { padding: 4px 0 96px; }
+.mlist__i {
+  position: relative; display: block; width: 100%; text-align: left;
+  margin-top: 10px; padding: 13px 92px 13px 15px;
+  background: var(--card); border: none; border-radius: var(--radius-card);
+  cursor: pointer; font-family: inherit;
+}
+.mlist__i:active { background: var(--brand-light-active); }
+.mlist__no { display: block; font-size: 12px; color: var(--ink-3); line-height: 17px; }
+.mlist__m { display: block; margin-top: 3px; font-size: 15px; font-weight: 600; color: var(--t-title); line-height: 21px; }
+.mlist__s {
+  position: absolute; top: 13px; right: 15px;
+  font-style: normal; font-size: 11px; font-weight: 500; color: var(--ink-3); line-height: 16px;
+}
+.mlist__i.is-pending .mlist__s { color: var(--accent); }
+/* 列表页吸底：生成最新月报 */
+.mlist-cta {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+  padding: 10px 15px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, .94);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--divider);
+}
+.mlist-cta button {
+  display: block; width: 100%; height: 40px;
+  border: none; border-radius: var(--radius-large);
+  background: var(--accent); color: #FFFFFF;
+  font-size: 16px; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: background .15s var(--ease);
+}
+.mlist-cta button:active { background: var(--accent-active); }
+
 /* ============================ 轻提示 ============================ */
 .toast {
   position: absolute; left: 50%; bottom: 84px;
