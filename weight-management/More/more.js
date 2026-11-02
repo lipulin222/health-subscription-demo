@@ -33,11 +33,12 @@
   var SUMMARIES = {
     report: {
       title: '评估报告',
+      /* 评估报告只有一种：减重评估报告，差异只在评估时间；副标题=结论性结果 */
       items: [
-        { d: '2026-10-27', t: '减重评估报告 · 慢病结合管理', s: 'BMI 27.3，合并脂肪肝与多次反弹史，建议优先安排线下面诊，制定专门的减重方案。', href: '../Assessment-report/index.html?disp=chronic' },
-        { d: '2026-10-20', t: '疗程随访评估（第 4 周）', s: '体重 68.4kg（较基线 −3.2kg），胃肠道反应已逐渐耐受，继续当前剂量。', href: '../Follow-up-assessment/index.html' },
-        { d: '2026-10-13', t: '首诊用药适应性评估', s: '6 题问卷完成，未命中用药安全禁忌，已进入医生评估环节。', href: '../Medication-eligibility-assessment/index.html?state=new' },
-        { d: '2026-09-29', t: 'GLP-1 标准方案初评', s: '基于问卷初步生成，匹配度 78%；是否用药及剂量以医生处方为准。', href: '../Assessment-report/index.html?disp=normal' }
+        { d: '2026-10-27', t: '减重评估报告', s: '需要体重和慢病结合管理', href: '../Assessment-report/index.html?disp=chronic' },
+        { d: '2026-10-20', t: '减重评估报告', s: '需要体重管理', href: '../Assessment-report/index.html?disp=normal' },
+        { d: '2026-10-13', t: '减重评估报告', s: '需要体重管理', href: '../Assessment-report/index.html?disp=mild' },
+        { d: '2026-09-29', t: '减重评估报告', s: '无需减重', href: '../Assessment-report/index.html?disp=adapt' }
       ]
     },
     monthly: {
