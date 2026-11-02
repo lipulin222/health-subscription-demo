@@ -832,25 +832,19 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .rk__tx em { font-style: normal; color: var(--warning); }
 .wcard .rk__tx span { color: var(--brand); }
 
-/* 回顾数据带：品牌实色底（去渐变 / 投影） */
-.wcard .band {
-  margin-top: 20px; border-radius: var(--radius-card); padding: 16px 15px 14px; color: #FFFFFF;
-  background: var(--brand);
+/* 维持期：插画 + 减重报告 + 通栏「打开回顾」（设计稿「第28天」最新版） */
+.wcard .rpt { margin-top: 20px; }
+.wcard .rpt__fg { display: flex; align-items: center; gap: 26px; padding-left: 14px; }
+.wcard .rpt__pic { width: 105px; height: 154px; flex-shrink: 0; object-fit: contain; }
+.wcard .rpt__t { font-size: 23px; font-weight: 600; line-height: 32px; color: var(--brand); }
+.wcard .rpt__s { margin-top: 2px; font-size: 13px; line-height: 15px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.wcard .rpt__btn {
+  margin-top: 14px; display: flex; align-items: center; justify-content: center;
+  height: 40px; border-radius: var(--radius-large);
+  background: var(--brand); color: #FFFFFF; font-size: 15px; font-weight: 500;
+  text-decoration: none; transition: background .15s ease;
 }
-.wcard .band__t { font-size: 10px; letter-spacing: 1.5px; opacity: .85; }
-.wcard .band__n { margin-top: 6px; font-size: 28px; font-weight: 600; line-height: 1.05; font-variant-numeric: tabular-nums; }
-.wcard .band__n i { font-style: normal; font-size: 14px; font-weight: 500; margin-left: 2px; opacity: .9; }
-.wcard .band__s { margin-top: 4px; font-size: 12px; opacity: .9; font-variant-numeric: tabular-nums; }
-.wcard .band__m { margin-top: 14px; display: flex; align-items: center; gap: 14px; }
-.wcard .band__m > div { display: flex; flex-direction: column; }
-.wcard .band__m b { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.wcard .band__m b i { font-style: normal; font-size: 11px; font-weight: 500; margin-left: 1px; opacity: .85; }
-.wcard .band__m em { margin-top: 1px; font-size: 11px; font-style: normal; opacity: .82; }
-.wcard .band__open {
-  margin-left: auto; font-size: 12px; font-weight: 500; color: #FFFFFF; white-space: nowrap;
-  text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, .55); padding-bottom: 1px;
-}
-.wcard .band__open:active { border-color: #FFFFFF; }
+.wcard .rpt__btn:active { background: var(--brand-active); }
 
 /* ==========================================================================
    单页双状态（老客 / 新客）

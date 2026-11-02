@@ -284,17 +284,16 @@ if (stateMenu && moreBtn) {
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多')),
 
     /* ⑤ 品牌认可：回顾 */
-    5: () => '<div class="band">' +
-      '<div class="band__t">YOUR 24 WEEKS</div>' +
-      '<div class="band__n">-8.6<i>kg</i></div>' +
-      '<div class="band__s">71.6kg → 63.0kg · 24 周</div>' +
-      '<div class="band__m">' +
-      '<div><b>78<i>次</i></b><em>打卡</em></div>' +
-      '<div><b>-9.5<i>cm</i></b><em>腰围</em></div>' +
-      '<div><b>3<i>次</i></b><em>复查</em></div>' +
-      '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
+    /* ⑤ 维持期：插画 + 减重报告 + 通栏「打开回顾」（设计稿「第28天」最新版） */
+    5: () => '<div class="rpt">' +
+      '<div class="rpt__fg">' +
+      '<img class="rpt__pic" src="design-assets/recap-hero.png" alt="" />' +
+      '<div class="rpt__tx">' +
+      '<div class="rpt__t">减重报告</div>' +
+      '<p class="rpt__s">71.6kg → 68.4kg · 24 周</p>' +
       '</div></div>' +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多')),
+      '<a class="rpt__btn" href="' + U.recap + '">打开回顾</a>' +
+      '</div>',
 
     /* ⑥ 开启日：下单 + 面诊 + 取药后，首次回到首页的一屏（一次性，设计稿「第一天」） */
     6: () => ritualBlock()
