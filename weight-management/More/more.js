@@ -109,12 +109,11 @@
       return '<a class="entry" href="' + href + '">' +
         '<span class="entry__ico">' + ico(en.type) + '</span>' +
         '<span class="entry__b">' +
-        '<span class="entry__t">' + esc(en.name) + '</span>' +
+        '<span class="entry__t">' + esc(en.name) + dot + '</span>' +
         '<span class="entry__d" style="display:block">' + esc(en.desc) + '</span>' +
         '</span>' +
         '<span class="entry__n">' + en.n + '</span>' +
         '<span class="entry__arw">' + ARW + '</span>' +
-        dot +
         '</a>';
     }).join('') + '</section>';
   }

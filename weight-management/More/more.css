@@ -98,10 +98,9 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .entry__n { flex-shrink: 0; font-size: var(--fs-2); color: var(--t-placeholder); }
 .entry__arw { flex-shrink: 0; width: 16px; height: 16px; color: #C0C6C7; }
 .entry + .entry { border-top: 1px solid var(--divider); }
-/* 入口行红点：生成月报 / new */
-.entry { position: relative; }
+/* 入口行红点：生成月报 / new（跟在标题后面，内联小药丸） */
 .entry__dot {
-  position: absolute; top: 10px; right: 40px;
+  display: inline-block; vertical-align: 2px; margin-left: 6px;
   font-style: normal; font-size: 10px; font-weight: 600; line-height: 1;
   color: #FFFFFF; background: #FA5151;
   padding: 3px 6px; border-radius: 8px 8px 8px 2px;
