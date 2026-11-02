@@ -835,7 +835,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 /* 维持期：插画 + 减重报告 + 通栏「打开回顾」（设计稿「第28天」最新版） */
 .wcard .rpt { margin-top: 20px; }
 .wcard .rpt__fg { display: flex; align-items: center; gap: 26px; padding-left: 14px; }
-.wcard .rpt__pic { width: 105px; height: 154px; flex-shrink: 0; object-fit: contain; }
+.wcard .rpt__pic { width: 95px; height: 139px; flex-shrink: 0; object-fit: contain; }
 .wcard .rpt__t { font-size: 23px; font-weight: 600; line-height: 32px; color: var(--brand); }
 .wcard .rpt__s { margin-top: 2px; font-size: 13px; line-height: 15px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .wcard .rpt__btn {
