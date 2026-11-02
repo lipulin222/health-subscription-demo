@@ -182,8 +182,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .svc img { width: 96px; height: 96px; object-fit: contain; }
 .svc b { margin-top: 6px; font-size: 12px; font-weight: 400; color: var(--brand); line-height: 19px; }
-/* 引言备注：浅色小字（12px），位于卖点图上方 */
-.mod__b-in .tail { margin: 0 0 2px; font-size: var(--fs-2); font-weight: 400; line-height: 19px; color: var(--t-placeholder); }
+/* 引言备注：与顶部引导文案同规格（14px / #666 / 行高 23px），位于卖点图上方 */
+.mod__b-in .tail { margin: 0 0 2px; font-size: var(--fs-3); font-weight: 400; line-height: 23px; color: var(--t-secondary); }
 /* 分点展示：青色要点，每行一个，行首带段落符 */
 .mod__b-in .hl-list { margin: 2px 0 10px; padding: 0; list-style: none; }
 .mod__b-in .hl-list li {
