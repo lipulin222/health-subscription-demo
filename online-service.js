@@ -289,8 +289,7 @@ if (stateMenu && moreBtn) {
       '<div class="rpt__fg">' +
       '<img class="rpt__pic" src="design-assets/recap-hero.png" alt="" />' +
       '<div class="rpt__tx">' +
-      '<div class="rpt__t">减重报告</div>' +
-      '<p class="rpt__s">71.6kg → 68.4kg · 24 周</p>' +
+      '<div class="rpt__t">恭喜减重成功！</div>' +
       '</div></div>' +
       '<a class="rpt__btn" href="' + U.recap + '">打开回顾</a>' +
       '</div>',
