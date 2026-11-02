@@ -69,11 +69,30 @@
     return '' +
       '<section class="card info">' +
       '<div class="row"><span class="row__k">商品</span><span class="row__v">体重管理首诊套餐（【穆峰达】替尔泊肽注射液）</span></div>' +
+      '<div class="order-more" id="orderMore" hidden>' +
       '<div class="row"><span class="row__k">订单编号</span><span class="row__v">' + ORDER_NO + '</span></div>' +
       '<div class="row"><span class="row__k">支付金额</span><span class="row__v">¥790.00</span></div>' +
       '<div class="row"><span class="row__k">支付方式</span><span class="row__v">微信支付</span></div>' +
       '<div class="row"><span class="row__k">支付时间</span><span class="row__v">' + ORDER_TIME + '</span></div>' +
+      '</div>' +
+      '<button type="button" class="order-toggle" id="orderToggle" aria-expanded="false" aria-controls="orderMore">' +
+      '<span>展开订单信息</span>' +
+      '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</button>' +
       '</section>';
+  }
+
+  /* 订单信息卡默认收起，点「展开订单信息」显示编号/金额/方式/时间 */
+  function bindOrderToggle() {
+    var t = $('orderToggle'), m = $('orderMore');
+    if (!t || !m) return;
+    t.addEventListener('click', function () {
+      var open = m.hidden;
+      m.hidden = !open;
+      t.classList.toggle('is-open', open);
+      t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      t.querySelector('span').textContent = open ? '收起订单信息' : '展开订单信息';
+    });
   }
 
   /* ---------------- 就诊人卡（必有、不可改） ---------------- */
@@ -233,6 +252,7 @@
     var p = parseStage();
     renderSteps(CUR[p.stage]);
     bindStepSwitch();
+    bindOrderToggle();
     render(p.stage, p.sub);
 
     var view = $('view');

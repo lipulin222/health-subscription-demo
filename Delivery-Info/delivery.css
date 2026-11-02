@@ -94,6 +94,18 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .row__v { flex: 1 1 auto; font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 21px; word-break: break-all; }
 .row__v:empty::before { content: attr(data-empty); font-weight: 400; color: var(--t-placeholder); }
 
+/* 订单信息折叠区：默认收起，仅展示商品行；点「展开订单信息」切换 */
+.order-more > .row:first-child { border-top: 1px solid var(--divider); }
+.order-toggle {
+  display: flex; width: 100%; align-items: center; justify-content: center; gap: 4px;
+  margin-top: 2px; padding: 10px 0 8px;
+  border: none; border-top: 1px solid var(--divider); background: none;
+  font-size: var(--fs-2); color: var(--t-secondary); cursor: pointer;
+}
+.order-toggle svg { width: 14px; height: 14px; transition: transform .18s ease; }
+.order-toggle.is-open svg { transform: rotate(180deg); }
+.order-toggle:active { color: var(--brand); }
+
 /* 就诊人卡头部 */
 .pat { display: flex; align-items: center; gap: 12px; padding: 14px 0 12px; }
 .pat__ava { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; }
