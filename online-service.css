@@ -725,14 +725,10 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .eval { margin-top: 20px; font-size: 13px; color: var(--ink-2); line-height: 19px; }
 .wcard .eval b { font-weight: 500; color: var(--ink); }
 .wcard .gauge { margin-top: 4px; }
-.wcard .gauge__top { position: relative; padding-top: 14px; }
-.wcard .gauge__flag {
-  position: absolute; top: 0; left: 48%; transform: translateX(-50%);
-  width: 17px; height: 14px; color: #66D089;
-}
-.wcard .gauge__flag svg { width: 17px; height: 14px; display: block; }
 .wcard .gauge__track { display: flex; gap: 5px; }
-.wcard .gauge__track i { flex: 1; height: 8px; border-radius: 4px; }
+/* 未选中段降饱和弱化，选中段（.is-on）保持原色突出 */
+.wcard .gauge__track i { flex: 1; height: 8px; border-radius: 4px; filter: saturate(.25); opacity: .45; }
+.wcard .gauge__track i.is-on { filter: none; opacity: 1; }
 .wcard .gauge__track i:nth-child(1) { background: linear-gradient(90deg, #4AC4D3, #4ED1D9); }
 .wcard .gauge__track i:nth-child(2) { background: #66D089; }
 .wcard .gauge__track i:nth-child(3) { background: linear-gradient(90deg, #FFB760, #FFA760); }

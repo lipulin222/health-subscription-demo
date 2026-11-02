@@ -269,10 +269,7 @@ if (stateMenu && moreBtn) {
     /* ② 消费决策：评估结论 + 三段量表（设计稿「未开始1」） */
     2: () => '<div class="eval">你的减重评估报告已生成</div>' +
       '<div class="gauge">' +
-      '<div class="gauge__top">' +
-      '<span class="gauge__flag" aria-hidden="true">' + ICO.flag + '</span>' +
-      '<div class="gauge__track"><i></i><i></i><i></i></div>' +
-      '</div>' +
+      '<div class="gauge__track"><i></i><i class="is-on"></i><i></i></div>' +
       '<div class="gauge__labels"><span>无需减重</span><span>需要减重管理</span><span>立即减重</span></div>' +
       '</div>' +
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')),
