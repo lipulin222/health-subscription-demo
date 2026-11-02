@@ -21,9 +21,11 @@
   'use strict';
 
   /* ===================== 1. 入口 ===================== */
-  /* 结果页不引导后续操作（按产品要求整卷结束），因此这里只保留返回兜底地址：
-     无历史记录时回到线上服务首页（portal）；不再指向已下线的 Demo 首页 */
   var HOME_URL = '../../online-service.html';
+  /* 分层处置落点（与首诊评估报告同逻辑）：
+     效果与耐受均在计划内 → 线上续药（支付页承接）；需医生判断 → 预约面诊 */
+  var PAY_URL = '../../Payment-Page/index.html';
+  var BOOK_URL = '../../Appointment-booking/index.html';
 
   var TITLE_QUIZ = '减重疗程随访评估';
   var TITLE_RESULT = '评估结果';
@@ -67,6 +69,7 @@
   var w0 = 0, w1 = 0;    /* 开始用药时体重 / 现在的体重（kg） */
   var mode = 'quiz';     /* quiz | alert | advice */
   var jumpIdx = 0;       /* 结果页「返回修改」要回到的题号 */
+  var RES = null;        /* 评估结果（含处置分支 disp：renew | face | alert） */
 
   var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICON_INFO = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 10.6v6.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="7.4" r="1.5" fill="currentColor"/></svg>';
@@ -184,10 +187,22 @@
   function renderBar() {
     if (!bar) return;
 
-    /* 结果页即终点：不引导后续操作，收起吸底栏 */
     if (mode !== 'quiz') {
-      bar.hidden = true;
+      /* 结果页：按处置分支给出下一步动作（分层引导，同首诊评估报告）
+         renew → 线上续药；face / alert → 预约面诊 */
+      bar.hidden = false;
       bar.innerHTML = '';
+      var cta = document.createElement('button');
+      cta.className = 'btn';
+      cta.type = 'button';
+      if (RES && RES.disp === 'renew') {
+        cta.textContent = '线上续药';
+        cta.addEventListener('click', function () { location.href = PAY_URL; });
+      } else {
+        cta.textContent = '预约面诊';
+        cta.addEventListener('click', function () { location.href = BOOK_URL; });
+      }
+      bar.appendChild(cta);
       return;
     }
 
@@ -292,8 +307,145 @@
     view.scrollTop = 0;
   }
 
-  /* ===================== 7. 评估规则 ===================== */
-  /* 条件性建议：只有用户确实填了相关内容才追加，避免通用套话 */
+  /* ===================== 7. 评估规则 =====================
+     分层处置（与首诊评估报告同逻辑，demo 口径，文案待精调）：
+       · renew —— 效果、耐受、执行都在计划内 → 按计划继续，可直接线上续药
+       · face  —— 需要医生结合记录判断（疗效不足 / 执行未到位 / 数据不足 / 已停药）→ 预约面诊
+       · alert —— 红旗症状 / 反应影响日常 → 尽快联系医生 */
+  /* draft 预览：?disp=renew|face 强制处置分支（同首诊报告页的 ?disp= 用法） */
+  var FORCE = (location.search.match(/[?&]disp=(renew|face)(?:&|$)/) || [])[1];
+
+  function evaluate() {
+    /* draft 预览：强制分支直接返回对应结论 */
+    if (FORCE === 'renew') return renewResult();
+    if (FORCE === 'face') return faceResult('复诊时和医生讨论是否调整剂量', '按你填的阶段和体重变化，降幅还不明显。要不要上调剂量，需要医生结合执行情况和复查指标来判断——线上问卷只能帮你把这件事提前准备好。');
+
+    /* ① 红旗症状 → 尽快联系医生（最高优先级，不走商业承接） */
+    var flag = firstReal(many('redflag'), '以上都没有');
+    if (flag) {
+      jumpIdx = idx('redflag');
+      return {
+        page: 'alert', disp: 'alert', reason: flag,
+        title: '需要尽快联系医生',
+        body: '线上问卷判断不了原因。请尽快联系你的随访医生或就近就诊——这类情况不建议继续自行用药，也不适合等到下次复诊。',
+        foot: '如填写有误，可返回修改后重新评估。本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。'
+      };
+    }
+
+   /* ② 反应已经影响日常 → 先别加量，预约面诊看耐受 */
+    var impact = one('impact');
+    if (impact === '影响进食或日常生活' || impact === '已经影响工作或睡眠') {
+      jumpIdx = idx('impact');
+      return {
+        page: 'alert', disp: 'face', reason: impact,
+        title: '先别急着加量',
+        body: '当前剂量的反应已经影响到你的日常。通常先维持当前剂量、把反应处理掉，再谈要不要升档——由医生来判断。建议预约面诊说明具体反应。',
+        foot: '如填写有误，可返回修改后重新评估。本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。'
+      };
+    }
+   /* ③ 已停药 → 重点转到维持与复查，是否重新用药由医生评估 → 预约面诊 */
+    var stage = one('stage');
+    if (stage === '已经停药') {
+      jumpIdx = idx('stage');
+      return {
+        page: 'advice', disp: 'face', tone: 'info',
+        title: '停药后的重点是维持，不是加量',
+        desc: '你已经停药。停药后体重容易往回走，这段时间的饮食节奏和复查安排比用药期更关键——要不要重新用药，由医生评估后再定。',
+        tips: tips([
+          '把体重和腰围按固定时间记录下来，趋势比单次数字有用',
+          '蛋白质吃够 + 保持力量训练：停药后要保住的是肌肉，不是水分',
+          '体重回升明显，或出现新的不适，联系随访医生再讨论方案',
+          tipsLifestyle(),
+          tipsDiet(),
+          tipsRecheck()
+        ])
+      };
+    }
+
+    /* ④ 执行没到位 → 先看执行，再谈调量 → 预约面诊 */
+    var adh = one('adherence');
+    if (adh === '漏过 2 次以上' || adh === '自己调过剂量') {
+      jumpIdx = idx('adherence');
+      return {
+        page: 'advice', disp: 'face', tone: 'info',
+        title: '先把用药执行补齐，再谈调整',
+        desc: '你填的执行情况是「<b>' + esc(adh) + '</b>」。剂量要不要调，前提是执行到位——不然医生看到的数据会失真，容易把「没打够」误判成「药不管用」。',
+        tips: tips([
+          '漏针不补打双倍剂量，按原来的固定日期继续即可；忘记时可以问医生怎么补',
+          '不要自行加减量，剂量调整交给医生',
+          '如果是因为不舒服才漏的，把具体反应告诉医生',
+          tipsSymptom(),
+          tipsDiet()
+        ])
+      };
+    }
+
+    /* ⑤ 已进入优化期/维持期但降幅不足 5% → 预约面诊讨论调量 */
+    var late = stage === '剂量优化期（9–12 周）' || stage === '维持期（13 周以上）';
+    var pct = deltaPct();
+
+    if (late && pct === null) {
+      jumpIdx = idx('weight');
+      return {
+        page: 'advice', disp: 'face', tone: 'info',
+        title: '这次还看不出趋势',
+        desc: '体重变化没填，暂时看不出这一段的走向。复诊时量一下体重和腰围，和医生一起看会更有据可依。',
+        tips: tips([
+          '固定同一时间称重（比如早上空腹），趋势才有可比性',
+          '把最近的体重、腰围记录整理一下，复诊时带上',
+          tipsSymptom(),
+          tipsLifestyle(),
+          tipsDiet()
+        ])
+      };
+    }
+
+    if (late && pct > -5) {
+      jumpIdx = idx('weight');
+      return faceResult('复诊时和医生讨论是否调整剂量',
+        '按你填的阶段和体重变化，降幅还不明显。要不要上调剂量，需要医生结合执行情况和复查指标来判断——线上问卷只能帮你把这件事提前准备好。');
+    }
+
+    /* ⑥ 默认：效果、耐受、执行都在计划内 → 按计划继续，可直接线上续药 */
+    return renewResult();
+  }
+
+  /* ===================== 7.5 分层结论构造（demo 口径，文案待精调） ===================== */
+  /* renew：效果达标 + 耐受可 + 执行到位 → 线上续药 */
+  function renewResult() {
+    jumpIdx = idx('stage');
+    return {
+      page: 'advice', disp: 'renew', tone: 'ok',
+      title: '当前剂量和节奏都在计划内',
+      desc: '从你填的情况看，体重在往下走、耐受也还可以。建议按计划继续当前剂量；药品不足时可直接线上续药，续药申请会由医生复核你的近期数据后确认。',
+      tips: tips([
+        '按固定日期用药，不要因为「感觉没变化」自己加量',
+        '医生看的是趋势，不是某一天的数字——复诊时把记录带上',
+        tipsSymptom(),
+        tipsLifestyle(),
+        tipsDiet(),
+        tipsRecheck()
+      ])
+    };
+  }
+
+  /* face：需要医生结合记录判断 → 预约面诊 */
+  function faceResult(title, desc) {
+    jumpIdx = idx('weight');
+    return {
+      page: 'advice', disp: 'face', tone: 'info',
+      title: title,
+      desc: desc,
+      tips: tips([
+        '先确认这一段有没有漏针、有没有因为不舒服自己减量',
+        '复诊前把体重、腰围记录和最近的化验单准备好',
+        tipsSymptom(),
+        tipsLifestyle(),
+        tipsDiet()
+      ])
+    };
+  }
+
   function tipsLifestyle() {
     var v = one('lifestyle');
     if (v === '基本没顾上' || v === '做了一些，不太规律') {
@@ -343,129 +495,20 @@
     ];
   }
 
-  function evaluate() {
-    /* ① 红旗症状 → 尽快联系医生（最高优先级） */
-    var flag = firstReal(many('redflag'), '以上都没有');
-    if (flag) {
-      jumpIdx = idx('redflag');
-      return {
-        page: 'alert', reason: flag,
-        title: '需要尽快联系医生',
-        body: '线上问卷判断不了原因。请尽快联系你的随访医生或就近就诊——这类情况不建议继续自行用药，也不适合等到下次复诊。',
-        foot: '如填写有误，可返回修改后重新评估。本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。'
-      };
-    }
-
-   /* ② 反应已经影响日常 → 先别加量，联系医生看耐受 */
-    var impact = one('impact');
-    if (impact === '影响进食或日常生活' || impact === '已经影响工作或睡眠') {
-      jumpIdx = idx('impact');
-      return {
-        page: 'alert', reason: impact,
-        title: '先别急着加量',
-        body: '当前剂量的反应已经影响到你的日常。通常先维持当前剂量、把反应处理掉，再谈要不要升档——由医生来判断。请联系随访医生说明具体反应。',
-        foot: '如填写有误，可返回修改后重新评估。本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。'
-      };
-    }
-
-   /* ③ 已停药 → 重点转到维持与复查，是否重新用药交给医生 */
-    var stage = one('stage');
-    if (stage === '已经停药') {
-      jumpIdx = idx('stage');
-      return {
-        page: 'advice', tone: 'info',
-        title: '停药后的重点是维持，不是加量',
-        desc: '你已经停药。停药后体重容易往回走，这段时间的饮食节奏和复查安排比用药期更关键——要不要重新用药，由医生评估后再定。',
-        tips: tips([
-          '把体重和腰围按固定时间记录下来，趋势比单次数字有用',
-          '蛋白质吃够 + 保持力量训练：停药后要保住的是肌肉，不是水分',
-          '体重回升明显，或出现新的不适，联系随访医生再讨论方案',
-          tipsLifestyle(),
-          tipsDiet(),
-          tipsRecheck()
-        ])
-      };
-    }
-
-    /* ④ 执行没到位 → 先看执行，再谈调量（否则医生看到的数据会失真） */
-    var adh = one('adherence');
-    if (adh === '漏过 2 次以上' || adh === '自己调过剂量') {
-      jumpIdx = idx('adherence');
-      return {
-        page: 'advice', tone: 'info',
-        title: '先把用药执行补齐，再谈调整',
-        desc: '你填的执行情况是「<b>' + esc(adh) + '</b>」。剂量要不要调，前提是执行到位——不然医生看到的数据会失真，容易把「没打够」误判成「药不管用」。',
-        tips: tips([
-          '漏针不补打双倍剂量，按原来的固定日期继续即可；忘记时可以问医生怎么补',
-          '不要自行加减量，剂量调整交给医生',
-          '如果是因为不舒服才漏的，把具体反应告诉医生',
-          tipsSymptom(),
-          tipsDiet()
-        ])
-      };
-    }
-
-    /* ⑤ 已进入优化期/维持期但降幅不足 5% → 复诊时讨论调量 */
-    var late = stage === '剂量优化期（9–12 周）' || stage === '维持期（13 周以上）';
-    var pct = deltaPct();
-
-    if (late && pct === null) {
-      jumpIdx = idx('weight');
-      return {
-        page: 'advice', tone: 'info',
-        title: '这次还看不出趋势',
-        desc: '体重变化没填，暂时看不出这一段的走向。复诊时量一下体重和腰围，和医生一起看会更有据可依。',
-        tips: tips([
-          '固定同一时间称重（比如早上空腹），趋势才有可比性',
-          '把最近的体重、腰围记录整理一下，复诊时带上',
-          tipsSymptom(),
-          tipsLifestyle(),
-          tipsDiet()
-        ])
-      };
-    }
-
-    if (late && pct > -5) {
-      jumpIdx = idx('weight');
-      return {
-        page: 'advice', tone: 'info',
-        title: '复诊时和医生讨论是否调整剂量',
-        desc: '按你填的阶段和体重变化，降幅还不明显。要不要上调剂量，需要医生结合执行情况和复查指标来判断——线上问卷只能帮你把这件事提前准备好。',
-        tips: tips([
-          '先确认这一段有没有漏针、有没有因为不舒服自己减量',
-          '如果已足剂量满 3 个月、降幅仍不到 5%，医生通常会重新评估方案',
-          '复诊前把体重、腰围记录和最近的化验单准备好',
-          tipsSymptom(),
-          tipsLifestyle(),
-          tipsDiet()
-        ])
-      };
-    }
-
-    /* ⑥ 默认：指标与耐受都在计划内 */
-    jumpIdx = idx('stage');
-    return {
-      page: 'advice', tone: 'ok',
-      title: '当前剂量和节奏都在计划内',
-      desc: '从你填的情况看，体重在往下走、耐受也还可以。建议按计划继续当前剂量，到复诊节点再和医生一起看。',
-      tips: tips([
-        '按固定日期用药，不要因为「感觉没变化」自己加量',
-        '医生看的是趋势，不是某一天的数字——复诊时把记录带上',
-        tipsSymptom(),
-        tipsLifestyle(),
-        tipsDiet(),
-        tipsRecheck()
-      ])
-    };
-  }
-
   /* ===================== 8. 结果区渲染 ===================== */
-  /* 结尾说明：整卷到此结束，不再引导任何操作 */
-  function nextBlock(isAlert) {
+  /* 结尾说明：按处置分支给出下一步（分层引导，同首诊评估报告逻辑） */
+  function nextBlock(r) {
+    var tx;
+    if (r.disp === 'renew') {
+      tx = '按计划继续当前剂量。药品不足时可直接线上续药，续药申请会由医生复核你的近期数据后确认。';
+    } else if (r.disp === 'face') {
+      tx = '建议预约线下面诊：医生会结合你的体重趋势、耐受和复查结果，判断下一步方案。';
+    } else {
+      tx = '如果你现在有明显不适，请先尽快联系医生或就近就诊，不必等待我们的回访。';
+    }
     return '<div class="next">' +
       '<b>接下来</b>' +
-      '<span class="next__tx">根据你的随访问卷结果，我们会评估你当前的情况；如果需要调整剂量或生活方式的干预，会有专人联系你。</span>' +
-      (isAlert ? '<span class="next__tx next__tx--warn">如果你现在有明显不适，请先尽快联系医生或就近就诊，不必等待我们的回访。</span>' : '') +
+      '<span class="next__tx">' + tx + '</span>' +
       '</div>';
   }
 
@@ -475,7 +518,7 @@
       '<span class="rb__ico rb__ico--no">' + ICON_WARN + '</span>' +
       '<h1 class="rb__t">' + esc(r.title) + '</h1>' +
       '<p class="rb__d">你填写的「<b>' + esc(r.reason) + '</b>」，' + r.body + '</p>' +
-      nextBlock(true) +
+      nextBlock(r) +
       '</section>' +
       '<p class="foot">' + r.foot + '</p>' +
       '<button class="linkbtn" id="fixLink" type="button">返回修改答案</button>';
@@ -494,7 +537,7 @@
       '<div class="sum">' + sum + '</div>' +
       (r.tips.length ? '<span class="tips__h">接下来可以这样做</span><ul class="tips">' +
         r.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '') +
-      nextBlock(false) +
+      nextBlock(r) +
       '</section>' +
       '<p class="foot">本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。</p>' +
       '<button class="linkbtn" id="fixLink" type="button">返回修改答案</button>';
@@ -502,6 +545,7 @@
 
   function showResult() {
     var r = evaluate();
+    RES = r;
     mode = r.page;
     /* 记一次随访完成时间：portal「续费」阶段据此在「线上续药 / 做随访评估」间切换 */
     ZZ.markFollowupDone();
@@ -530,10 +574,41 @@
     }
     var more = document.getElementById('moreBtn');
     if (more) {
-      more.addEventListener('click', function () {
-        toast('随访结果为初步建议，不构成诊断和处方');
+      /* 顶栏「⋯」：draft 阶段兼作处置分支预览切换入口 */
+      more.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var sw = document.querySelector('.disp-sw');
+        if (sw) sw.classList.toggle('is-open');
       });
     }
+  }
+
+  /* ===================== 9.5 分支预览切换（draft 工具，同首诊报告页） ===================== */
+  function initDispSw() {
+    var phone = document.getElementById('phone');
+    var more = document.getElementById('moreBtn');
+    if (!phone || !more) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'disp-sw';
+    wrap.innerHTML =
+      '<div class="disp-sw__menu">' +
+      '<span class="disp-sw__cap">预览处置分支</span>' +
+      '<button type="button" data-disp="renew"' + (FORCE === 'renew' ? ' class="is-cur"' : '') + '>线上续药（计划内）</button>' +
+      '<button type="button" data-disp="face"' + (FORCE === 'face' ? ' class="is-cur"' : '') + '>预约面诊（需医生评估）</button>' +
+      '</div>';
+    phone.appendChild(wrap);
+
+    wrap.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-disp]');
+      if (!b) return;
+      var u = new URL(location.href);
+      u.searchParams.set('disp', b.getAttribute('data-disp'));
+      location.href = u.href;
+    });
+    /* 点外面收起 */
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) wrap.classList.remove('is-open');
+    });
   }
 
   /* ===================== 10. 启动 ===================== */
@@ -544,6 +619,7 @@
     if (!view || !bar) return;
     view.classList.add('view-in');
     initNav();
+    initDispSw();
     renderQuiz();
   }
 

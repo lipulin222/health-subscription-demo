@@ -356,3 +356,20 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ============================ 分支预览切换（draft 工具） ============================ */
+.disp-sw { position: absolute; top: 46px; right: 8px; z-index: 60; }
+.disp-sw__menu {
+  display: none; min-width: 168px; padding: 4px;
+  background: #FFFFFF; border-radius: var(--radius-card);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+}
+.disp-sw.is-open .disp-sw__menu { display: block; animation: viewIn .18s var(--ease); }
+.disp-sw__cap { display: block; padding: 6px 12px 2px; font-size: 10px; color: var(--t-placeholder); }
+.disp-sw__menu button {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  border: none; background: none; border-radius: var(--radius-large);
+  font-family: var(--font); font-size: var(--fs-2); color: var(--t-primary); padding: 8px 12px;
+}
+.disp-sw__menu button:active { background: var(--brand-light); }
+.disp-sw__menu button.is-cur { color: var(--brand); font-weight: 600; }
