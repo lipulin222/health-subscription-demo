@@ -451,28 +451,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   text-decoration: none;
 }
 
-/* ============================ 吸底 CTA ============================ */
-.cta {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 10px 15px calc(12px + env(safe-area-inset-bottom));
-  background: rgba(255, 255, 255, .94);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid var(--divider);
-}
-/* Primary Large：高 40px / 圆角 6px / 16px/600（去投影） */
-.cta a {
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-  height: 40px;
-  border-radius: var(--radius-large);
-  background: var(--accent);
-  color: #FFFFFF;
-  font-size: 16px; font-weight: 600;
-  text-decoration: none;
-  transition: background .15s var(--ease);
-}
-.cta a:active { background: var(--accent-active); }
-.cta a svg { width: 18px; height: 18px; }
-
 /* ============================ 轻提示 ============================ */
 .toast {
   position: absolute; left: 50%; bottom: 84px;

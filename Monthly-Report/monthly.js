@@ -181,7 +181,6 @@
   var emptyEl = document.getElementById('empty');
   var reportEl = document.getElementById('report');
   var gateEl = document.getElementById('gate');
-  var ctaEl = document.getElementById('cta');
   var topTitle = document.getElementById('topTitle');
   var topbarEl = document.getElementById('topbar');
   var phoneEl = document.getElementById('phone');
@@ -277,12 +276,6 @@
     if (phoneEl) phoneEl.classList.add('has-hero');
     if (topbarEl) topbarEl.classList.remove('solid');
 
-    ctaEl.hidden = false;
-    ctaEl.innerHTML = '<a href="' + agentHref(r.no) + '">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
-      '<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4 3v-4.6A7.5 7.5 0 0 1 4 11.5 7.5 7.5 0 0 1 11.5 4h1A7.5 7.5 0 0 1 20 11.5Z"/>' +
-      '<path d="M9.5 11.5h5"/></svg>问助理</a>';
-
     [].slice.call(reportEl.querySelectorAll('.chip')).forEach(function (c) {
       c.addEventListener('click', function () { show(parseInt(c.getAttribute('data-no'), 10)); });
     });
@@ -319,7 +312,6 @@
     gateEl.hidden = false;
     reportEl.hidden = true;
     emptyEl.hidden = true;
-    ctaEl.hidden = true;
     var mn = quizMonthName();
     if (topTitle) topTitle.textContent = mn + '状态';
     var ttl = document.getElementById('gateTtl');
@@ -393,7 +385,6 @@
     emptyEl.hidden = false;
     reportEl.hidden = true;
     gateEl.hidden = true;
-    ctaEl.hidden = true;
     exitHero();
   }
 
