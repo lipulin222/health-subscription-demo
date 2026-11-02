@@ -261,16 +261,15 @@
     return h;
   }
 
-  /* ---------------- 月报列表页（默认落地页） ---------------- */
+  /* ---------------- 月报列表页（默认落地页，只显示已生成的月报） ---------------- */
   function listHTML() {
     var h = '<div class="mlist">';
     for (var i = REPORTS.length - 1; i >= 0; i--) {
       var r = REPORTS[i];
-      var done = r.status !== 'pending';
-      h += '<button type="button" class="mlist__i' + (done ? '' : ' is-pending') + '" data-no="' + r.no + '">' +
+      if (r.status === 'pending') continue;
+      h += '<button type="button" class="mlist__i" data-no="' + r.no + '">' +
         '<span class="mlist__no">第 ' + r.no + ' 期 · ' + esc(r.range) + '</span>' +
-        '<span class="mlist__m">' + (done ? esc(r.title) : esc(r.tag) + '，' + esc(r.eta) + '生成') + '</span>' +
-        '<em class="mlist__s">' + (done ? '已生成' : esc(r.tag)) + '</em>' +
+        '<span class="mlist__m">' + esc(r.title) + '</span>' +
         '</button>';
     }
     h += '</div>';
