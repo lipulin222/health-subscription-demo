@@ -357,7 +357,7 @@ function renderDetail(p){
 function route(){
   const hash = location.hash || '#/list';
   if(hash.startsWith('#/')){
-    const id = hash.slice(2);
+    const id = hash.slice(2).split('?')[0];
     const p = DATA.find(x=>x.pid===id);
     if(p){ renderDetail(p); window.scrollTo(0,0); return; }
   }

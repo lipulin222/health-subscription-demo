@@ -158,7 +158,7 @@ body { display:flex; justify-content:center; min-height:100vh; }
 <script>
 'use strict';
 /* ===== 工具 ===== */
-var PROFILE_BASE = 'https://lipulin222.github.io/health-subscription-demo/patient-ai-summary/#/';
+var PROFILE_BASE = 'https://lipulin222.github.io/health-subscription-demo/patient-ai-summary/?from=assess#/';
 var DISC = '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。';
 var ARW = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var AXIS = ['无需减重','需要减重管理','需要减重与慢病结合管理'];
@@ -351,7 +351,7 @@ function heroHtml(p){
     '<div class="hero__hd">' +
     '<span class="hero__name">' + p.name + '</span>' +
     '<span class="hero__meta">' + p.gender + ' · ' + p.age + ' 岁 · ' + p.h + 'cm / ' + p.w + 'kg · BMI ' + p.bmi + '</span>' +
-    '<a class="hero__info" href="' + PROFILE_BASE + p.profileId + '?from=assess" aria-label="查看用户资料详情">' +
+    '<a class="hero__info" href="' + PROFILE_BASE + p.profileId + '" aria-label="查看用户资料详情">' +
     '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 11.2v4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></svg>' +
     '</a>' +
     '</div>' +
