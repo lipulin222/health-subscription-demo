@@ -194,6 +194,9 @@
 
     $('view').innerHTML = h;
 
+    /* 订单信息卡在本次渲染中生成，绑定展开/收起须放在渲染之后 */
+    bindOrderToggle();
+
     /* 物流卡点击 → 二级编辑页（现成的 fill.html） */
     var lg = $('lgCard');
     if (lg) {
@@ -238,7 +241,6 @@
     var p = parseStage();
     renderSteps(CUR[p.stage]);
     bindStepSwitch();
-    bindOrderToggle();
     render(p.stage, p.sub);
 
     var view = $('view');
