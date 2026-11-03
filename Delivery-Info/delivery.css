@@ -186,6 +186,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .page.is-center { display: flex; flex-direction: column; justify-content: center; }
 /* 状态文案区：订单卡下方留白居中（订单详情页所有环节均以订单卡置顶） */
 .stage-center { text-align: center; padding: 96px 20px 0; }
+/* 医生评估环节：患者信息卡与文案间距收窄为 20px */
+.stage-center--assess { padding-top: 20px; }
 .stage-center__t { font-size: var(--fs-3); color: var(--t-primary); line-height: 23px; }
 .stage-center__d { margin-top: 8px; font-size: var(--fs-1); color: var(--t-placeholder); line-height: 18px; }
 

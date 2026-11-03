@@ -112,8 +112,6 @@
       '<div class="row"><span class="row__k">身高</span><span class="row__v">162cm</span></div>' +
       '<div class="row"><span class="row__k">体重</span><span class="row__v">71.6kg（购药前）</span></div>' +
       '<div class="row"><span class="row__k">BMI</span><span class="row__v">27.3</span></div>' +
-      '<div class="row"><span class="row__k">腰围</span><span class="row__v">88cm</span></div>' +
-      '<div class="row"><span class="row__k">过敏史</span><span class="row__v">药物过敏：无；食物过敏：无；其他过敏：无</span></div>' +
       '</section>';
   }
 
@@ -160,7 +158,7 @@
     if (stage === 'assess') {
       /* 医生评估进行中：患者信息卡（供医生评估参考）+ 页面居中文案 */
       h += patientCard();
-      h += '<div class="stage-center">' +
+      h += '<div class="stage-center stage-center--assess">' +
         '<div class="stage-center__t">医生正在结合你的情况评估方案，预计 1 个工作日内完成。</div>' +
         '<div class="stage-center__d">完成后你会收到公众号通知和短信。</div>' +
         '</div>';
