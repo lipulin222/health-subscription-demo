@@ -158,7 +158,8 @@
     var h = orderCard();
 
     if (stage === 'assess') {
-      /* 医生评估进行中：无卡片，页面居中展示 */
+      /* 医生评估进行中：患者信息卡（供医生评估参考）+ 页面居中文案 */
+      h += patientCard();
       h += '<div class="stage-center">' +
         '<div class="stage-center__t">医生正在结合你的情况评估方案，预计 1 个工作日内完成。</div>' +
         '<div class="stage-center__d">完成后你会收到公众号通知和短信。</div>' +
@@ -166,9 +167,8 @@
     }
 
     if (stage === 'logistics') {
-      /* 填写物流：物流卡（可点编辑）+ 就诊人信息卡 */
+      /* 填写物流：物流卡（可点编辑） */
       h += logisticsCard(data, true);
-      h += patientCard();
       h += '<p class="note">药品需冷链配送，请完善收货信息以确保顺利签收；收货后请立即将药品放入冰箱冷藏（2–8℃）。</p>';
     }
 
