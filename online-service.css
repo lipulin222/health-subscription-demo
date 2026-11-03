@@ -623,7 +623,16 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   padding: 15px;
   color: var(--ink);
   text-align: left;
+  position: relative;
 }
+
+/* 卡片右上角「切换旧版」：所有状态常驻，灰字文字链（href 由状态脚本按当前 state/stage 写入） */
+.card__oldlink {
+  position: absolute; top: 15px; right: 15px;
+  font-size: 12px; line-height: 18px; color: #999999;
+  text-decoration: none;
+}
+.card__oldlink:active { color: var(--ink-2); }
 
 /* ---------- 健康订阅面板：渐变头（标题+专项标签）+ 体重管理白卡 连体 ---------- */
 .hp {

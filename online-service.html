@@ -90,6 +90,7 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
                起始阶段由状态脚本写入：老客 = ④ 续费、新客 = ① 购前 -->
           <div class="wcard" data-wlcard data-start-stage="4">
             <article class="card">
+              <a class="card__oldlink" id="oldLink" href="https://lipulin222.github.io/online-health-care/online-service.html">切换旧版</a>
               <header class="card__hd">
                 <span class="card__logo" aria-hidden="true">
                   <span class="card__logo-tile">
@@ -302,6 +303,15 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
       if (!(st >= 1 && st <= 6)) st = 1;
       var card = document.querySelector('[data-wlcard]');
       if (card) card.setAttribute('data-start-stage', String(st));
+
+      /* 「切换旧版」带上当前 state/stage，旧版落在同样的演示位置 */
+      var oldLink = document.getElementById('oldLink');
+      if (oldLink) {
+        var qs = [];
+        if (isNew) qs.push('state=new');
+        if (st > 1) qs.push('stage=' + st);
+        if (qs.length) oldLink.href = 'https://lipulin222.github.io/online-health-care/online-service.html?' + qs.join('&');
+      }
     })();
   </script>
   <script src="shared.js"></script>
