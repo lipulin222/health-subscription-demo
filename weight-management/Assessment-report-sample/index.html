@@ -158,7 +158,7 @@ body { display:flex; justify-content:center; min-height:100vh; }
 <script>
 'use strict';
 /* ===== 工具 ===== */
-var GEN_TIME = (function(){ var n=new Date(); function p2(x){return (x<10?'0':'')+x;} return n.getFullYear()+'-'+p2(n.getMonth()+1)+'-'+p2(n.getDate())+' '+p2(n.getHours())+':'+p2(n.getMinutes()); })();
+var PROFILE_BASE = 'https://lipulin222.github.io/health-subscription-demo/patient-ai-summary/#/';
 var DISC = '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。';
 var ARW = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var AXIS = ['无需减重','需要减重管理','需要减重与慢病结合管理'];
@@ -195,7 +195,7 @@ function drugOffline(p){
 
 /* ===== 10 位样例患者（数据源：患者数据-提炼版字段维度.md；文案按 v3 提示词重新生成） ===== */
 var PATIENTS = [
-{ id:'P1', name:'王雅静', gender:'女', age:32, h:162, w:83.5, bmi:31.8, tier:'normal',
+{ id:'P1', name:'王雅静', profileId:'1004128765', gender:'女', age:32, h:162, w:83.5, bmi:31.8, tier:'normal',
   hint:'你的 BMI 已达 31.8，长期来看对血压、血脂和睡眠都是负担，减重的必要性明确。建议饮食、运动与药物治疗同步开展，三者结合能达到最好的效果。',
   mods:[
     { t:'整体建议', html:'<p>你的情况可以概括为：BMI 31.8，体检提示轻度脂肪肝，原因主要在饮食和久坐。这些信号指向同一个结论——需要把体脂降下来；而好消息是，脂肪肝尚未到用药程度，会随体脂下降改善，要解决的只是「怎么开始」。</p>' +
@@ -207,7 +207,7 @@ var PATIENTS = [
       ul([['每天快走 20–30 分钟','通勤提前下车、饭后散步都可以计入'],['久坐时每小时起身活动','设提醒即可，避免连续久坐'],['两三周后加入力量训练','每周 2 次，保住肌肉量，减重后不易反弹']]) },
     { t:'用药建议', html:'@DRUG_NORMAL@' }
   ] },
-{ id:'P2', name:'李婷', gender:'女', age:28, h:163, w:68.4, bmi:25.7, tier:'normal',
+{ id:'P2', name:'李婷', profileId:'1004128766', gender:'女', age:28, h:163, w:68.4, bmi:25.7, tier:'normal',
   hint:'你没有确诊慢病、未使用相关药物，BMI 25.7 刚过建议干预线，适合减重。建议生活方式与药物配合进行。',
   mods:[
     { t:'整体建议', html:'<p>你的基础条件不错，当前要做的是尽早开始，并在开始后保持节奏。</p>' +
@@ -219,7 +219,7 @@ var PATIENTS = [
       ul([['每天快走 30 分钟','可拆成 3 段完成，先固定频率，再逐渐加快'],['久坐时每小时起身活动','设提醒即可']]) },
     { t:'用药建议', html:'@DRUG_NORMAL@' }
   ] },
-{ id:'P3', name:'许雯', gender:'女', age:35, h:160, w:68.2, bmi:26.6, tier:'mild', monitor:'血脂',
+{ id:'P3', name:'许雯', profileId:'1004128767', gender:'女', age:35, h:160, w:68.2, bmi:26.6, tier:'mild', monitor:'血脂',
   hint:'你的血脂偏高，但尚未达到慢病程度，这个阶段减重本身就是改善血脂最有效的手段。建议饮食、运动与药物治疗同步开展，并按随访计划复查血脂。',
   mods:[
     { t:'整体建议', html:'<p>你要同时推进两件事：降体重、稳血脂。两者的方法是一致的，体重下降后血脂也会随之改善。</p>' +
@@ -233,7 +233,7 @@ var PATIENTS = [
       '<p class="note">运动中能正常说话，即为合适的强度。</p>' },
     { t:'用药建议', html:'@DRUG_MILD@' }
   ] },
-{ id:'P4', name:'张建国', gender:'男', age:52, h:172, w:92.6, bmi:31.3, tier:'offline',
+{ id:'P4', name:'张建国', profileId:'1004128768', gender:'男', age:52, h:172, w:92.6, bmi:31.3, tier:'offline',
   hint:'你有 2 型糖尿病和高血压，且都在用药，减重必须与血糖血压管理统筹安排。建议先到内科面诊，由医生把慢病治疗和减重纳入同一个方案。',
   mods:[
     { t:'整体建议', html:'<p>你当前的第一目标是让血糖血压稳定：在这个基础上谈减重，方案才能安全推进。</p>' +
@@ -246,7 +246,7 @@ var PATIENTS = [
       ul([['快走起步','每次 20–30 分钟，每周 5 天'],['防范低血糖','运动前测血糖，随身携带含糖食物'],['血压不稳定期','避免憋气发力的动作，以快走过渡']]) },
     { t:'用药建议', html:'@DRUG_OFF@' }
   ] },
-{ id:'P5', name:'刘桂芳', gender:'女', age:45, h:158, w:85.0, bmi:34.1, tier:'offline',
+{ id:'P5', name:'刘桂芳', profileId:'1004128769', gender:'女', age:45, h:158, w:85.0, bmi:34.1, tier:'offline',
   hint:'你正在使用胰岛素，减重对血糖有益，但胰岛素剂量必须随体重变化同步调整，这只能由医生完成。建议先到内科面诊，把减重和胰岛素调整纳入同一个方案。',
   mods:[
     { t:'整体建议', html:'<p>你的重点是减重过程中的安全：体重下降后，身体对胰岛素的需求会减少，剂量不随之调整容易引发低血糖。</p>' +
@@ -257,7 +257,7 @@ var PATIENTS = [
       ul([['运动前测血糖','不空腹运动，随身携带糖果，出现心慌出汗立即停止并进食'],['从中低强度起步','快走、固定单车等，逐步建立规律']]) },
     { t:'用药建议', html:'@DRUG_OFF@' }
   ] },
-{ id:'P6', name:'赵德海', gender:'男', age:58, h:170, w:96.1, bmi:33.2, tier:'offline',
+{ id:'P6', name:'赵德海', profileId:'1004128770', gender:'男', age:58, h:170, w:96.1, bmi:33.2, tier:'offline',
   hint:'你做过心脏支架手术，并长期服用心血管药物，减重对心血管有益，但运动强度和用药边界需要医生先行评估。建议先到内科面诊，再开始减重安排。',
   mods:[
     { t:'整体建议', html:'<p>你的情况安全优先于速度：心脏术后，运动强度不能自行估计，用药也不能自行调整。</p>' +
@@ -268,7 +268,7 @@ var PATIENTS = [
       ul([['从平地快走开始','避免憋气发力的动作'],['不适立即停止','胸闷、气短、头晕时停止活动，并及时就医']]) },
     { t:'用药建议', html:'@DRUG_OFF@' }
   ] },
-{ id:'P7', name:'孙梦琪', gender:'女', age:29, h:165, w:90.1, bmi:33.1, tier:'offline',
+{ id:'P7', name:'孙梦琪', profileId:'1004128771', gender:'女', age:29, h:165, w:90.1, bmi:33.1, tier:'offline',
   hint:'你半年内体重上升约 8 公斤，时间与糖皮质激素（泼尼松）的使用吻合，大概率是药物引起的体重增加。此时不建议先减重：请到内科面诊，并由开激素的医生核实用药方案。',
   mods:[
     { t:'整体建议', html:'<p>当前不建议急于减重：体重上升的原因大概率在药物，原因不解决，减下去也会反弹。</p>' +
@@ -280,7 +280,7 @@ var PATIENTS = [
     { t:'用药建议', html:mbar('暂不适用',10) +
       '<p>正在使用糖皮质激素期间，不适合使用 GLP-1 类减重药物；激素方案是否调整，由处方医生评估决定。</p>' }
   ] },
-{ id:'P8', name:'周凯', gender:'男', age:36, h:175, w:94.8, bmi:31.0, tier:'offline',
+{ id:'P8', name:'周凯', profileId:'1004128772', gender:'男', age:36, h:175, w:94.8, bmi:31.0, tier:'offline',
   hint:'近两年你的体重多次下降后反弹，已达 3 次。问题不在努力程度，而在方法难以维持。这次先把「不再反弹」作为目标，建议到内科面诊分析反复的原因，后续随访频率也会高于常规。',
   mods:[
     { t:'整体建议', html:'<p>反复减重又反弹，最大的代价是每次都伴随肌肉流失和代谢下降，越减越难。你自评的情绪化进食和睡眠不足，正是反弹的两个直接推手。</p>' +
@@ -291,7 +291,7 @@ var PATIENTS = [
       ul([['每周 2 次力量训练','保住肌肉与代谢，是防反弹的基础'],['有氧保持常规量','快走等中低强度即可，不必增加']]) },
     { t:'用药建议', html:'@DRUG_OFF@' }
   ] },
-{ id:'P9', name:'沈佳怡', gender:'女', age:30, h:161, w:79.7, bmi:30.8, tier:'lifestyle',
+{ id:'P9', name:'沈佳怡', profileId:'1004128773', gender:'女', age:30, h:161, w:79.7, bmi:30.8, tier:'lifestyle',
   hint:'你的体重已进入建议干预的范围，多囊体质的代谢改善也正需要体重管理，当下开始是合适的，且饮食和运动的方向与备孕一致。是否配合药物，会在后续用药评估环节结合你的备孕情况判断。',
   mods:[
     { t:'整体建议', html:'<p>备孕和体重管理并不冲突：多囊体质的代谢改善依靠饮食和运动，这恰好也是备孕需要的准备。</p>' +
@@ -301,7 +301,7 @@ var PATIENTS = [
     { t:'运动建议', html:'<p>适量运动改善代谢，也是在为备孕做准备：</p>' +
       ul([['每周累计 150 分钟中低强度','快走、游泳、瑜伽均可'],['避免过度运动','过量运动不利于备孕，以身体感受为准']]) }
   ] },
-{ id:'P10', name:'唐子睿', gender:'男', age:17, h:174, w:85.8, bmi:28.3, tier:'exclude',
+{ id:'P10', name:'唐子睿', profileId:'1004128774', gender:'男', age:17, h:174, w:85.8, bmi:28.3, tier:'exclude',
   hint:'你未满 18 周岁，成人减重药物和线上服务均不适用。体检提示胰岛素水平偏高并伴有黑棘皮征，建议由家长陪同到儿科就诊；同时全家一起调整饮食和作息，效果远好于一个人单独控制。',
   mods:[
     { t:'整体建议', html:'<p>17 岁的体重管理与成人不同：药物不可用，执行要靠家庭，并且需要医生先评估胰岛素抵抗的程度。</p>' +
@@ -351,10 +351,9 @@ function heroHtml(p){
     '<div class="hero__hd">' +
     '<span class="hero__name">' + p.name + '</span>' +
     '<span class="hero__meta">' + p.gender + ' · ' + p.age + ' 岁 · ' + p.h + 'cm / ' + p.w + 'kg · BMI ' + p.bmi + '</span>' +
-    '<button type="button" class="hero__info" id="genInfoBtn" aria-label="查看生成时间">' +
+    '<a class="hero__info" href="' + PROFILE_BASE + p.profileId + '" aria-label="查看用户资料详情">' +
     '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 11.2v4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></svg>' +
-    '</button>' +
-    '<span class="hero__tip" id="genTip" hidden>生成时间：' + GEN_TIME + '</span>' +
+    '</a>' +
     '</div>' +
     '<div class="grade"><div class="grade__h"><span>减重建议</span><b>' + t.value + '</b></div>' +
     '<div class="grade__bar">' + bars + '</div><div class="grade__ax">' + axis + '</div></div>' +
@@ -387,11 +386,6 @@ function render(id){
       else { b.style.maxHeight = b.scrollHeight + 'px'; setTimeout(function(){ b.style.maxHeight = 'none'; }, 340); }
     });
   });
-  /* 生成时间气泡 */
-  var info = document.getElementById('genInfoBtn'), tip = document.getElementById('genTip');
-  info.addEventListener('click', function(e){ e.stopPropagation(); tip.hidden = !tip.hidden; });
-  document.addEventListener('click', function(){ tip.hidden = true; });
-
   /* 吸底按钮（按档位） */
   var bar = document.getElementById('paybar');
   bar.hidden = false; bar.innerHTML = '';
