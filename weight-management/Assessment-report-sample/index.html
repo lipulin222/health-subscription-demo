@@ -132,15 +132,15 @@ body { display:flex; justify-content:center; min-height:100vh; }
 @media (max-width:360px) { .page { padding-left:var(--space-card-gap); padding-right:var(--space-card-gap); } .hero { padding:12px; } }
 @media (prefers-reduced-motion:reduce) { * { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
 
-/* ===== 整体建议 · 健康影响链（因果链示意：图标块由浅到深，节点间以关联词衔接） ===== */
-.chain { margin-top:14px; }
-.chain__row { display:flex; align-items:center; gap:14px; }
-.chain__ico { flex:0 0 56px; width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; }
-.chain__ico svg { width:32px; height:32px; display:block; }
-.chain__tx { min-width:0; }
-.chain__t { display:block; font-size:15px; font-weight:600; color:#1F5F73; line-height:21px; }
-.chain__d { display:block; margin-top:2px; font-size:12px; color:var(--t-secondary); line-height:18px; text-decoration:none; }
-.chain__lk { width:56px; display:flex; align-items:center; justify-content:center; gap:5px; padding:7px 0; font-size:13px; color:var(--brand); white-space:nowrap; }
+/* ===== 整体建议 · 健康影响链（横版：五个节点一行排开，关联词+箭头衔接） ===== */
+.chain { margin-top:14px; display:flex; align-items:flex-start; }
+.chain__col { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; }
+.chain__ico { width:100%; max-width:54px; aspect-ratio:1/1; border-radius:13px; display:flex; align-items:center; justify-content:center; }
+.chain__ico svg { width:30px; height:30px; display:block; }
+.chain__t { margin-top:10px; font-size:13px; font-weight:600; color:#1F8CA8; line-height:18px; white-space:nowrap; }
+.chain__d { margin-top:2px; font-size:9px; color:var(--t-secondary); line-height:12px; text-align:center; padding:0 2px; text-decoration:none; }
+.chain__lk { flex:0 0 17px; display:flex; flex-direction:column; align-items:center; gap:1px; padding-top:13px; color:var(--brand); }
+.chain__lk s { font-size:9px; line-height:11px; text-decoration:none; }
 .chain__lk svg { width:12px; height:12px; }
 </style>
 </head>
@@ -184,8 +184,8 @@ function drugTable(w){
 function mbar(level,pct){
   return '<div class="mbar"><span class="mbar__lab">匹配度</span><span class="mbar__lv">'+level+'</span><span class="mbar__tr"><i style="width:'+pct+'%"></i></span></div>';
 }
-/* 整体建议 · 健康影响链：生活方式 → 体重 → 指标异常 → 慢性疾病 → 致死致残
-   图标块颜色由浅到深示意进展；节点间关联词（影响/导致/发展/恶化）对齐图标列居中 */
+/* 整体建议 · 健康影响链（横版）：生活方式 → 体重 → 指标异常 → 慢性疾病 → 致死致残
+   图标块颜色由浅到深示意进展；节点间关联词（影响/导致/发展/恶化）+ 箭头衔接 */
 function chain(){
   var C = ['#D8EEF2','#BCE3ED','#93D2E2','#58AFCB','#2187A6'];
   var ROWS = [
@@ -198,10 +198,10 @@ function chain(){
   var LINKS = ['影响','导致','发展','恶化'];
   var h = '<div class="chain">';
   ROWS.forEach(function(r,i){
-    h += '<div class="chain__row"><span class="chain__ico" style="background:'+C[i]+'">'+r[0]+'</span>' +
-      '<span class="chain__tx"><b class="chain__t">'+r[1]+'</b><s class="chain__d">'+r[2]+'</s></span></div>';
+    h += '<div class="chain__col"><span class="chain__ico" style="background:'+C[i]+'">'+r[0]+'</span>' +
+      '<b class="chain__t">'+r[1]+'</b><s class="chain__d">'+r[2]+'</s></div>';
     if (i < LINKS.length) {
-      h += '<div class="chain__lk"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+LINKS[i]+'</div>';
+      h += '<div class="chain__lk"><s>'+LINKS[i]+'</s><svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
     }
   });
   return h + '</div>';
