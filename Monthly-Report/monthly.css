@@ -157,7 +157,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   padding: 24px 20px calc(96px + env(safe-area-inset-bottom));
   background: #FFFFFF; text-align: center;
 }
-.er__t { font-size: 15px; color: #999999; line-height: 18px; }
+.er__i { width: 145px; height: 110px; }
+.er__t { margin-top: 24px; font-size: 15px; color: #999999; line-height: 18px; }
 
 /* ============================ 报告头 ============================ */
 .rp { padding-bottom: 8px; }
