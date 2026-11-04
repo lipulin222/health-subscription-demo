@@ -140,6 +140,21 @@ body { display:flex; justify-content:center; min-height:100vh; }
 .chain__t { margin-top:5px; font-size:12px; font-weight:400; color:#1F8CA8; line-height:17px; white-space:nowrap; }
 .chain__lk { flex:0 0 auto; padding-top:14px; color:#999999; font-size:12px; line-height:17px; white-space:nowrap; }
 .hl { font-style:normal; color:var(--brand); }
+
+/* ===== 用药建议 · 科普卡片（猜你想问 + 四分类入口） ===== */
+.kbcard { margin-top:12px; background:var(--bg-page); border-radius:var(--radius-card); padding:2px 12px; }
+.kbcard__row { display:flex; align-items:center; gap:10px; padding:10px 0; text-decoration:none; border-bottom:1px solid var(--divider); }
+.kbcard__ico { flex:0 0 34px; width:34px; height:34px; border-radius:8px; background:var(--brand-light); display:flex; align-items:center; justify-content:center; color:var(--brand); }
+.kbcard__ico svg { width:18px; height:18px; }
+.kbcard__tx { flex:1 1 auto; min-width:0; font-size:12px; color:var(--t-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.kbcard__tx b { color:var(--brand); font-weight:600; }
+.kbcard__go { flex:0 0 auto; color:var(--t-placeholder); }
+.kbcard__cats { display:flex; align-items:stretch; }
+.kbcard__cat { flex:1 1 0; text-align:center; text-decoration:none; padding:9px 0 8px; }
+.kbcard__cat + .kbcard__cat { border-left:1px solid var(--divider); }
+.kbcard__cat:active { background:var(--brand-light); }
+.kbcard__cat b { display:block; font-size:13px; font-weight:600; color:var(--t-title); line-height:18px; }
+.kbcard__cat s { display:block; margin-top:2px; font-size:10px; color:var(--t-secondary); line-height:14px; text-decoration:none; }
 </style>
 </head>
 <body>
@@ -210,11 +225,24 @@ function drugNormal(p){
     '<p>' + (p.why || '结合你的情况，我们建议在调整饮食和运动的同时，配合 GLP-1 类药物一起减：它通过延缓胃排空、降低食欲来减少摄入，让你在控制饮食的过程中少一些饥饿感，整体效果也比单靠生活方式更明确。') + '</p>' +
     '<p>根据你当前的体重情况，参考按临床数据，用药后的体重预计变化情况如下：</p>' +
     drugTable(p.w) +
-    '<p class="note">上述区间来自临床研究，个体差异较大，以实际随访数据为准。</p>';
+    '<p class="note">上述区间来自临床研究，个体差异较大，以实际随访数据为准。</p>' +
+    '<div class="kbcard">' +
+      '<a class="kbcard__row" href="../../patient-education/index.html?stage=1#/">' +
+        '<span class="kbcard__ico"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3.5" width="14" height="17" rx="2.5" fill="currentColor" opacity=".15"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>' +
+        '<span class="kbcard__tx"><b>猜你想问</b> · GLP-1 到底是怎么起作用的</span>' +
+        '<span class="kbcard__go">›</span>' +
+      '</a>' +
+      '<div class="kbcard__cats">' +
+        '<a class="kbcard__cat" href="../../patient-education/index.html?stage=1#/g/know"><b>效果</b><s>多久有变化</s></a>' +
+        '<a class="kbcard__cat" href="../../patient-education/index.html?stage=1#/g/safe"><b>安全</b><s>副作用说明</s></a>' +
+        '<a class="kbcard__cat" href="../../patient-education/index.html?stage=1#/all"><b>花费</b><s>价格说明</s></a>' +
+        '<a class="kbcard__cat" href="../../patient-education/index.html?stage=1#/g/run"><b>使用</b><s>操作方法</s></a>' +
+      '</div>' +
+    '</div>';
 }
 function drugMild(p, monitor){
   return drugNormal(p) +
-    '<p>用药期间需留意'+monitor+'的变化，出现明显波动及时联系医生。</p>';
+    (monitor ? '<p>用药期间需留意'+monitor+'的变化，出现明显波动及时联系医生。</p>' : '');
 }
 function drugOffline(p){
   return mbar('需医生面诊评估',65) +
@@ -341,7 +369,7 @@ var PATIENTS = [
       ul([['携带本次体检报告','胰岛素、尿酸等指标是重要参考'],['挂儿科','由儿科医生评估胰岛素抵抗的情况']]) }
   ] },
 { id:'P11', name:'郑磊', gender:'男', age:40, h:180, w:87, bmi:26.9, tier:'normal',
-  why:'结合你的情况，我们建议在调整饮食和运动的同时，配合 GLP-1 类药物一起减。核心理由是：体重基数较大时，减重初期单靠运动消耗有限、关节负担也重，而单纯靠意志力控制饮食又很难长期坚持；药物可以先把体重降下来、加快减重进程，让你更早进入规律运动的阶段，也更容易建立信心，提高减重的成功概率。',
+  why:'结合你的情况，我们建议在调整饮食和运动的同时，配合 GLP-1 类药物一起减。核心理由是：<br><span class="hl">体重基数较大时，减重初期单靠运动消耗有限、关节负担也重，而单纯靠意志力控制饮食又很难长期坚持；药物可以先把体重降下来、加快减重进程，让你更早进入规律运动的阶段，也更容易建立信心，提高减重的成功概率。</span>',
   hint:'你的 BMI 26.9 已进入建议干预的范围，确诊的脂肪肝和体检提示偏高的血压，都会随体重下降改善。建议饮食、运动与药物治疗同步开展，指标改善正是你这次减重最直接的目标。',
   mods:[
     { t:'整体建议', html:
@@ -402,7 +430,7 @@ byId('P3').mods[3].html = drugMild(byId('P3'),'血脂');
   var p = byId(id);
   p.mods[3].html = drugOffline(p);
 });
-byId('P11').mods[3].html = drugMild(byId('P11'),'血压');
+byId('P11').mods[3].html = drugMild(byId('P11'));
 byId('P13').mods[3].html = drugMild(byId('P13'),'血脂和尿酸');
 
 /* ===== 档位口径 ===== */
