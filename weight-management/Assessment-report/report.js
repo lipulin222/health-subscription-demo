@@ -489,7 +489,23 @@
 
   /* ===================== 6.5 吸底常驻按钮（按分支） =====================
      chronic/mild：预约面诊 → 弹起二维码（参考减重回顾末屏「开启健康管理」）
-     normal：查看用药方案 → 线上订阅下单页；adapt：返回 */
+     normal：查看用药方案 → 线上订阅下单页；adapt：推荐给亲友做评估（分享）+ 返回 */
+  /* 推荐给亲友做评估：优先系统分享；不支持时复制评估入口链接并轻提示 */
+  function shareAssess() {
+    var url = new URL(ASSESS_URL, location.href).toString();
+    if (navigator.share) {
+      navigator.share({ title: '体重管理评估', url: url }).catch(function () {});
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(
+        function () { ZZ.toast('链接已复制，快分享给亲友吧'); },
+        function () { ZZ.toast('复制失败，请长按地址栏复制'); });
+      return;
+    }
+    ZZ.toast('当前浏览器不支持分享');
+  }
+
   function initFixbar() {
     var bar = document.getElementById('paybar');
     if (!bar) return;
@@ -499,11 +515,19 @@
     btn.className = 'btn fixbar__btn';
     btn.type = 'button';
     if (DISP === 'adapt') {
-      btn.textContent = '返回';
-      btn.addEventListener('click', function () {
+      /* 不适宜减重：主按钮「推荐给亲友做评估」（分享评估入口），副按钮「返回」 */
+      btn.textContent = '推荐给亲友做评估';
+      btn.addEventListener('click', shareAssess);
+      var back = document.createElement('button');
+      back.className = 'btn btn--ghost fixbar__sub';
+      back.type = 'button';
+      back.textContent = '返回';
+      back.addEventListener('click', function () {
         if (history.length > 1) history.back();
         else location.href = HOME_URL;
       });
+      bar.appendChild(back);
+      bar.appendChild(btn);
     } else if (DISP === 'normal') {
       btn.textContent = '查看用药方案';
       btn.addEventListener('click', function () { location.href = PLAN_URL; });
