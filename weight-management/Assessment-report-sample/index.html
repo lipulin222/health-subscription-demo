@@ -193,7 +193,7 @@ function drugOffline(p){
     '<p class="note">匹配度基于初步信息估算，个体差异较大。</p>';
 }
 
-/* ===== 10 位样例患者（数据源：患者数据-提炼版字段维度.md；文案按 v3 提示词重新生成） ===== */
+/* ===== 11 位样例患者（P1–P10 数据源：患者数据-提炼版字段维度.md；P11 数据源：患者数据-转化结果-问卷序号1.md；文案按 v3 提示词重新生成） ===== */
 var PATIENTS = [
 { id:'P1', name:'王雅静', profileId:'1004128765', gender:'女', age:32, h:162, w:83.5, bmi:31.8, tier:'normal',
   hint:'你的 BMI 已达 31.8，长期来看对血压、血脂和睡眠都是负担，减重的必要性明确。建议饮食、运动与药物治疗同步开展，三者结合能达到最好的效果。',
@@ -310,6 +310,18 @@ var PATIENTS = [
       ul([['全家采用同一套饮食','含糖饮料、夜宵从家中移除，家长带头执行'],['保证活动与睡眠','每天 60 分钟中高强度活动，固定就寝时间']]) },
     { t:'就诊建议', html:'<p>就诊前把材料准备齐全，医生评估更高效：</p>' +
       ul([['携带本次体检报告','胰岛素、尿酸等指标是重要参考'],['挂儿科','由儿科医生评估胰岛素抵抗的情况']]) }
+  ] },
+{ id:'P11', name:'郑磊', gender:'男', age:40, h:180, w:87, bmi:26.9, tier:'normal',
+  hint:'你的 BMI 26.9 已进入建议干预的范围，确诊的脂肪肝和体检提示偏高的血压，都会随体重下降改善。建议饮食、运动与药物治疗同步开展，指标改善正是你这次减重最直接的目标。',
+  mods:[
+    { t:'整体建议', html:'<p>你的情况可以概括为：BMI 26.9，确诊脂肪肝，体检提示血压偏高；原因主要在甜食夜宵偏多的饮食习惯和久坐。这些异常目前都还没有发展到需要长期用药的程度，会随体脂下降改善，当下的任务是把饮食和运动的调整落实并保持住。</p>' +
+      ul([['当前的主要挑战是把调整坚持下来','你的目标明确（改善指标），方法也不复杂，难在甜食夜宵和久坐的日常惯性'],['减重节奏要放缓','有胆结石病史，体重下降过快可能诱发胆囊症状，按周记录体重，稳步下行']]) },
+    { t:'饮食建议', html:'<p>你的饮食问题集中在甜食、夜宵和外卖，调整就从这三个源头下手：</p>' +
+      ul([['甜食和含糖饮料先停','这是你体重增加最直接的来源，戒断后变化也最明显'],['夜宵取消，晚饭提前','睡前 3 小时不再进食'],['外卖换成有选择的点法','优先蒸煮做法和荤素搭配，少点油炸和盖浇类']]) +
+      '<p class="note">进入后续流程后，营养师会结合你的口味与作息给出个性化食谱。</p>' },
+    { t:'运动建议', html:'<p>久坐是你的第二个源头，运动的目标是先把日常活动量建立起来：</p>' +
+      ul([['每天快走 30 分钟','可拆成 3 段完成，通勤提前下车、饭后散步都可以计入'],['久坐时每小时起身活动','设提醒即可，先打断连续久坐'],['有基础后加力量训练','每周 2 次，保住肌肉量，减重后不易反弹']]) },
+    { t:'用药建议', html:'@DRUG_MILD@' }
   ] }
 ];
 
@@ -322,6 +334,7 @@ byId('P3').mods[3].html = drugMild(byId('P3'),'血脂');
   var p = byId(id);
   p.mods[3].html = drugOffline(p);
 });
+byId('P11').mods[3].html = drugMild(byId('P11'),'血压');
 
 /* ===== 档位口径 ===== */
 var TIER = {
@@ -351,9 +364,11 @@ function heroHtml(p){
     '<div class="hero__hd">' +
     '<span class="hero__name">' + p.name + '</span>' +
     '<span class="hero__meta">' + p.gender + ' · ' + p.age + ' 岁 · ' + p.h + 'cm / ' + p.w + 'kg · BMI ' + p.bmi + '</span>' +
-    '<a class="hero__info" href="' + PROFILE_BASE + p.profileId + '" aria-label="查看用户资料详情">' +
-    '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 11.2v4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></svg>' +
-    '</a>' +
+    (p.profileId
+      ? '<a class="hero__info" href="' + PROFILE_BASE + p.profileId + '" aria-label="查看用户资料详情">' +
+        '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 11.2v4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></svg>' +
+        '</a>'
+      : '') +
     '</div>' +
     '<div class="grade"><div class="grade__h"><span>减重建议</span><b>' + t.value + '</b></div>' +
     '<div class="grade__bar">' + bars + '</div><div class="grade__ax">' + axis + '</div></div>' +
