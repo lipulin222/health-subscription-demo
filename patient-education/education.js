@@ -15,7 +15,7 @@
   /* ===================== 1. 元信息与入口 ===================== */
   const DOCTOR = { name: '李医生', dept: '内分泌', date: '11/03' };
   const ICON_KEPU = '../branding-pic/icons/卓正科普.svg';
-  const AGENT_URL = '../weight-management/Weight-loss-assistant/index.html';  /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
+  const AGENT_URL = '../weight-management/Weight-loss-assistant/index.html';  /* 询问护士（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   /* 「测一测」按卡片阶段分流（阶段由 portal 通过 ?stage= 透传，缺省=1 未开始）：
      未开始（①②）→ 首诊用药适应性评估；进行中及以后（③④⑤）→ 疗程随访评估 */
   const STAGE_NOW = parseInt((location.search.match(/(?:^|[?&])stage=(\d+)/) || [])[1], 10) || 1;
@@ -409,7 +409,7 @@
   function ctaHtml() {
     return state.stage <= 2
       ? '<button class="btn" type="button" data-act="assess">体重管理评估</button>'
-      : '<button class="btn" type="button" data-act="agent">有拿不准的？问 AI 减重助理</button>';
+      : '<button class="btn" type="button" data-act="agent">有拿不准的？问问护士</button>';
   }
 
   /* 首页：入门卡 + 你现在可能想看 + 按主题找（标题右侧「全部内容 ›」）+ 承接按钮 */
@@ -463,8 +463,8 @@
       esc(DOCTOR.name) + ' · ' + esc(DOCTOR.dept) + ' · 审核于 ' + esc(DOCTOR.date) + '</div>' +
       '<div class="card ar__bd">' + artBody(a) + '</div>' +
       '<div class="ar__ask"><b>看到这里还有拿不准的？</b>' +
-      '<s>把问题直接抛给 AI 减重助理，它会结合你的情况一起看</s>' +
-      '<button class="btn" type="button" data-act="agent" data-article="' + esc(a.t) + '">问 AI 减重助理</button></div>' +
+      '<s>把问题直接交给询问护士，它会结合你的情况一起看</s>' +
+      '<button class="btn" type="button" data-act="agent" data-article="' + esc(a.t) + '">询问护士</button></div>' +
       '<div class="ar__end"><b>这篇帮你解决了吗</b><div class="ar__end-b">' +
       '<button class="btn btn--ghost" type="button" data-act="art-no" data-id="' + a.id + '">还有疑问</button>' +
       '<button class="btn" type="button" data-act="art-yes">解决了</button></div></div>';

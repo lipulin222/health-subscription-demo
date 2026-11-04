@@ -68,7 +68,7 @@ if (stateMenu && moreBtn) {
 
   /* 站点根：空串＝相对当前页面跳转（本地 / 离线 file:// / GitHub Pages 均可用，本页固定在仓库根） */
   const BASE = '';
-  /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
+  /* 询问护士（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   const AGENT = BASE + 'weight-management/Weight-loss-assistant/index.html';
   const U = {
     report: BASE + 'weight-management/Assessment-report/index.html', // 减重评估报告（决策）
@@ -264,7 +264,7 @@ if (stateMenu && moreBtn) {
     1: () => '<div class="cats">' +
       CATS.map((c) => '<a class="cats__c" href="' + BASE + 'patient-education/index.html?stage=' + (stage || 1) + '#/g/' + c[0] + '"><b>' + c[1] + '</b><span>' + c[2] + '</span></a>').join('<i class="cats__sep" aria-hidden="true"></i>') +
       '</div>' +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估')),
+      duo(btn('ghost', agentHref(), '询问护士'), btn('solid', assessHref(), '快速评估')),
 
     /* ② 消费决策：评估结论 + 三段量表（设计稿「未开始1」） */
     2: () => '<div class="eval">你的减重评估报告已生成</div>' +
@@ -272,16 +272,16 @@ if (stateMenu && moreBtn) {
       '<div class="gauge__track"><i></i><i class="is-on"></i><i></i></div>' +
       '<div class="gauge__labels"><span>无需减重</span><span>需要减重管理</span><span>立即减重</span></div>' +
       '</div>' +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')),
+      duo(btn('ghost', agentHref(), '询问护士'), btn('solid', U.report, '查看评估报告')),
 
     /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录（设计稿「第28天」）
        主按钮固定「查看更多」→ 聚合页；有待办（生成月报 / 新月报）时按钮上挂红点 */
     3: () => (hasNoWeight ? wldEmpty() : wldBlock()) +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多', '', monthlyBadge())),
+      duo(btn('ghost', agentHref(), '询问护士'), btn('solid', moreUrl, '查看更多', '', monthlyBadge())),
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）+ 数据区（设计稿「第28天1」） */
     4: () => rkCard() + wldBlock() +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多')),
+      duo(btn('ghost', agentHref(), '询问护士'), btn('solid', moreUrl, '查看更多')),
 
     /* ⑤ 品牌认可：回顾 */
     /* ⑤ 维持期：插画 + 减重报告 + 通栏「打开回顾」（设计稿「第28天」最新版） */
