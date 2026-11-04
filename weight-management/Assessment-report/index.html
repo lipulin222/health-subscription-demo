@@ -74,6 +74,9 @@ body { display:flex; justify-content:center; min-height:100vh; }
 .mod { margin-top:var(--space-card-gap); overflow:hidden; }
 .mod__h { display:flex; align-items:center; gap:9px; width:100%; cursor:pointer; font-family:var(--font); text-align:left; background:none; border:none; padding:12px 15px; transition:background .18s var(--ease); }
 .mod__h:active { background:var(--brand-light-active); }
+.mod__h--static { cursor:auto; }
+.mod__h--static:active { background:none; }
+.mod__mbar { padding:0 15px 13px; }
 .mod__no { flex-shrink:0; font-size:10px; font-weight:500; letter-spacing:.04em; color:#FFF; background:var(--brand); border-radius:var(--radius-small); padding:2px 6px; line-height:1.5; }
 .mod__t { flex:1; min-width:0; font-size:15px; font-weight:600; color:var(--t-title); line-height:22px; }
 .mod__arw { flex-shrink:0; width:22px; height:22px; color:var(--t-placeholder); display:flex; align-items:center; justify-content:center; transition:transform .24s var(--ease); }
@@ -577,21 +580,34 @@ function heroHtml(p){
 function render(id){
   var p = PATIENTS.filter(function(x){ return x.id === id; })[0];
   var html = heroHtml(p);
+  /* 仅「用药建议」可折叠且默认收起；其余模块头部纯展示，不带箭头。
+     用药建议的匹配度条移到头部下方常驻展示，收起时仍可见 */
   html += p.mods.map(function(m, i){
-    return '<section class="mod card">' +
-      '<button class="mod__h" type="button" aria-expanded="true">' +
-      '<span class="mod__no">' + ('0' + (i + 1)).slice(-2) + '</span>' +
-      '<span class="mod__t">' + m.t + '</span>' +
-      '<span class="mod__arw" aria-hidden="true">' + ARW + '</span></button>' +
-      '<div class="mod__b"><div class="mod__b-in">' + m.html + '</div></div></section>';
+    var no = '<span class="mod__no">' + ('0' + (i + 1)).slice(-2) + '</span>';
+    var foldable = m.t === '用药建议';
+    var mbarHtml = '', body = m.html;
+    if (foldable) {
+      var mm = body.match(/^\s*<div class="mbar">[\s\S]*?<\/div>\s*/);
+      if (mm) { mbarHtml = '<div class="mod__mbar">' + mm[0] + '</div>'; body = body.slice(mm[0].length); }
+    }
+    return '<section class="mod card' + (foldable ? ' is-fold' : '') + '">' +
+      (foldable
+        ? '<button class="mod__h" type="button" aria-expanded="false">' + no +
+          '<span class="mod__t">' + m.t + '</span>' +
+          '<span class="mod__arw" aria-hidden="true">' + ARW + '</span></button>'
+        : '<div class="mod__h mod__h--static">' + no +
+          '<span class="mod__t">' + m.t + '</span></div>') +
+      mbarHtml +
+      '<div class="mod__b"><div class="mod__b-in">' + body + '</div></div></section>';
   }).join('');
   html += '<div class="disc">' + DISC + '</div>';
   view.innerHTML = html;
   view.scrollTop = 0;
 
-  /* 折叠交互 */
+  /* 折叠交互：仅用药建议模块（头部为 button）可收起展开 */
   view.querySelectorAll('.mod').forEach(function(mod){
-    var h = mod.querySelector('.mod__h'), b = mod.querySelector('.mod__b');
+    var h = mod.querySelector('button.mod__h'), b = mod.querySelector('.mod__b');
+    if (!h) return;
     h.addEventListener('click', function(){
       var folded = mod.classList.toggle('is-fold');
       h.setAttribute('aria-expanded', folded ? 'false' : 'true');
