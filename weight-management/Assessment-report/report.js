@@ -14,7 +14,7 @@
      · 套餐/价格等商品内容不上报告页，由文末按钮跳转下单页：
        chronic=查看方案与线上订阅（主）+ 预约医生面诊（副）；mild/normal=进入下单页；adapt=返回首页
      · 预览（draft 用）：?disp=adapt|chronic|mild|normal 强制指定处置分支，
-       亦可从顶栏「⋯」菜单切换；不带参数按问卷结果规则映射，无结果回退默认口径
+       亦可从顶栏「⋯」菜单切换；不带参数按问卷结果规则映射，无结果显示空状态
    【评估后三大处置】（规则映射，同 v2）
      · 无适应症（BMI<24 且无合并症/异常）→ 直接劝退，不打针
      · 确诊慢病合并症 / 溜溜球体重 → 优先建议线下面诊（允许线上服务）：慢病管理置顶
@@ -57,6 +57,17 @@
     normal: { name: '王倩', age: 35, gender: '女', height: 168, weight: 80, bmi: '28.3',
       meta: ['都没有'], rebound: '没减过' }
   };
+
+  /* 是否有真实问卷结果：非分支预览且 sessionStorage 无结果 → 显示空状态（还没有评估报告） */
+  var HAS_DATA = (function () {
+    if (FORCE) return true;
+    try {
+      var raw = sessionStorage.getItem('zz:assessResult');
+      if (!raw) return false;
+      var r0 = JSON.parse(raw);
+      return !!(r0 && r0.height && r0.weight);
+    } catch (e) { return false; }
+  })();
 
   /* 默认口径（不带 disp 参数时直接打开 / sessionStorage 不可用）：
      李蔓 · 脂肪肝 + 反弹 3 次及以上 —— 按规则映射落在「线下优先」分支 */
@@ -429,6 +440,19 @@
     return renderHero() + renderMods() + renderDisc();
   }
 
+  /* 空状态（DistinctUI 3.0 缺省页：白底 + 「没有文件」插画 + 文案 + 按钮组） */
+  function renderEmpty() {
+    return '' +
+      '<div class="er">' +
+      '<img class="er__i" src="../../assets/empty-states/empty-no-file.png" alt="" aria-hidden="true">' +
+      '<p class="er__t">还没有评估报告</p>' +
+      '<p class="er__d">完成健康评估后，这里会给出你的初步评估建议</p>' +
+      '<div class="er__btns">' +
+      '<a class="btn er__btn" href="' + ASSESS_URL + '">去评估</a>' +
+      '<a class="btn btn--ghost er__btn" href="' + HOME_URL + '">返回首页</a>' +
+      '</div></div>';
+  }
+
   /* ===================== 6. 交互 ===================== */
   /* 见 shared.js */
   var toast = ZZ.toast;
@@ -584,6 +608,18 @@
   function init() {
     var view = document.getElementById('view');
     if (!view) return;
+
+    /* 没有评估数据且非分支预览 → 空状态（吸底按钮一并隐藏；顶栏「⋯」仍可切分支预览） */
+    if (!HAS_DATA) {
+      view.innerHTML = renderEmpty();
+      view.classList.add('view-in');
+      var bar0 = document.getElementById('paybar');
+      if (bar0) bar0.hidden = true;
+      initNav();
+      initDispSw();
+      return;
+    }
+
     view.innerHTML = render();
     view.classList.add('view-in');
 
