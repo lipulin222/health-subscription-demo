@@ -131,6 +131,17 @@ body { display:flex; justify-content:center; min-height:100vh; }
 
 @media (max-width:360px) { .page { padding-left:var(--space-card-gap); padding-right:var(--space-card-gap); } .hero { padding:12px; } }
 @media (prefers-reduced-motion:reduce) { * { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+
+/* ===== 整体建议 · 健康影响链（因果链示意：图标块由浅到深，节点间以关联词衔接） ===== */
+.chain { margin-top:14px; }
+.chain__row { display:flex; align-items:center; gap:14px; }
+.chain__ico { flex:0 0 56px; width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; }
+.chain__ico svg { width:32px; height:32px; display:block; }
+.chain__tx { min-width:0; }
+.chain__t { display:block; font-size:15px; font-weight:600; color:#1F5F73; line-height:21px; }
+.chain__d { display:block; margin-top:2px; font-size:12px; color:var(--t-secondary); line-height:18px; text-decoration:none; }
+.chain__lk { width:56px; display:flex; align-items:center; justify-content:center; gap:5px; padding:7px 0; font-size:13px; color:var(--brand); white-space:nowrap; }
+.chain__lk svg { width:12px; height:12px; }
 </style>
 </head>
 <body>
@@ -173,6 +184,33 @@ function drugTable(w){
 function mbar(level,pct){
   return '<div class="mbar"><span class="mbar__lab">匹配度</span><span class="mbar__lv">'+level+'</span><span class="mbar__tr"><i style="width:'+pct+'%"></i></span></div>';
 }
+/* 整体建议 · 健康影响链：生活方式 → 体重 → 指标异常 → 慢性疾病 → 致死致残
+   图标块颜色由浅到深示意进展；节点间关联词（影响/导致/发展/恶化）对齐图标列居中 */
+function chain(){
+  var C = ['#D8EEF2','#BCE3ED','#93D2E2','#58AFCB','#2187A6'];
+  var ROWS = [
+    [chainIcoLife(), '生活方式', '饮食 · 运动 · 吸烟饮酒 · 熬夜'],
+    [chainIcoWeight(C[1]), '体重', '超重、肥胖'],
+    [chainIcoIndex(), '指标异常', '血压、血糖、血脂'],
+    [chainIcoChronic(C[3]), '慢性疾病', '高血压、糖尿病、冠心病等'],
+    [chainIcoEnd(C[4]), '致死致残', '结局不可逆']
+  ];
+  var LINKS = ['影响','导致','发展','恶化'];
+  var h = '<div class="chain">';
+  ROWS.forEach(function(r,i){
+    h += '<div class="chain__row"><span class="chain__ico" style="background:'+C[i]+'">'+r[0]+'</span>' +
+      '<span class="chain__tx"><b class="chain__t">'+r[1]+'</b><s class="chain__d">'+r[2]+'</s></span></div>';
+    if (i < LINKS.length) {
+      h += '<div class="chain__lk"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+LINKS[i]+'</div>';
+    }
+  });
+  return h + '</div>';
+}
+function chainIcoLife(){ return '<svg viewBox="0 0 24 24" fill="none"><path d="M4.2 10.6h15.6c-.3 4.3-3.6 7.2-7.8 7.2s-7.5-2.9-7.8-7.2z" fill="#fff"/><path d="M8.6 4.2c2.1.4 3.6 1.7 4.1 3.6-2.2.2-3.9-1.2-4.1-3.6z" fill="#fff"/><path d="M14.6 5.2c1.8.4 3 1.6 3.4 3.2-2 .3-3.5-1-3.4-3.2z" fill="#fff"/></svg>'; }
+function chainIcoWeight(c){ return '<svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3.4" fill="#fff"/><path d="M9 9.6a4.4 4.4 0 0 1 6 0" stroke="'+c+'" stroke-width="1.5" stroke-linecap="round"/><path d="M12 11.2l2-2.6" stroke="'+c+'" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="11.6" r="1.1" fill="'+c+'"/></svg>'; }
+function chainIcoIndex(){ return '<svg viewBox="0 0 24 24" fill="none"><rect x="4.6" y="12.4" width="3" height="6.6" rx="1.2" fill="#fff"/><rect x="10.5" y="9.6" width="3" height="9.4" rx="1.2" fill="#fff"/><rect x="16.4" y="6.8" width="3" height="12.2" rx="1.2" fill="#fff"/><path d="M5.4 9.2 14.6 4.4" stroke="#F5C842" stroke-width="2" stroke-linecap="round"/><path d="M12.6 3.2l3.8-.2-.2 3.8" stroke="#F5C842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+function chainIcoChronic(c){ return '<svg viewBox="0 0 24 24" fill="none"><path d="M12 20.6S4.4 15.6 4.4 10.2A4.4 4.4 0 0 1 12 7.3a4.4 4.4 0 0 1 7.6 2.9c0 5.4-7.6 10.4-7.6 10.4z" fill="#fff"/><path d="M7.4 11h2.3l1.1-2.1 1.7 3.9 1.1-1.8h3" stroke="'+c+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+function chainIcoEnd(c){ return '<svg viewBox="0 0 24 24" fill="none"><path d="M12 20.6S4.4 15.6 4.4 10.2A4.4 4.4 0 0 1 12 7.3a4.4 4.4 0 0 1 7.6 2.9c0 5.4-7.6 10.4-7.6 10.4z" fill="#fff"/><path d="M4.6 12h14.8" stroke="'+c+'" stroke-width="1.7"/></svg>'; }
 /* 用药模块：沿用现有定稿结构（匹配度条在前、分析在后） */
 function drugNormal(p){
   return mbar('较高',78) +
@@ -315,7 +353,7 @@ var PATIENTS = [
   hint:'你的 BMI 26.9 已进入建议干预的范围，确诊的脂肪肝和体检提示偏高的血压，都会随体重下降改善。建议饮食、运动与药物治疗同步开展，指标改善正是你这次减重最直接的目标。',
   mods:[
     { t:'整体建议', html:'<p>你的情况可以概括为：BMI 26.9，确诊脂肪肝，体检提示血压偏高；原因主要在甜食夜宵偏多的饮食习惯和久坐。这些异常目前都还没有发展到需要长期用药的程度，会随体脂下降改善，当下的任务是把饮食和运动的调整落实并保持住。</p>' +
-      ul([['当前的主要挑战是把调整坚持下来','你的目标明确（改善指标），方法也不复杂，难在甜食夜宵和久坐的日常惯性'],['减重节奏要放缓','有胆结石病史，体重下降过快可能诱发胆囊症状，按周记录体重，稳步下行']]) },
+      ul([['当前的主要挑战是把调整坚持下来','你的目标明确（改善指标），方法也不复杂，难在甜食夜宵和久坐的日常惯性'],['减重节奏要放缓','有胆结石病史，体重下降过快可能诱发胆囊症状，按周记录体重，稳步下行']]) + chain() },
     { t:'饮食建议', html:'<p>你的饮食问题集中在甜食、夜宵和外卖，调整就从这三个源头下手：</p>' +
       ul([['甜食和含糖饮料先停','这是你体重增加最直接的来源，戒断后变化也最明显'],['夜宵取消，晚饭提前','睡前 3 小时不再进食'],['外卖换成有选择的点法','优先蒸煮做法和荤素搭配，少点油炸和盖浇类']]) +
       '<p class="note">进入后续流程后，营养师会结合你的口味与作息给出个性化食谱。</p>' },
