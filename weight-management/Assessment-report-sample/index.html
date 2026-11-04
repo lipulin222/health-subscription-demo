@@ -132,16 +132,13 @@ body { display:flex; justify-content:center; min-height:100vh; }
 @media (max-width:360px) { .page { padding-left:var(--space-card-gap); padding-right:var(--space-card-gap); } .hero { padding:12px; } }
 @media (prefers-reduced-motion:reduce) { * { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
 
-/* ===== 整体建议 · 健康影响链（横版：四节点一行排开，关联词+箭头衔接，置于模块顶部） ===== */
+/* ===== 整体建议 · 健康影响链（横版：四节点一行排开，节点间「关联词 >」文字衔接，置于模块顶部） ===== */
 .chain { margin-bottom:14px; display:flex; align-items:flex-start; }
 .chain__col { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; }
-.chain__ico { width:100%; max-width:58px; aspect-ratio:1/1; border-radius:16px; display:flex; align-items:center; justify-content:center; }
-.chain__ico svg { width:34px; height:34px; display:block; }
+.chain__ico { width:100%; max-width:46px; aspect-ratio:1/1; border-radius:13px; display:flex; align-items:center; justify-content:center; }
+.chain__ico svg { width:27px; height:27px; display:block; }
 .chain__t { margin-top:10px; font-size:14px; font-weight:600; color:#1F8CA8; line-height:20px; white-space:nowrap; }
-.chain__d { margin-top:3px; font-size:10px; color:var(--t-secondary); line-height:14px; text-align:center; padding:0 2px; text-decoration:none; text-wrap:balance; }
-.chain__lk { flex:0 0 26px; display:flex; flex-direction:column; align-items:center; gap:1px; padding-top:15px; color:var(--brand); }
-.chain__lk s { font-size:10px; line-height:12px; text-decoration:none; white-space:nowrap; }
-.chain__lk svg { width:15px; height:15px; }
+.chain__lk { flex:0 0 auto; padding-top:14px; color:var(--brand); font-size:12px; line-height:17px; white-space:nowrap; }
 </style>
 </head>
 <body>
@@ -189,18 +186,18 @@ function mbar(level,pct){
 function chain(){
   var C = ['#D8EEF2','#BCE3ED','#93D2E2','#58AFCB'];
   var ROWS = [
-    [chainIcoLife(), '生活方式', '饮食 · 运动 · 吸烟饮酒 · 熬夜'],
-    [chainIcoWeight(C[1]), '体重', '超重、肥胖'],
-    [chainIcoIndex(), '指标异常', '血压、血糖、血脂'],
-    [chainIcoChronic(C[3]), '慢性疾病', '高血压、糖尿病、冠心病等']
+    [chainIcoLife(), '生活方式'],
+    [chainIcoWeight(C[1]), '体重'],
+    [chainIcoIndex(), '指标异常'],
+    [chainIcoChronic(C[3]), '慢性疾病']
   ];
   var LINKS = ['影响','导致','发展'];
   var h = '<div class="chain">';
   ROWS.forEach(function(r,i){
     h += '<div class="chain__col"><span class="chain__ico" style="background:'+C[i]+'">'+r[0]+'</span>' +
-      '<b class="chain__t">'+r[1]+'</b><s class="chain__d">'+r[2]+'</s></div>';
+      '<b class="chain__t">'+r[1]+'</b></div>';
     if (i < LINKS.length) {
-      h += '<div class="chain__lk"><s>'+LINKS[i]+'</s><svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+      h += '<div class="chain__lk">'+LINKS[i]+' &gt;</div>';
     }
   });
   return h + '</div>';
