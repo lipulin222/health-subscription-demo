@@ -515,18 +515,9 @@
     btn.className = 'btn fixbar__btn';
     btn.type = 'button';
     if (DISP === 'adapt') {
-      /* 不适宜减重：主按钮「推荐给亲友做评估」（分享评估入口），副按钮「返回」 */
+      /* 不适宜减重：通栏主按钮「推荐给亲友做评估」（分享评估入口） */
       btn.textContent = '推荐给亲友做评估';
       btn.addEventListener('click', shareAssess);
-      var back = document.createElement('button');
-      back.className = 'btn btn--ghost fixbar__sub';
-      back.type = 'button';
-      back.textContent = '返回';
-      back.addEventListener('click', function () {
-        if (history.length > 1) history.back();
-        else location.href = HOME_URL;
-      });
-      bar.appendChild(back);
       bar.appendChild(btn);
     } else if (DISP === 'normal') {
       btn.textContent = '查看用药方案';
