@@ -240,9 +240,8 @@ function drugNormal(p){
       '</div>' +
     '</div>';
 }
-function drugMild(p, monitor){
-  return drugNormal(p) +
-    (monitor ? '<p>用药期间需留意'+monitor+'的变化，出现明显波动及时联系医生。</p>' : '');
+function drugMild(p){
+  return drugNormal(p);
 }
 function drugOffline(p){
   return mbar('需医生面诊评估',65) +
@@ -462,13 +461,13 @@ var PATIENTS = [
 function byId(id){ return PATIENTS.filter(function(x){ return x.id === id; })[0]; }
 byId('P1').mods[3].html = drugNormal(byId('P1'));
 byId('P2').mods[3].html = drugNormal(byId('P2'));
-byId('P3').mods[3].html = drugMild(byId('P3'),'血脂');
+byId('P3').mods[3].html = drugMild(byId('P3'));
 ['P4','P5','P6','P8'].forEach(function(id){
   var p = byId(id);
   p.mods[3].html = drugOffline(p);
 });
 byId('P11').mods[3].html = drugMild(byId('P11'));
-byId('P13').mods[3].html = drugMild(byId('P13'),'血脂和尿酸');
+byId('P13').mods[3].html = drugMild(byId('P13'));
 
 /* ===== 档位口径 ===== */
 var TIER = {
