@@ -154,7 +154,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   justify-content: center; padding: 24px 20px; background: #FFFFFF; text-align: center; }
 .er__i { width: 145px; height: 110px; }
 .er__t { margin-top: 24px; font-size: 15px; color: #999999; line-height: 18px; }
-.er__d { margin-top: 8px; font-size: 12px; color: #999999; line-height: 17px; }
 .er__btns { margin-top: 24px; display: flex; gap: 10px; }
 .er__btn { width: 130px; flex: 0 0 130px; text-decoration: none; }
 .btn--ghost:active { background: var(--bg-page); }

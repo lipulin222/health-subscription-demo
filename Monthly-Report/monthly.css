@@ -150,32 +150,25 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 
 /* ============================ 空状态（无月报时） ============================ */
-/* DistinctUI 第八节空状态：插画 145×110 + 文案 15px/#999999 */
-.ph {
-  margin-top: 8px;
-  padding: 40px 22px 26px;
-  text-align: center;
+/* 与评估报告空态同构：白底整页 + 插画 145×110 + 文案 15px/#999 + 按钮组；底部留出吸底按钮高度 */
+.er {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px 20px calc(96px + env(safe-area-inset-bottom));
+  background: #FFFFFF; text-align: center;
 }
-.ph__ico img {
-  display: block;
-  width: 145px; height: 110px;
-  margin: 0 auto 24px;
+.er__i { width: 145px; height: 110px; }
+.er__t { margin-top: 24px; font-size: 15px; color: #999999; line-height: 18px; }
+.er__btns { margin-top: 24px; display: flex; gap: 10px; }
+.er__btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 130px; height: 40px; border-radius: var(--radius-large);
+  font-size: 16px; font-weight: 600; text-decoration: none;
+  transition: background .15s var(--ease);
 }
-.ph__t { font-size: 17px; font-weight: 500; color: var(--ink); line-height: 1.5; }
-.ph__d { margin-top: 10px; font-size: 13px; color: var(--ink-2); line-height: 1.85; }
-/* 次按钮：Default 描边实线（高 32px / 圆角 6px / 品牌字） */
-.ph__btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  margin-top: 22px;
-  height: 32px; padding: 0 16px;
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-large);
-  color: var(--accent);
-  background: #FFFFFF;
-  font-size: 13px; font-weight: 500;
-  text-decoration: none;
-}
-.ph__btn:active { background: var(--brand-light); }
+.er__btn--pri { background: var(--accent); color: #FFFFFF; }
+.er__btn--pri:active { background: var(--accent-active); }
+.er__btn--gh { background: #FFFFFF; color: var(--ink); border: 1px solid #DCDCDC; }
 
 /* ============================ 报告头 ============================ */
 .rp { padding-bottom: 8px; }

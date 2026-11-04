@@ -446,7 +446,6 @@
       '<div class="er">' +
       '<img class="er__i" src="../../assets/empty-states/empty-no-file.png" alt="" aria-hidden="true">' +
       '<p class="er__t">还没有评估报告</p>' +
-      '<p class="er__d">完成健康评估后，这里会给出你的初步评估建议</p>' +
       '<div class="er__btns">' +
       '<a class="btn er__btn" href="' + ASSESS_URL + '">去评估</a>' +
       '<a class="btn btn--ghost er__btn" href="' + HOME_URL + '">返回首页</a>' +

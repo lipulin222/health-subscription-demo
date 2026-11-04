@@ -425,7 +425,8 @@
     reportEl.hidden = true;
     gateEl.hidden = true;
     if (listEl) listEl.hidden = true;
-    if (listCta) listCta.hidden = true;
+    /* 「生成最新月报」吸底按钮在空状态下常驻，随时可开始第一次填写 */
+    if (listCta) listCta.hidden = false;
     exitHero();
   }
 
