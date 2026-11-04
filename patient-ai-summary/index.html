@@ -293,7 +293,7 @@ function renderList(){
 function renderDetail(p){
   const t = TIERS[p.tier];
   const fromAssess = new URLSearchParams(location.search).has('from');
-  const backHref = fromAssess ? '../weight-management/Assessment-report-sample/index.html' : '#/list';
+  const backHref = fromAssess ? '../weight-management/Assessment-report/index.html' : '#/list';
   const backLab = fromAssess ? '← 返回评估报告' : '← 返回列表';
   let h = `<a class="back" href="${backHref}">${backLab}</a>
   <div class="card"><div class="p-head">
