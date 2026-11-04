@@ -184,12 +184,12 @@ function mbar(level,pct){
 /* 整体建议 · 健康影响链（横版）：生活方式 → 体重 → 指标异常 → 慢性疾病
    图标块颜色由浅到深示意进展；节点间关联词（影响/导致/发展）+ 箭头衔接 */
 function chain(){
-  var C = ['#D8EEF2','#BCE3ED','#93D2E2','#58AFCB'];
+  var C = ['#009BBF','#009BBF','#009BBF','#009BBF'];
   var ROWS = [
     [chainIcoLife(), '生活方式'],
-    [chainIcoWeight(C[1]), '体重'],
-    [chainIcoIndex(), '指标异常'],
-    [chainIcoChronic(C[3]), '慢性疾病']
+    [chainIcoWeight(C[0]), '体重'],
+    [chainIcoIndex(C[0]), '指标异常'],
+    [chainIcoChronic(C[0]), '慢性疾病']
   ];
   var LINKS = ['影响','导致','发展'];
   var h = '<div class="chain">';
