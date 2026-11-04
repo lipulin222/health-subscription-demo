@@ -147,6 +147,16 @@ body { display:flex; justify-content:center; min-height:100vh; }
 .qr { display:block; width:208px; height:auto; margin:10px auto 12px; }
 .qr-s { text-align:center; font-size:var(--fs-2); line-height:20px; color:var(--t-placeholder); }
 
+/* 亲友退出 · 登录保存提示弹层（居中对话框） */
+.dlg { position:fixed; inset:0; z-index:210; display:flex; align-items:center; justify-content:center; padding:0 32px; }
+.dlg[hidden] { display:none; }
+.dlg__mask { position:absolute; inset:0; background:rgba(0,0,0,.45); animation:sheetMaskIn .2s var(--ease); }
+.dlg__panel { position:relative; width:100%; max-width:300px; background:#FFF; border-radius:var(--radius-panel); padding:20px 18px 14px; text-align:center; animation:sheetPanelIn .28s var(--ease); }
+.dlg__t { font-size:16px; font-weight:600; color:var(--t-title); line-height:24px; }
+.dlg__d { margin-top:8px; font-size:13px; color:var(--t-secondary); line-height:21px; text-align:left; }
+.dlg__btns { display:flex; gap:10px; margin-top:16px; }
+.dlg__btns .btn { flex:1; }
+
 @media (max-width:360px) { .page { padding-left:var(--space-card-gap); padding-right:var(--space-card-gap); } .hero { padding:12px; } }
 @media (prefers-reduced-motion:reduce) { * { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
 
@@ -215,15 +225,30 @@ body { display:flex; justify-content:center; min-height:100vh; }
   </div>
 </div>
 
+<!-- 亲友退出 · 登录保存提示弹层 -->
+<div class="dlg" id="exitDlg" hidden>
+  <div class="dlg__mask"></div>
+  <div class="dlg__panel" role="dialog" aria-modal="true" aria-label="保存提示">
+    <div class="dlg__t">建议先登录保存</div>
+    <div class="dlg__d">登录后，本次评估与报告会保存到你的账户；不登录的话，退出后内容将永久丢失。</div>
+    <div class="dlg__btns">
+      <button class="btn" id="exitLogin" type="button">登录保存</button>
+      <button class="btn btn--ghost" id="exitNow" type="button">仍要退出</button>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
 /* ===== 工具 ===== */
 var PROFILE_BASE = '../../patient-ai-summary/?from=assess#/';
 var DISC = '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。';
+var IS_GUEST = /(^|[?&])guest=1(&|$)/.test(location.search); /* 亲友分享链路：?guest=1 临时档案态 */
 var PLAN_URL = '../Treatment-package/index.html';            /* 第2档「查看用药方案」落点 */
 var BOOK_URL = '../../Appointment-booking/index.html';       /* 「预约面诊」落点 */
 var HOME_URL = '../../online-service.html';                  /* 返回兜底 */
-var ASSESS_URL = '../Medication-eligibility-assessment/index.html?state=new'; /* 重新评估落点 */
+var ASSESS_URL = '../Medication-eligibility-assessment/index.html?state=new' + (IS_GUEST ? '&guest=1' : ''); /* 重新评估落点（亲友态保持 guest 链路） */
+var SHARE_URL = new URL(ASSESS_URL, location.href).toString(); /* 推荐给亲友的评估入口 */
 var ARW = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var AXIS = ['无需减重','需要减重管理','需要减重与慢病结合管理'];
 
@@ -585,14 +610,17 @@ function render(id){
     return b;
   }
   if (p.tier === 'normal') {
-    bar.appendChild(mkBtn('查看用药方案', false, function(){ location.href = PLAN_URL; }));
+    bar.appendChild(mkBtn('查看用药方案', false, function(){
+      if (IS_GUEST) { toast('请先登录后再查看用药方案'); return; }
+      location.href = PLAN_URL;
+    }));
   } else if (p.tier === 'offline' || p.tier === 'mild') {
     bar.appendChild(mkBtn('线上咨询', true, function(){ document.getElementById('qrSheet').hidden = false; }));
     bar.appendChild(mkBtn('预约面诊', false, function(){ location.href = BOOK_URL; }));
   } else if (p.tier === 'lifestyle') {
     bar.appendChild(mkBtn('查看生活方式方案', false, function(){ location.href = '../../patient-education/index.html?stage=1'; }));
   } else {
-    bar.appendChild(mkBtn('返回', false, goBack));
+    bar.appendChild(mkBtn('推荐给亲友做评估', false, shareAssess));
   }
 
   /* 菜单高亮 */
@@ -620,12 +648,39 @@ menu.querySelector('button[data-re]').addEventListener('click', function(){
   sw.classList.remove('is-open'); location.href = ASSESS_URL;
 });
 
-/* ===== 返回 / 二维码浮层 / 深链 ===== */
-function goBack(){
+/* ===== 返回 / 分享 / 二维码浮层 / 深链 ===== */
+function doBack(){
   if (history.length > 1) history.back();
   else location.href = HOME_URL;
 }
+function goBack(){
+  /* 亲友态退出：提示先登录保存，否则报告将永久丢失 */
+  if (IS_GUEST) { document.getElementById('exitDlg').hidden = false; return; }
+  doBack();
+}
+/* 推荐给亲友做评估：优先系统分享，不支持时复制评估入口链接 */
+function shareAssess(){
+  if (navigator.share) {
+    navigator.share({ title:'体重管理评估', url: SHARE_URL }).catch(function(){});
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(SHARE_URL).then(
+      function(){ toast('评估链接已复制，发给亲友即可开始评估'); },
+      function(){ toast('复制失败，请长按地址栏复制'); });
+    return;
+  }
+  toast('当前浏览器不支持分享');
+}
 document.getElementById('backBtn').addEventListener('click', goBack);
+document.getElementById('exitLogin').addEventListener('click', function(){
+  document.getElementById('exitDlg').hidden = true;
+  toast('样例演示：登录流程未接入');
+});
+document.getElementById('exitNow').addEventListener('click', function(){
+  document.getElementById('exitDlg').hidden = true;
+  doBack();
+});
 var qr = document.getElementById('qrSheet');
 qr.addEventListener('click', function(e){
   if (e.target.closest('[data-close]')) qr.hidden = true;
@@ -636,6 +691,7 @@ var DISP2PID = { adapt:'P12', normal:'P1', mild:'P3', chronic:'P4' };
 var Q = new URLSearchParams(location.search);
 var INIT_ID = (Q.get('id') && byId(Q.get('id'))) ? Q.get('id') : (DISP2PID[Q.get('disp')] || 'P1');
 render(INIT_ID);
+if (IS_GUEST) toast('亲友评估模式：已使用临时档案，登录后可长期保存');
 </script>
 </body>
 </html>

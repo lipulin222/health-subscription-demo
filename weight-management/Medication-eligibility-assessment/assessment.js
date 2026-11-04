@@ -29,7 +29,10 @@
   'use strict';
 
   /* ===================== 1. 入口 ===================== */
-  var PLAN_URL = '../Assessment-report/index.html';
+  /* 亲友分享链路：?guest=1 由评估报告「推荐给亲友做评估」带入——
+     后台为其建临时档案（临时 UIN），报告页的登录保存/用药方案拦截按此标记生效 */
+  var isGuest = /(^|[?&])guest=1(&|$)/.test(location.search);
+  var PLAN_URL = '../Assessment-report/index.html' + (isGuest ? '?guest=1' : '');
   var HOME_URL = '../../online-service.html';
 
   var TITLE_QUIZ = '体重管理状况评估';
@@ -384,7 +387,11 @@
   }
 
   /* ===================== 5.2b 提交中转页 ===================== */
-  var SUB_STEPS = [
+  var SUB_STEPS = isGuest ? [
+    '已收到问卷',
+    '正在创建临时健康档案',
+    '正在生成评估报告'
+  ] : [
     '已收到你的问卷',
     '正在核对用药安全',
     '正在生成你的评估报告'
