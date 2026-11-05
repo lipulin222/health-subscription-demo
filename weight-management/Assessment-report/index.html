@@ -76,9 +76,9 @@ body { display:flex; justify-content:center; min-height:100vh; }
 .mod__h:active { background:var(--brand-light-active); }
 .mod__h--static { cursor:auto; }
 .mod__h--static:active { background:none; }
-.mod__mbar { padding:0 15px 8px; }
+.mod__mbar { padding:0 15px 0; }
 /* 用药建议 · 底部居中「查看详情 + 下拉箭头」（收起时向下，展开时向上） */
-.mod__pull { display:flex; align-items:center; justify-content:center; gap:4px; width:100%; padding:2px 0 5px; border:none; background:none; cursor:pointer; font-family:var(--font); font-size:var(--fs-2); line-height:18px; color:var(--t-secondary); }
+.mod__pull { display:flex; align-items:center; justify-content:center; gap:4px; width:100%; padding:0 0 10px; border:none; background:none; cursor:pointer; font-family:var(--font); font-size:var(--fs-2); line-height:18px; color:var(--t-secondary); }
 .mod__pull svg { width:16px; height:16px; transition:transform .24s var(--ease); }
 .mod:not(.is-fold) .mod__pull svg { transform:rotate(180deg); }
 .mod__no { flex-shrink:0; font-size:10px; font-weight:500; letter-spacing:.04em; color:#FFF; background:var(--brand); border-radius:var(--radius-small); padding:2px 6px; line-height:1.5; }
