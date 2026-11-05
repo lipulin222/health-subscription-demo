@@ -122,6 +122,7 @@ body { display:flex; justify-content:center; min-height:100vh; }
 .paybar { flex-shrink:0; display:flex; align-items:center; gap:14px; background:#FFF; border-top:1px solid var(--divider); padding:12px 15px calc(12px + env(safe-area-inset-bottom,0px)); position:relative; z-index:6; }
 .paybar .fixbar__btn { flex:1 1 auto; width:100%; }
 .paybar .fixbar__sub { flex:0 0 auto; width:auto; padding:0 16px; }
+.paybar .fixbar__half { flex:1 1 0; width:auto; padding:0 8px; }
 
 /* 顶栏 ⋯ 切换菜单 */
 .disp-sw { position:absolute; top:46px; right:8px; z-index:60; }
@@ -622,19 +623,19 @@ function render(id){
   /* 吸底按钮（按档位） */
   var bar = document.getElementById('paybar');
   bar.hidden = false; bar.innerHTML = '';
-  function mkBtn(text, ghost, fn){
+  function mkBtn(text, ghost, fn, half){
     var b = document.createElement('button');
-    b.className = 'btn' + (ghost ? ' btn--ghost fixbar__sub' : ' fixbar__btn');
+    b.className = 'btn' + (ghost ? ' btn--ghost fixbar__sub' : ' fixbar__btn') + (half ? ' fixbar__half' : '');
     b.type = 'button'; b.textContent = text;
     b.addEventListener('click', fn);
     return b;
   }
   if (p.tier === 'normal') {
-    bar.appendChild(mkBtn('邀请亲友评估', true, shareAssess));
+    bar.appendChild(mkBtn('邀请亲友评估', true, shareAssess, true));
     bar.appendChild(mkBtn('了解用药详情', false, function(){
       if (IS_GUEST) { toast('请先登录后再查看用药方案'); return; }
       location.href = PLAN_URL;
-    }));
+    }, true));
   } else if (p.tier === 'offline' || p.tier === 'mild') {
     bar.appendChild(mkBtn('线上咨询', true, function(){ document.getElementById('qrSheet').hidden = false; }));
     bar.appendChild(mkBtn('预约面诊', false, function(){ location.href = BOOK_URL; }));
