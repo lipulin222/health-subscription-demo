@@ -630,7 +630,8 @@ function render(id){
     return b;
   }
   if (p.tier === 'normal') {
-    bar.appendChild(mkBtn('查看用药方案', false, function(){
+    bar.appendChild(mkBtn('邀请亲友评估', true, shareAssess));
+    bar.appendChild(mkBtn('了解用药详情', false, function(){
       if (IS_GUEST) { toast('请先登录后再查看用药方案'); return; }
       location.href = PLAN_URL;
     }));
