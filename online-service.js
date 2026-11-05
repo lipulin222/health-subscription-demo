@@ -58,12 +58,23 @@ if (stateMenu && moreBtn) {
     if (t && card.contains(t)) toast(t.dataset.toast);
   });
 
-  /* 开启日「开始第 1 天」：就地切到「进行中」③ 的初始态（还没有体重记录） */
+  /* 开启日「记录第一天」：呼起原生日期选择器（现网组件），选定第一次打针日后再进入进行中 */
   card.addEventListener('click', (e) => {
     if (!e.target.closest('[data-rit-start]')) return;
     e.preventDefault();
+    const inp = card.querySelector('[data-rit-date]');
+    if (!inp) return;
+    try { if (inp.showPicker) inp.showPicker(); else inp.click(); }
+    catch (_) { inp.focus(); }
+  });
+  /* 选定日期后：就地切到「进行中」③ 的初始态（还没有体重记录） */
+  card.addEventListener('change', (e) => {
+    if (!e.target.closest('[data-rit-date]')) return;
+    const v = e.target.value;
+    if (!v) return;
     hasNoWeight = true;
     render(3);
+    toast('已记录，' + v + ' 为你的减重第 1 天');
   });
 
   /* 站点根：空串＝相对当前页面跳转（本地 / 离线 file:// / GitHub Pages 均可用，本页固定在仓库根） */
@@ -210,7 +221,7 @@ if (stateMenu && moreBtn) {
 
   /* ==========================================================================
      卡头第二行「猜你想问」：按阶段轮播本阶段用户可能关心的问题（替代原知识库入口行）
-     阶段 ⑥ 开启日副行留空，不轮播
+     阶段 ⑥ 开启日标题特殊，猜你想问沿用适应期（阶段 ①）的问题列表
      ========================================================================== */
   const hdQuestions = (n) => {
     if (n === 1) {
@@ -225,13 +236,8 @@ if (stateMenu && moreBtn) {
     const t = card.querySelector('[data-hd-title]');
     const sub = card.querySelector('[data-hd-sub]');
     if (!t || !sub) return;
-    if (n === 6) {
-      t.textContent = '你的科学减重已开启！';
-      sub.innerHTML = '';
-      return;
-    }
-    t.textContent = '体重管理';
-    const list = hdQuestions(n);
+    t.textContent = n === 6 ? '减重旅程开启！' : '体重管理';
+    const list = hdQuestions(n === 6 ? 1 : n);
     sub.innerHTML = '<span class="card__sub-tag">猜你想问</span>' +
       '<span class="hroll" data-hroll>' +
       list.map((o, i) => '<a class="hroll__t' + (i ? '' : ' is-on') + '" href="' + o.href + '">·' + o.t + '</a>').join('') +
@@ -242,10 +248,11 @@ if (stateMenu && moreBtn) {
 
   /* ==========================================================================
      开启日（阶段 ⑥）：下单 + 面诊 + 取药后，首次回到首页看到的仪式区（设计稿「第一天」）
-     · 标题换成「你的科学减重已开启！」（renderHeader 处理），副行留空
-     · 单条进度轨道（4 阶段，点亮第 1 段）+ 陪伴句 + 全宽「开始第 1 天」
+     · 标题换成「减重旅程开启！」（renderHeader 处理），副行为「猜你想问」
+     · 单条进度轨道（4 阶段，点亮第 1 段）+ 陪伴句 + 全宽「记录第一天」
+     · 按钮下方灰字提示口径；点击呼起原生日期选择器（现网组件），选定打针日后进入进行中
      · 不放起点数据（此刻还没有变化，避免出现「-0kg」这类尴尬信息）
-     · 只出现一次，点「开始第 1 天」或再次进入即回落成常规「进行中」（见 render）
+     · 只出现一次，记录日期或再次进入即回落成常规「进行中」（见 render）
      ========================================================================== */
   const RIT_STEPS = ['适应期', '剂量调整', '优化期', '维持期'];
 
@@ -257,7 +264,9 @@ if (stateMenu && moreBtn) {
     '</div>' +
     '<p class="rit2__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，陪你顺利实现减重目标。</p>' +
     '</div>' +
-    '<div class="solo"><a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-rit-start>开始第 1 天</a></div>';
+    '<div class="solo"><a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-rit-start>记录第一天</a></div>' +
+    '<p class="rit2__tip">建议以第一次打针日期作为减重第一天</p>' +
+    '<input class="rit2__date" type="date" data-rit-date tabindex="-1" aria-hidden="true">';
 
   const STAGE = {
     /* ① 购前：四分类入口（设计稿「未开始2」） */
