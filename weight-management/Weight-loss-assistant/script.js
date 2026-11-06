@@ -791,7 +791,7 @@
   // ===== 入口上下文读取 =====
   // 来源页写入 localStorage/sessionStorage 的 consultCtx，或用 URL 参数传入。
   // 字段与《减重服务-AI助理分入口呼起提示词》的「给后端的字段清单」一致，另补 planName（方案名）：
-  //   ?entry=4&planName=替尔泊肽标准方案&planStage=强化期&week=4&totalWeeks=24&name=&age=&gender=&version=
+  //   ?entry=4&planName=GLP-1 标准方案&planStage=强化期&week=4&totalWeeks=24&name=&age=&gender=&version=
   //   entry：1 购前 / 2 科普 / 3 评估 / 4 方案 / 5 提醒 / 6 记录 / 7 续药购药 / 8 底部 chip（默认 8）
   // 缺的字段不补默认值，交由 fillTpl 整句删掉（不臆造）
   const CTX_FIELDS = ['entry', 'articleTitle', 'assessmentResult', 'week', 'totalWeeks', 'planName',

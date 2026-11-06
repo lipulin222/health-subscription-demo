@@ -14,16 +14,14 @@
   'use strict';
 
   /* ===================== 1. 订单数据 ===================== */
-  /* 与 Assessment-report 的 PKG 保持一致（改价时两处同步） */
+  /* 商品与金额取自 shared.js 的 ZZ.CFG（改价只需改一处） */
   var ORDER = {
-    name: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐',
-    price: 790
+    name: ZZ.CFG.GOODS_NAME,
+    price: ZZ.CFG.PKG_PRICE
   };
 
-  /* 金额格式：¥790.00 */
-  function money(n) {
-    return '¥' + n.toFixed(2);
-  }
+  /* 金额格式统一走 shared.js：¥790.00 */
+  var money = ZZ.money;
 
   /* 返回兜底：本页由减重评估报告页进入，无历史记录时回到报告页 */
   var BACK_URL = '../weight-management/Assessment-report/index.html';

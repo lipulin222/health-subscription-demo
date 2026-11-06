@@ -129,7 +129,7 @@
     var more = $('moreBtn');
     if (more) {
       more.addEventListener('click', function () {
-        toast('评估结果为初步建议，不构成诊断和处方');
+        toast(ZZ.CFG.DISC_TOAST);
       });
     }
 

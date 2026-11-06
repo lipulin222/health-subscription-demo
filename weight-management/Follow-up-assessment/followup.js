@@ -328,7 +328,7 @@
         page: 'alert', disp: 'alert', reason: flag,
         title: '需要尽快联系医生',
         body: '线上问卷判断不了原因。请尽快联系你的随访医生或就近就诊——这类情况不建议继续自行用药，也不适合等到下次复诊。',
-        foot: '如填写有误，可返回修改后重新评估。本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。'
+        foot: '如填写有误，可返回修改后重新评估。' + ZZ.CFG.DISC_FORM
       };
     }
 
@@ -340,7 +340,7 @@
         page: 'alert', disp: 'face', reason: impact,
         title: '先别急着加量',
         body: '当前剂量的反应已经影响到你的日常。通常先维持当前剂量、把反应处理掉，再谈要不要升档——由医生来判断。建议预约面诊说明具体反应。',
-        foot: '如填写有误，可返回修改后重新评估。本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。'
+        foot: '如填写有误，可返回修改后重新评估。' + ZZ.CFG.DISC_FORM
       };
     }
    /* ③ 已停药 → 重点转到维持与复查，是否重新用药由医生评估 → 预约面诊 */
@@ -539,7 +539,7 @@
         r.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '') +
       nextBlock(r) +
       '</section>' +
-      '<p class="foot">本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。</p>' +
+      '<p class="foot">' + ZZ.CFG.DISC_FORM + '</p>' +
       '<button class="linkbtn" id="fixLink" type="button">返回修改答案</button>';
   }
 

@@ -18,7 +18,9 @@
   const AGENT_URL = '../weight-management/Weight-loss-assistant/index.html';  /* 询问护士（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   /* 「测一测」按卡片阶段分流（阶段由 portal 通过 ?stage= 透传，缺省=1 未开始）：
      未开始（①②）→ 首诊用药适应性评估；进行中及以后（③④⑤）→ 疗程随访评估 */
-  const STAGE_NOW = parseInt((location.search.match(/(?:^|[?&])stage=(\d+)/) || [])[1], 10) || 1;
+  /* stage 全站只解析一次：portal 有 6 个阶段，科普内容只有 1~5 档（⑥ 沿用 ⑤ 的内容） */
+  const STAGE_NOW = Math.min(6, Math.max(1, parseInt((location.search.match(/(?:^|[?&])stage=(\d+)/) || [])[1], 10) || 1));
+  const CONTENT_STAGE = Math.min(STAGE_NOW, 5);
   const ASSESS_URL = STAGE_NOW <= 2
     ? '../weight-management/Medication-eligibility-assessment/index.html?state=new'
     : '../weight-management/Follow-up-assessment/index.html';
@@ -443,7 +445,7 @@
       if (b.ul) h += '<ul class="ar__ul">' + b.ul.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
       if (b.note) h += '<div class="ar__note">' + esc(b.note) + '</div>';
       if (b.qa) h += b.qa.map(function (x) {
-        return '<button class="ti" type="button" data-act="faq">' +
+        return '<button class="ti" type="button" data-act="faq" aria-expanded="false">' +
           '<span class="ti__q"><span>' + esc(x.q) + '</span><i>+</i></span>' +
           '<span class="ti__a">' + esc(x.a) + '</span></button>';
       }).join('');
@@ -474,7 +476,7 @@
         '<div class="card al__box">' + rel.map(artItem).join('') + '</div>';
     }
     h += '<button class="ar__back" type="button" data-act="nav" data-to="#/">' +
-      '<span class="ar__back-ico"><img src="' + ICON_KEPU + '" alt=""></span>' +
+      '<span class="ar__back-ico"><img loading="lazy" decoding="async" src="' + ICON_KEPU + '" alt=""></span>' +
       '<span class="ar__back-tx"><b>返回科普知识库</b><s>按主题找，或看当前推荐</s></span>' +
       '<span class="ar__back-go">›</span></button>';
     return h;
@@ -550,7 +552,10 @@
       go('#/g/' + g);
     },
     'q-clear': function () { go('#/all'); },
-    faq: function (el) { el.classList.toggle('is-open'); },
+    faq: function (el) {
+      const open = el.classList.toggle('is-open');
+      el.setAttribute('aria-expanded', open ? 'true' : 'false');
+    },
     'art-yes': function () { toast('好的，继续保持'); go('#/'); },
     'art-no': function (el) {
       const a = artById(el.dataset.id);
@@ -572,13 +577,13 @@
 
   /* ===================== 8. 启动 ===================== */
   (function init() {
-    const qs = new URLSearchParams(location.search);
-    const st = parseInt(qs.get('stage'), 10);
-    if (st >= 1 && st <= 5) state.stage = st;
+    /* stage 已在文件顶部统一解析（1~6），科普内容取对应的 1~5 档 */
+    state.stage = CONTENT_STAGE;
 
     document.getElementById('backBtn').addEventListener('click', function () {
-      /* 首页：返回 portal（无历史则直跳）；二级页：返回上一页 */
-      if (!parseHash().all && !parseHash().art) {
+      /* 首页：返回 portal（无历史则直跳）；分类页 / 全部页 / 文章页：返回上一页 */
+      const r = parseHash();
+      if (r.view === 'home') {
         if (window.history.length > 1) window.history.back();
         else window.location.href = HOME_URL;
         return;

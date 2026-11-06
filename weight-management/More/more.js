@@ -55,24 +55,27 @@
     }
   };
 
-  /* 订单列表（参考「我的订单」结构）：编号+状态 / 商品行 / 合计 / 操作按钮 */
+  /* 订单列表（参考「我的订单」结构）：编号+状态 / 商品行 / 合计 / 操作按钮
+     商品名与金额取自 shared.js 的 ZZ.CFG（改价只需改一处） */
+  var PRICE_PKG = ZZ.money(ZZ.CFG.PKG_PRICE);
+  var PRICE_RENEW = ZZ.money(ZZ.CFG.RENEW_PRICE);
   var ORDERS = [
     {
       no: 'O2026102600000013', st: '配送中', cls: 'doing',
-      name: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐', price: '¥790.00',
-      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: '¥790.00',
+      name: ZZ.CFG.GOODS_NAME, price: PRICE_PKG,
+      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: PRICE_PKG,
       btns: [{ t: '查看物流', href: '../../Delivery-Info/index.html' }]
     },
     {
       no: 'O2026102300000012', st: '已完成', cls: 'done',
-      name: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐', price: '¥790.00',
-      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: '¥790.00',
+      name: ZZ.CFG.GOODS_NAME, price: PRICE_PKG,
+      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: PRICE_PKG,
       btns: [{ t: '再次续订', href: '../../Payment-Page/index.html' }, { t: '评价', toast: '示例 Demo：评价入口待接入' }]
     },
     {
       no: 'O2026101900000011', st: '已取消', cls: 'cancel',
-      name: '替尔泊肽单月续订装', price: '¥580.00',
-      spec: '2.5mg/周 × 4 周', qty: '× 1', sum: '¥580.00',
+      name: '替尔泊肽单月续订装', price: PRICE_RENEW,
+      spec: '2.5mg/周 × 4 周', qty: '× 1', sum: PRICE_RENEW,
       btns: [{ t: '再次续订', href: '../../Payment-Page/index.html' }]
     }
   ];
@@ -154,7 +157,7 @@
         '<span class="ord__st ord__st--' + o.cls + '">' + o.st + '</span>' +
         '</div>' +
         '<div class="ord__bd">' +
-        '<span class="ord__cover"><img src="' + COVER + '" alt="" /></span>' +
+        '<span class="ord__cover"><img loading="lazy" decoding="async" src="' + COVER + '" alt="" /></span>' +
         '<div class="ord__b">' +
         '<div class="ord__r1"><span class="ord__n">' + esc(o.name) + '</span><span class="ord__p">' + o.price + '</span></div>' +
         '<div class="ord__spec"><span>' + esc(o.spec) + '</span><span class="ord__qty">' + o.qty + '</span></div>' +

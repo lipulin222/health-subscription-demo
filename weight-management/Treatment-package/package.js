@@ -47,8 +47,8 @@
     el.innerHTML =
       '<div class="hero__hd">' +
       '<span class="hero__name">' + esc(u.name) + '</span>' +
-      '<span class="hero__meta">' + esc(u.gender || '') + ' · ' + u.age + ' 岁 · ' +
-      u.height + 'cm / ' + u.weight + 'kg · BMI ' + Number(bmi).toFixed(1) + '</span>' +
+      '<span class="hero__meta">' + esc(u.gender || '') + ' · ' + esc(u.age) + ' 岁 · ' +
+      esc(u.height) + 'cm / ' + esc(u.weight) + 'kg · BMI ' + Number(bmi).toFixed(1) + '</span>' +
       '<button type="button" class="hero__info" id="genInfoBtn" aria-label="查看生成时间" aria-expanded="false">' +
       '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 11.2v4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></svg>' +
       '</button>' +

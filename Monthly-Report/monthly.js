@@ -161,7 +161,7 @@
 
   /* 本期配图：通栏横幅，透顶展示；r.month = 该期起始月份 */
   function hero(r) {
-    return '<figure class="hero"><img src="' + PIC + (r.month || r.no) + '.png" alt="' + r.month + '月配图" width="2048" height="896"></figure>';
+    return '<figure class="hero"><img loading="lazy" decoding="async" src="' + PIC + (r.month || r.no) + '.png" alt="' + r.month + '月配图" width="750" height="328"></figure>';
   }
 
   /* 节：编号 + 标题 + 条目组（label 为空时不显示小标题） */
@@ -193,8 +193,8 @@
     var r = byNo(no);
     var week = r && r.status !== 'pending' ? String(r.no * 4) : '4';
     return AGENT + '?entry=4&planStage=' + encodeURIComponent('进行中') +
-      '&week=' + week + '&totalWeeks=24' +
-      '&planName=' + encodeURIComponent('GLP-1 标准方案') +
+      '&week=' + week + '&totalWeeks=' + ZZ.CFG.TOTAL_WEEKS +
+      '&planName=' + encodeURIComponent(ZZ.CFG.PLAN_NAME) +
       '&from=monthly&month=' + no;
   }
 

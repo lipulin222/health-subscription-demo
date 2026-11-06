@@ -70,7 +70,7 @@
   }
 
   /* 开启日「已看过」标记（Demo 用 localStorage 代替服务端状态）
-     目前 portal 已不读这个标记：⑥ 开启日改成显式进入，点「开始第 1 天」才回 ③。
+     目前 portal 已不读这个标记：⑥ 开启日改成显式进入，点「记录第一天」才回 ③。
      标记保留给后续需要「只展示一次」的场景（如服务端下发）继续用。 */
   var JOURNEY_KEY = 'zz:journeyStartedAt';
   function markJourneyStarted() {
@@ -80,9 +80,27 @@
     try { return !!localStorage.getItem(JOURNEY_KEY); } catch (e) { return false; }
   }
 
+  /* ===================== 全站统一口径（单一事实源） =====================
+     价格、商品名、疗程周数与声明此前散落在多个页面，改一处会漏其余。
+     页面统一取 ZZ.CFG.*；HTML 里静态展示的金额与 CFG 保持同一数值。
+     两种声明并存是有意的：报告页关联了健康数据，问卷/随访页只有本次问卷。 */
+  var CFG = {
+    PKG_PRICE: 790,          /* 首诊套餐价 */
+    PKG_ORIGINAL: 1380,      /* 首诊套餐原价（划线价） */
+    RENEW_PRICE: 580,        /* 单月续订装 */
+    TOTAL_WEEKS: 24,         /* 全站疗程口径 */
+    GOODS_NAME: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐',
+    PLAN_NAME: 'GLP-1 标准方案',
+    DISC_REPORT: '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。',
+    DISC_FORM: '本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。',
+    DISC_TOAST: '评估结果为初步建议，不构成诊断和处方'
+  };
+  function money(n) { return '¥' + Number(n).toFixed(2); }
+
   w.ZZ = {
     toast: toast, esc: esc, setTitle: setTitle,
     markFollowupDone: markFollowupDone, followupFresh: followupFresh,
-    markJourneyStarted: markJourneyStarted, journeyStarted: journeyStarted
+    markJourneyStarted: markJourneyStarted, journeyStarted: journeyStarted,
+    CFG: CFG, money: money
   };
 })(window);

@@ -3,14 +3,12 @@
 /* ---------- 轻提示 ---------- */
 /* 统一实现在 shared.js：此前本页与 5 个子页各写一份，时长/转义还不一致 */
 const toast = ZZ.toast;
-/* 最近一次随访是否在两周内（见 shared.js）：决定「续费」阶段主按钮是续药还是重做随访 */
-const followupFresh = ZZ.followupFresh;
 /* 开启日（阶段 ⑥）不再用「已看过」记忆做自动回落（那样会让 5→6 的点击被悄悄改写成 3，
-   看起来像掉状态）。现在 ⑥ 由用户显式进入，看完点「开始第 1 天」才进 ③。 */
+   看起来像掉状态）。现在 ⑥ 由用户显式进入，看完点「记录第一天」才进 ③。 */
 /* 进行中卡片的两种形态：
    false（默认）= 已有体重记录，显示 −3.2kg / 第 28 天
    true         = 还没有任何记录，显示「起始体重 + 引导记录」的初始态
-   进入方式：?data=none 直接看；或在开启日点「开始第 1 天」后自动进入 */
+   进入方式：?data=none 直接看；或在开启日点「记录第一天」选定日期后自动进入 */
 let hasNoWeight = /(^|[?&])data=none(&|$)/.test(location.search);
 
 /* ---------- 通用点击提示 ---------- */
@@ -93,13 +91,12 @@ if (stateMenu && moreBtn) {
   /* 科普页 / 评估页入口：都按卡片「当前阶段」决定，不再按新客老客身份。
      口径：未开始（①②）→ 首诊适应性评估；进行中及以后（③④⑤）→ 疗程随访评估。
      stage 在下方声明，这两个函数在 render 时才求值，不存在 TDZ 问题。 */
-  const eduHref = () => BASE + 'patient-education/index.html?stage=' + (stage || 1);
   const assessHref = () => (stage <= 2
     ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'
     : BASE + 'weight-management/Follow-up-assessment/index.html');
 
   /* 卡片对应的演示方案（与 ② 决策阶段展示的方案一致，供助理上下文复用） */
-  const PLAN_NAME = 'GLP-1 标准方案';
+  const PLAN_NAME = ZZ.CFG.PLAN_NAME;
 
   /* AI 助理入口地址（分阶段带场景）：
      ①② 尚未购药 → entry 1（购前 · 首页减重服务卡）
@@ -115,7 +112,7 @@ if (stateMenu && moreBtn) {
       p.set('planStage', STAGE_CTX[st] || '进行中');
       /* 全站疗程口径 24 周：③④=第 4 周，⑤结营=第 24 周，⑥开启日=第 1 周 */
       p.set('week', st === 5 ? '24' : (st === 6 ? '1' : '4'));
-      p.set('totalWeeks', '24');
+      p.set('totalWeeks', String(ZZ.CFG.TOTAL_WEEKS));
     }
     if (st >= 2) p.set('planName', PLAN_NAME);
     return AGENT + '?' + p.toString();
@@ -209,7 +206,7 @@ if (stateMenu && moreBtn) {
     { t: '运动康复提醒', b: '运动中有疼痛不适，建议到院运动康复面诊。', url: U.followup }
   ];
   let rkIndex = 5; // C1 续药提醒
-  const rkBody = (r) => (r.em ? '<em>' + r.em + '</em>' : '') + r.b + (r.cta ? '<span>' + r.cta + '</span>' : '');
+  const rkBody = (r) => r.b;
   const rkCard = () => {
     const r = RK[rkIndex];
     return '<div class="rk" data-rk>' +
@@ -296,7 +293,7 @@ if (stateMenu && moreBtn) {
     /* ⑤ 维持期：插画 + 减重报告 + 通栏「打开回顾」（设计稿「第28天」最新版） */
     5: () => '<div class="rpt">' +
       '<div class="rpt__fg">' +
-      '<img class="rpt__pic" src="design-assets/recap-hero.png" alt="" />' +
+      '<img loading="lazy" decoding="async" class="rpt__pic" src="design-assets/recap-hero.png" alt="" />' +
       '<div class="rpt__tx">' +
       '<div class="rpt__t">恭喜减重成功！</div>' +
       '</div></div>' +
@@ -323,10 +320,13 @@ if (stateMenu && moreBtn) {
 
   let stage = 0;
   let hdTimer = null;
+  let hdAnimTimer = null;
 
-  /* 卡头「猜你想问」轮播：进入时从下方滑入，离开时向上滑出 */
+  /* 卡头「猜你想问」轮播：进入时从下方滑入，离开时向上滑出。
+     切换阶段时连同未结束的滑出动画一起清理，避免旧节点残留 class。 */
   function startHroll() {
     clearInterval(hdTimer);
+    clearTimeout(hdAnimTimer);
     const box = card.querySelector('[data-hroll]');
     if (!box) return;
     const items = box.querySelectorAll('.hroll__t');
@@ -337,7 +337,7 @@ if (stateMenu && moreBtn) {
       const cur = items[i];
       cur.classList.remove('is-on');
       cur.classList.add('is-out');
-      setTimeout(() => cur.classList.remove('is-out'), 520);
+      hdAnimTimer = setTimeout(() => cur.classList.remove('is-out'), 520);
       i = (i + 1) % items.length;
       items[i].classList.add('is-on');
     }, 2600);

@@ -61,7 +61,7 @@
   }
 
   /* ---------------- 订单信息卡（所有环节置顶展示） ---------------- */
-  /* 商品与金额与 Payment-Page/pay.js 的 ORDER 保持一致（改价时两处同步） */
+  /* 金额取自 shared.js 的 ZZ.CFG（改价只需改一处） */
   var ORDER_NO = 'ZZ2026103018260042';
   var ORDER_TIME = '2026-10-30 17:26';
 
@@ -71,7 +71,7 @@
       '<div class="row"><span class="row__k">商品</span><span class="row__v">体重管理首诊套餐（【穆峰达】替尔泊肽注射液）</span></div>' +
       '<div class="order-more" id="orderMore" hidden>' +
       '<div class="row"><span class="row__k">订单编号</span><span class="row__v">' + ORDER_NO + '</span></div>' +
-      '<div class="row"><span class="row__k">支付金额</span><span class="row__v">¥790.00</span></div>' +
+      '<div class="row"><span class="row__k">支付金额</span><span class="row__v">' + ZZ.money(ZZ.CFG.PKG_PRICE) + '</span></div>' +
       '<div class="row"><span class="row__k">支付方式</span><span class="row__v">微信支付</span></div>' +
       '<div class="row"><span class="row__k">支付时间</span><span class="row__v">' + ORDER_TIME + '</span></div>' +
       '</div>' +

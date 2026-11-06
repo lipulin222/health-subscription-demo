@@ -52,10 +52,12 @@
     document.querySelectorAll('.doc__good').forEach(function (g) {
       var btn = g.querySelector('.doc__more');
       if (!btn) return;
+      btn.setAttribute('aria-expanded', 'false');
       btn.addEventListener('click', function () {
         var open = g.classList.toggle('is-open');
         g.classList.toggle('is-clamp', !open);
         btn.setAttribute('aria-label', open ? '收起擅长' : '展开擅长');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
     });
   }

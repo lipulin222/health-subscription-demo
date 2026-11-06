@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -227,7 +227,7 @@ body { display:flex; justify-content:center; min-height:100vh; }
       </button>
     </div>
     <div class="sheet__body">
-      <img class="qr" src="qr-assistant.png" alt="专属健康护士二维码">
+      <img loading="lazy" decoding="async" class="qr" src="qr-assistant.png" alt="专属健康护士二维码">
       <p class="qr-s">微信扫一扫，添加你的专属健康护士</p>
     </div>
   </div>
@@ -246,11 +246,12 @@ body { display:flex; justify-content:center; min-height:100vh; }
   </div>
 </div>
 
+<script src="../../shared.js"></script>
 <script>
 'use strict';
 /* ===== 工具 ===== */
 var PROFILE_BASE = '../../patient-ai-summary/?from=assess#/';
-var DISC = '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。';
+var DISC = ZZ.CFG.DISC_REPORT;
 var IS_GUEST = /(^|[?&])guest=1(&|$)/.test(location.search); /* 亲友分享链路：?guest=1 临时档案态 */
 var PLAN_URL = '../Treatment-package/index.html';            /* 第2档「查看用药方案」落点 */
 var BOOK_URL = '../../Appointment-booking/index.html';       /* 「预约面诊」落点 */
@@ -290,7 +291,7 @@ function chain(){
   });
   return h + '</div>';
 }
-function chainIco(src){ return '<img src="'+src+'" alt="" aria-hidden="true">'; }
+function chainIco(src){ return '<img loading="lazy" decoding="async" src="'+src+'" alt="" aria-hidden="true">'; }
 /* 用药模块：沿用现有定稿结构（匹配度条在前、分析在后）
    p.why 可选：人设化的「为什么适合用药」理由；未配置时用通用文案 */
 function drugNormal(p){
@@ -704,6 +705,12 @@ document.getElementById('exitNow').addEventListener('click', function(){
 var qr = document.getElementById('qrSheet');
 qr.addEventListener('click', function(e){
   if (e.target.closest('[data-close]')) qr.hidden = true;
+});
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  if (!qr.hidden) qr.hidden = true;
+  var dlg = document.getElementById('exitDlg');
+  if (!dlg.hidden) dlg.hidden = true;
 });
 
 /* 深链：?id=P11 直接打开指定患者；?disp=adapt|normal|mild|chronic 按老口径映射到对应样例患者 */

@@ -416,7 +416,7 @@
       '<p class="qb__s">我们正在整理你的问卷并匹配适合的方案，大约需要几秒。</p>' +
       '<div class="sub" aria-live="polite">' + rows + '</div>' +
       '</section>' +
-      '<p class="foot">本页面会自动跳转。本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。</p>';
+      '<p class="foot">本页面会自动跳转。' + ZZ.CFG.DISC_FORM + '</p>';
   }
 
   /* 提交前把本次问卷结果交给报告页（报告页不改：仍读 height/weight/bmi/meta/rebound/open，
@@ -768,7 +768,7 @@
     var more = document.getElementById('moreBtn');
     if (more) {
       more.addEventListener('click', function () {
-        toast('评估结果为初步建议，不构成诊断和处方');
+        toast(ZZ.CFG.DISC_TOAST);
       });
     }
   }

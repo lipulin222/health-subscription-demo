@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <!--
   线上服务首页（单页双状态）
   ------------------------------------------------------------------------------
@@ -6,7 +6,7 @@
   由 <html data-state="old|new"> 控制显隐（见 online-service.css 末尾）：
       · 默认（无参数 / ?state=old）= 老客状态
       · ?state=new                    = 新客状态
-  旧地址 online-service-new.html 保留为跳转桩，指向 ?state=new，外部链接不会失效。
+  旧地址 online-service-new.html 已停用（仓库中不存在该文件），新客统一用 ?state=new。
   状态脚本在 </body> 前同步执行（只做三件事：设 data-state、设 data-start-stage、
   标记下拉菜单当前项），不做任何渲染，避免闪烁。
 -->
@@ -130,7 +130,7 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
                 </div>
 
                 <div class="duo">
-                  <a class="cb__btn cb__btn--ghost" href="weight-management/Weight-loss-assistant/index.html?entry=4&amp;planStage=%E8%BF%9B%E8%A1%8C%E4%B8%AD&amp;week=4&amp;totalWeeks=12">询问护士</a>
+                  <a class="cb__btn cb__btn--ghost" href="weight-management/Weight-loss-assistant/index.html?entry=4&amp;planStage=%E8%BF%9B%E8%A1%8C%E4%B8%AD&amp;week=4&amp;totalWeeks=24">询问护士</a>
                   <a class="cb__btn cb__btn--solid" href="weight-management/More/index.html">查看更多</a>
                 </div>
               </div>
@@ -143,7 +143,7 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
       <section class="block">
         <div class="jd">
           <div class="jd__hd">
-            <img class="jd__ava" src="design-assets/jd-avatar.jpg" alt="" />
+            <img loading="lazy" decoding="async" class="jd__ava" src="design-assets/jd-avatar.jpg" alt="" />
             <div class="jd__info">
               <h2 class="jd__name">线上问诊</h2>
               <p class="jd__desc">7*24h图文/电话问诊</p>
@@ -183,7 +183,7 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
       <section class="block">
         <div class="kk">
           <div class="kk__hd">
-            <img class="kk__ava" src="design-assets/kk-psych.jpg" alt="" />
+            <img loading="lazy" decoding="async" class="kk__ava" src="design-assets/kk-psych.jpg" alt="" />
             <div class="kk__info">
               <h2 class="kk__name">视频心理咨询</h2>
               <p class="kk__desc">排解负面情绪 解决内心困境</p>
@@ -204,7 +204,7 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
       <section class="block">
         <div class="kk">
           <div class="kk__hd">
-            <img class="kk__ava" src="design-assets/kk-family.jpg" alt="" />
+            <img loading="lazy" decoding="async" class="kk__ava" src="design-assets/kk-family.jpg" alt="" />
             <div class="kk__info">
               <h2 class="kk__name">家庭私人医生</h2>
               <p class="kk__desc">365天微信群服务 随时问医生</p>
@@ -224,9 +224,9 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
       <!-- ⑥ 通栏 banner（690×160） -->
       <section class="block">
         <a class="promo" href="javascript:void(0)" data-toast="正在打开活动页面">
-          <img class="promo__bg" src="design-assets/promo-bg.png" alt="" />
+          <img loading="lazy" decoding="async" class="promo__bg" src="design-assets/promo-bg.png" alt="" />
           <span class="promo__veil"></span>
-          <img class="promo__person" src="design-assets/promo-person.png" alt="" />
+          <img loading="lazy" decoding="async" class="promo__person" src="design-assets/promo-person.png" alt="" />
           <div class="promo__txt">
             <div class="promo__t">视频心理咨询618专场优惠</div>
             <div class="promo__row">免费心理测评 <i>|</i> 10次套餐8折
@@ -271,7 +271,7 @@ M57.442516,26.533571L58.079166,27.8459L58.306763,24.18001L52.017181,24.18001L53.
 
     <!-- AI 助手浮钮（设计稿：客服 AI，TabBar 中上方） -->
     <button type="button" class="ai-fab" data-toast="AI 健康助理为你服务" aria-label="AI 助手">
-      <img src="design-assets/ai-bot.gif" alt="" />
+      <img loading="lazy" decoding="async" src="design-assets/ai-bot.gif" alt="" />
     </button>
   </div>
 
