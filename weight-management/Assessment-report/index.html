@@ -654,14 +654,16 @@ function goBack(){
   if (IS_GUEST) { document.getElementById('exitDlg').hidden = false; return; }
   doBack();
 }
-/* 推荐给亲友做评估：优先系统分享，不支持时复制评估入口链接 */
+/* 推荐给亲友做评估：优先系统分享，不支持时复制「标题 + 文案 + 评估入口链接」 */
+var SHARE_TITLE = '邀请你完成健康体重管理评估';
+var SHARE_TEXT  = '10个小问题，快速了解自己是否需要进行体重管理';
 function shareAssess(){
   if (navigator.share) {
-    navigator.share({ title:'体重管理评估', url: SHARE_URL }).catch(function(){});
+    navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url: SHARE_URL }).catch(function(){});
     return;
   }
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(SHARE_URL).then(
+    navigator.clipboard.writeText(SHARE_TITLE + '\n' + SHARE_TEXT + '\n' + SHARE_URL).then(
       function(){ toast('评估链接已复制，发给亲友即可开始评估'); },
       function(){ toast('复制失败，请长按地址栏复制'); });
     return;
