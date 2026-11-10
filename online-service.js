@@ -6,10 +6,12 @@ const toast = ZZ.toast;
 /* 开启日（阶段 ⑥）不再用「已看过」记忆做自动回落（那样会让 5→6 的点击被悄悄改写成 3，
    看起来像掉状态）。现在 ⑥ 由用户显式进入，看完点「记录第一天」才进 ③。 */
 /* 进行中卡片的两种形态：
-   false（默认）= 已有体重记录，显示 −3.2kg / 第 28 天
-   true         = 初始态，显示起始体重 71.6kg（无 -xxkg）+「记录体重变化，追踪减重进程」
-   进入方式：?data=none 直接看；或在开启日点「记录第一天」立即切到该态 */
-let hasNoWeight = /(^|[?&])data=none(&|$)/.test(location.search);
+   false（默认）= 有体重更新的状态：−3.2kg / 第 28 天 /「查看更多」带月报红点
+   true         = 初始态：起始体重 71.6kg（无 -xxkg）/ 第 1 天 /「记录体重变化，追踪减重进程」/ 无红点
+   两种形态都保留：初始态只由 ?data=none 或开启日点「记录第一天」进入；
+   之后手动切换阶段再回到 ③，即恢复成有体重更新的状态 */
+const NO_DATA_PARAM = /(^|[?&])data=none(&|$)/.test(location.search);
+let hasNoWeight = NO_DATA_PARAM;
 
 /* ---------- 通用点击提示 ---------- */
 document.querySelectorAll('[data-toast]').forEach((el) => {
@@ -283,10 +285,12 @@ if (stateMenu && moreBtn) {
       '</div>' +
       duo(btn('ghost', agentHref(), '询问护士'), btn('solid', U.report, '查看评估报告')),
 
-    /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录（设计稿「第28天」）
-       主按钮固定「查看更多」→ 聚合页；有待办（生成月报 / 新月报）时按钮上挂红点 */
+    /* ③ 陪跑的两种形态：
+       初始态 = 起始体重 71.6kg + 引导小字，「查看更多」不带红点；
+       更新态 = −3.2kg + 已坚持 28 天，有待办（生成月报 / 新月报）时「查看更多」带红点 */
     3: () => (hasNoWeight ? wldEmpty() : wldBlock()) +
-      duo(btn('ghost', agentHref(), '询问护士'), btn('solid', moreUrl, '查看更多', '', monthlyBadge())),
+      duo(btn('ghost', agentHref(), '询问护士'),
+        btn('solid', moreUrl, '查看更多', '', hasNoWeight ? '' : monthlyBadge())),
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）+ 数据区（设计稿「第28天1」） */
     4: () => rkCard() + wldBlock() +
@@ -364,6 +368,9 @@ if (stateMenu && moreBtn) {
   }
 
   chip.addEventListener('click', () => {
+    /* 手动切阶段时回到阶段默认形态：③ 恢复成有体重更新的状态，
+       初始态仍可通过 ?data=none 或开启日「记录第一天」再次进入 */
+    hasNoWeight = NO_DATA_PARAM;
     const i = CYCLE.indexOf(stage);
     render(i === -1 ? 3 : CYCLE[(i + 1) % CYCLE.length]);
   });
