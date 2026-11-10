@@ -7,8 +7,8 @@ const toast = ZZ.toast;
    看起来像掉状态）。现在 ⑥ 由用户显式进入，看完点「记录第一天」才进 ③。 */
 /* 进行中卡片的两种形态：
    false（默认）= 已有体重记录，显示 −3.2kg / 第 28 天
-   true         = 还没有任何记录，显示「起始体重 + 引导记录」的初始态
-   进入方式：?data=none 直接看；或在开启日点「记录第一天」选定日期后自动进入 */
+   true         = 初始态，显示起始体重 71.6kg（无 -xxkg）+「记录体重变化，追踪减重进程」
+   进入方式：?data=none 直接看；或在开启日点「记录第一天」立即切到该态 */
 let hasNoWeight = /(^|[?&])data=none(&|$)/.test(location.search);
 
 /* ---------- 通用点击提示 ---------- */
@@ -56,23 +56,27 @@ if (stateMenu && moreBtn) {
     if (t && card.contains(t)) toast(t.dataset.toast);
   });
 
-  /* 开启日「记录第一天」：呼起原生日期选择器（现网组件），选定第一次打针日后再进入进行中 */
+  /* 日期选择器（现网原生组件）：挂在页面级而不是卡片内，卡片重绘不会把它移除 */
+  const ritDate = document.createElement('input');
+  ritDate.type = 'date';
+  ritDate.className = 'rit2__date';
+  ritDate.tabIndex = -1;
+  ritDate.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(ritDate);
+
+  /* 开启日「记录第一天」：点击即刷成「进行中」③ 的初始态（起始体重，没有 -xxkg），
+     同时呼起日期选择器补记第一次打针日；浏览器不支持该组件时也不影响卡片刷新 */
   card.addEventListener('click', (e) => {
     if (!e.target.closest('[data-rit-start]')) return;
     e.preventDefault();
-    const inp = card.querySelector('[data-rit-date]');
-    if (!inp) return;
-    try { if (inp.showPicker) inp.showPicker(); else inp.click(); }
-    catch (_) { inp.focus(); }
-  });
-  /* 选定日期后：就地切到「进行中」③ 的初始态（还没有体重记录） */
-  card.addEventListener('change', (e) => {
-    if (!e.target.closest('[data-rit-date]')) return;
-    const v = e.target.value;
-    if (!v) return;
     hasNoWeight = true;
     render(3);
-    toast('已记录，' + v + ' 为你的减重第 1 天');
+    try { if (ritDate.showPicker) ritDate.showPicker(); else ritDate.click(); }
+    catch (_) { /* 日期选择器不可用时静默跳过 */ }
+  });
+  ritDate.addEventListener('change', () => {
+    if (!ritDate.value) return;
+    toast('已记录，' + ritDate.value + ' 为你的减重第 1 天');
   });
 
   /* 站点根：空串＝相对当前页面跳转（本地 / 离线 file:// / GitHub Pages 均可用，本页固定在仓库根） */
@@ -185,11 +189,11 @@ if (stateMenu && moreBtn) {
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p></div>' +
     '<button type="button" class="wld__rec" data-toast="正在打开数据记录" aria-label="记录数据">' + ICO.edit + '</button></div>';
 
-  /* 初始态（还没有任何体重记录）：不给「-0kg」这种尴尬数字，
-     直接摆出起始体重数值 + 一行引导，按钮同为「记录体重」 */
+  /* 初始态（还没有体重变化）：只摆起始体重 71.6kg，不显示 -xxkg，
+     下方引导小字「记录体重变化，追踪减重进程」 */
   const wldEmpty = () => '<div class="wld"><div class="wld__l">' +
     '<span class="wld__n">71.6<i>kg</i></span>' +
-    '<p class="wld__meta">每周更新体重记录，更好追踪身体变化。</p></div>' +
+    '<p class="wld__meta">记录体重变化，追踪减重进程</p></div>' +
     '<button type="button" class="wld__rec" data-toast="正在打开数据记录" aria-label="记录体重">' + ICO.edit + '</button></div>';
 
   /* 提醒内容：规格见「减重服务-提醒规格.md」（A 组复查 3 / B 组方案 2 / C 组续费转诊 3，共 8 条）
@@ -262,8 +266,7 @@ if (stateMenu && moreBtn) {
     '<p class="rit2__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，陪你顺利实现减重目标。</p>' +
     '</div>' +
     '<div class="solo"><a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-rit-start>记录第一天</a></div>' +
-    '<p class="rit2__tip">建议以第一次打针日期作为减重第一天</p>' +
-    '<input class="rit2__date" type="date" data-rit-date tabindex="-1" aria-hidden="true">';
+    '<p class="rit2__tip">建议以第一次打针日期作为减重第一天</p>';
 
   const STAGE = {
     /* ① 购前：四分类入口（设计稿「未开始2」） */

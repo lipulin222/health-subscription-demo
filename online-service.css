@@ -789,7 +789,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .solo { margin-top: 20px; }
 /* 「记录第一天」下方灰色小字 + 隐藏的原生日期选择器（现网组件） */
 .wcard .rit2__tip { margin-top: 8px; text-align: center; font-size: 11px; color: #999999; line-height: 1.6; }
-.wcard .rit2__date { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; border: 0; }
+/* 日期选择器挂在 body 级，避免卡片重绘时被移除 */
+.rit2__date { position: absolute; left: -9999px; top: 0; width: 1px; height: 1px; opacity: 0; border: 0; }
 
 /* ==========================================================================
    开启日（阶段 ⑥）：仪式卡。青绿渐变头 → 品牌实色头，去品牌图形压角
