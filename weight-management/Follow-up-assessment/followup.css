@@ -180,16 +180,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   transition: width .3s var(--ease);
 }
 
-.prog__dots { display: flex; gap: 4px; margin-top: 8px; }
-.dot {
-  flex: 1; height: 3px; padding: 0; border: none; border-radius: 999px;
-  background: var(--stroke); cursor: default; font-size: 0;
-  transition: background .2s var(--ease), transform .2s var(--ease);
-}
-.dot.is-done { background: var(--brand-disabled); cursor: pointer; }
-.dot.is-cur { background: var(--brand); }
-.dot.is-done:active, .dot.is-cur:active { transform: scaleY(1.8); }
-
 /* ============================ 5. 题面 ============================ */
 .qb { margin-top: var(--space-card-gap); padding: 15px; }
 .qb__t { font-size: var(--fs-5); font-weight: 600; line-height: 24px; color: var(--t-title); }

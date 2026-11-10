@@ -4,7 +4,7 @@
    定位：用药一段时间后的随访问卷——回答「效果如何、耐受怎样、执行到没到位」，
      据此给出分级结论：按计划继续 / 建议复诊时讨论调量 / 先补齐执行 / 先联系医生。
    格式与 UI 与首诊问卷（Medication-eligibility-assessment）一致，仅内容与结论不同。
-     ① 一屏一题 + 进度条：单选点中即自动跳下一题；已答题目点上方色条可返回修改
+     ① 一屏一题 + 一条进度条：单选点中即自动跳下一题；返回修改用底部「上一题」
      ② 每题都留「不确定」选项 —— 不责备缺失数据；不设倒计时、不限时，任何题都能跳过
      ③ 安全信号（红旗症状）在提交时校验，命中即给出警示结论
      ④ 结论分两级：
@@ -143,12 +143,8 @@
   var setTitle = ZZ.setTitle;
 
   /* ===================== 5. 答题区渲染 ===================== */
+  /* 进度条只保留一条：与首诊评估问卷一致，用连续填充条表示当前进度 */
   function renderProgress() {
-    var dots = '';
-    for (var i = 0; i < Q.length; i++) {
-      var cls = 'dot' + (i < cur ? ' is-done' : (i === cur ? ' is-cur' : ''));
-      dots += '<button class="' + cls + '" type="button" data-i="' + i + '" aria-label="第 ' + (i + 1) + ' 题"></button>';
-    }
     return '' +
       '<section class="prog card">' +
       '<div class="prog__top">' +
@@ -156,7 +152,6 @@
       '<span class="prog__hint">约 2 分钟</span>' +
       '</div>' +
       '<div class="prog__bar"><i style="width:' + ((cur + 1) / Q.length * 100) + '%"></i></div>' +
-      '<div class="prog__dots">' + dots + '</div>' +
       '</section>';
   }
 
@@ -227,16 +222,6 @@
 
   function bindQuiz() {
     var q = Q[cur];
-
-    /* ① 已答题目点上方色条可返回修改；未答题目不可跳（避免跳着答漏掉安全题） */
-    var dots = prog ? prog.querySelectorAll('.dot') : [];
-    for (var i = 0; i < dots.length; i++) {
-      (function (n, btn) {
-        btn.addEventListener('click', function () {
-          if (n <= cur) { cur = n; renderQuiz(); }
-        });
-      })(i, dots[i]);
-    }
 
     if (q.type === 'w') {
       var in0 = view.querySelector('#inW0');
