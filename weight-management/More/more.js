@@ -63,13 +63,13 @@
     {
       no: 'O2026102600000013', st: '配送中', cls: 'doing',
       name: ZZ.CFG.GOODS_NAME, price: PRICE_PKG,
-      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: PRICE_PKG,
+      spec: '医生线上定制方案 + 替尔泊肽 + 护士线上服务', qty: '× 1', sum: PRICE_PKG,
       btns: [{ t: '查看物流', href: '../../Delivery-Info/index.html' }]
     },
     {
       no: 'O2026102300000012', st: '已完成', cls: 'done',
       name: ZZ.CFG.GOODS_NAME, price: PRICE_PKG,
-      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: PRICE_PKG,
+      spec: '医生线上定制方案 + 替尔泊肽 + 护士线上服务', qty: '× 1', sum: PRICE_PKG,
       btns: [{ t: '再次续订', href: '../../Payment-Page/index.html' }, { t: '评价', toast: '示例 Demo：评价入口待接入' }]
     },
     {

@@ -85,9 +85,10 @@
      页面统一取 ZZ.CFG.*；HTML 里静态展示的金额与 CFG 保持同一数值。
      两种声明并存是有意的：报告页关联了健康数据，问卷/随访页只有本次问卷。 */
   var CFG = {
-    PKG_PRICE: 790,          /* 首诊套餐价 */
-    PKG_ORIGINAL: 1380,      /* 首诊套餐原价（划线价） */
+    PKG_PRICE: 580,          /* 首诊套餐价 */
+    PKG_ORIGINAL: 980,       /* 原价 = 套餐卡三项服务之和：200 + 580 + 200 */
     RENEW_PRICE: 580,        /* 单月续订装 */
+    SVC: { doctor: 200, drug: 580, nurse: 200 }, /* 套餐卡三项服务单价，见 Treatment-package */
     TOTAL_WEEKS: 24,         /* 全站疗程口径 */
     GOODS_NAME: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐',
     PLAN_NAME: 'GLP-1 标准方案',
@@ -95,6 +96,7 @@
     DISC_FORM: '本页内容基于你填写的问卷生成，为初步评估建议，不构成诊断和处方。',
     DISC_TOAST: '评估结果为初步建议，不构成诊断和处方'
   };
+  CFG.PKG_SAVE = CFG.PKG_ORIGINAL - CFG.PKG_PRICE; /* 立省：980 - 580 = 400 */
   function money(n) { return '¥' + Number(n).toFixed(2); }
 
   w.ZZ = {
