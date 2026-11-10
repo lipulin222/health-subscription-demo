@@ -8,8 +8,8 @@ const toast = ZZ.toast;
 /* 进行中卡片的两种形态：
    false（默认）= 有体重更新的状态：−3.2kg / 第 28 天 /「查看更多」带月报红点
    true         = 初始态：起始体重 71.6kg（无 -xxkg）/ 第 1 天 /「记录体重变化，追踪减重进程」/ 无红点
-   两种形态都保留：初始态只由 ?data=none 或开启日点「记录第一天」进入；
-   之后手动切换阶段再回到 ③，即恢复成有体重更新的状态 */
+   两种形态都保留：初始态由 ?data=none、开启日点「记录第一天」，
+   或点标题右侧双箭头循环到 ③ 的第一项进入；在 ③ 再点一次双箭头就切到有更新态 */
 const NO_DATA_PARAM = /(^|[?&])data=none(&|$)/.test(location.search);
 let hasNoWeight = NO_DATA_PARAM;
 
@@ -41,7 +41,8 @@ if (stateMenu && moreBtn) {
 
 /* ==========================================================================
    体重管理卡 · 阶段切换
-   点击卡片右上角状态标签，按「购前 → 决策 → 陪跑 → 续费 → 回顾 → 开启日」循环切换，
+   点击标题右侧的双箭头，按「购前 → 决策 → 陪跑 → 续费 → 回顾 → 开启日」循环切换，
+   ③ 陪跑在循环里连着出现两次（初始态 → 有更新态），用来切换体重记录的两种形态；
    并重绘核心区；核心区各按钮跳转到 weight-management 系列独立页面。
    初始阶段由卡片的 data-start-stage 决定（默认 1 购前，?stage=N 可指定；⑥ 开启日只看一次）。
    ========================================================================== */
@@ -350,29 +351,42 @@ if (stateMenu && moreBtn) {
     }, 2600);
   }
 
-  /* 点击右上角标签的循环顺序：
-     ① 未开始 → ② 报告已生成 → ⑥ 开启日（减重期第一张，第 1 天）→ ③ 进行中（第 28 天）
-     → ④ 续费 → ⑤ 维持期 → ①
-     ⑥ 紧跟评估报告之后，因为「看完报告 → 支付 → 面诊拿药 → 回来」才是真实的进入顺序。 */
-  const CYCLE = [1, 2, 6, 3, 4, 5];
+  /* 点标题右侧双箭头的循环顺序（③ 出现两次，用来切换「初始态 / 有更新态」）：
+     ① 未开始 → ② 报告已生成 → ⑥ 开启日 → ③ 初始态（71.6kg，无红点）
+     → ③ 有更新态（−3.2kg，带红点）→ ④ 续费 → ⑤ 维持期 → ①
+     在 ③ 点一次即切换形态、再点一次才继续走阶段，原来的 6 阶段演示仍完整。 */
+  const CYCLE = [
+    { stage: 1 }, { stage: 2 }, { stage: 6 },
+    { stage: 3, empty: true }, { stage: 3, empty: false },
+    { stage: 4 }, { stage: 5 }
+  ];
+  function cycleIndex() {
+    for (let i = 0; i < CYCLE.length; i++) {
+      const it = CYCLE[i];
+      if (it.stage === stage && (it.stage !== 3 || it.empty === hasNoWeight)) return i;
+    }
+    return -1;
+  }
 
   function render(n) {
     stage = n;
     body.innerHTML = STAGE[n]();
     renderHeader(n);
     const c = chipFor(n);
-    /* 标题后的小符号只做切换入口，不展示状态文案；当前阶段写进 aria/title 便于确认 */
-    chip.setAttribute('aria-label', '当前阶段：' + c[0] + '（点击切换到下一阶段）');
-    chip.title = '当前阶段：' + c[0] + '（点击切换）';
+    /* 标题后的小符号只做切换入口，不展示状态文案；③ 时提示它同时切换体重记录形态 */
+    const tip = n === 3 ? '（点击切换初始态 / 有更新态）' : '（点击切换到下一阶段）';
+    chip.setAttribute('aria-label', '当前阶段：' + c[0] + tip);
+    chip.title = '当前阶段：' + c[0] + tip;
     card.setAttribute('data-stage', String(n));
   }
 
   chip.addEventListener('click', () => {
-    /* 手动切阶段时回到阶段默认形态：③ 恢复成有体重更新的状态，
-       初始态仍可通过 ?data=none 或开启日「记录第一天」再次进入 */
-    hasNoWeight = NO_DATA_PARAM;
-    const i = CYCLE.indexOf(stage);
-    render(i === -1 ? 3 : CYCLE[(i + 1) % CYCLE.length]);
+    /* ③ 的两个形态是循环里的连续两项：点一次切形态，再点一次继续走阶段。
+       非 ③ 阶段按 URL 复位形态；初始态也可用 ?data=none 或开启日「记录第一天」进入。 */
+    const i = cycleIndex();
+    const next = i === -1 ? { stage: 3, empty: false } : CYCLE[(i + 1) % CYCLE.length];
+    hasNoWeight = next.stage === 3 ? !!next.empty : NO_DATA_PARAM;
+    render(next.stage);
   });
   render(parseInt(card.getAttribute('data-start-stage'), 10) || 1);
 })();
