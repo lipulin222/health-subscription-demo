@@ -297,16 +297,16 @@ if (stateMenu && moreBtn) {
     4: () => rkCard() + wldBlock() +
       duo(btn('ghost', agentHref(), '询问护士'), btn('solid', moreUrl, '查看更多')),
 
-    /* ⑤ 品牌认可：回顾 */
-    /* ⑤ 维持期：插画 + 减重报告 + 通栏「打开回顾」（设计稿「第28天」最新版） */
+    /* ⑤ 维持期：插画 + 回顾入口（点图文进回顾页），下方按钮与 ④ 一致 */
     5: () => '<div class="rpt">' +
-      '<div class="rpt__fg">' +
+      '<a class="rpt__fg" href="' + U.recap + '">' +
       '<img loading="lazy" decoding="async" class="rpt__pic" src="design-assets/recap-hero.png" alt="" />' +
       '<div class="rpt__tx">' +
-      '<div class="rpt__t">恭喜减重成功！</div>' +
-      '</div></div>' +
-      '<a class="rpt__btn" href="' + U.recap + '">打开回顾</a>' +
-      '</div>',
+      '<div class="rpt__t">回顾你的减重旅程</div>' +
+      '<div class="rpt__s">点击查看&gt;</div>' +
+      '</div></a>' +
+      '</div>' +
+      duo(btn('ghost', agentHref(), '询问护士'), btn('solid', moreUrl, '查看更多')),
 
     /* ⑥ 开启日：下单 + 面诊 + 取药后，首次回到首页的一屏（一次性，设计稿「第一天」） */
     6: () => ritualBlock()
