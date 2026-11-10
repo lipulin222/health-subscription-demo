@@ -177,20 +177,6 @@ body { display:flex; justify-content:center; min-height:100vh; }
 .chain__lk { flex:0 0 auto; padding-top:14px; color:#999999; font-size:12px; line-height:17px; white-space:nowrap; }
 .hl { font-style:normal; color:var(--brand); }
 
-/* ===== 用药建议 · 科普卡片（体重管理小百科 + 分类入口） ===== */
-.kbcard { margin-top:12px; }
-.kbcard__row { display:flex; align-items:center; gap:10px; padding:10px 0; text-decoration:none; border-bottom:1px solid var(--divider); }
-.kbcard__ico { flex:0 0 34px; width:34px; height:34px; border-radius:8px; background:var(--brand-light); display:flex; align-items:center; justify-content:center; color:var(--brand); }
-.kbcard__ico svg { width:18px; height:18px; }
-.kbcard__tx { flex:1 1 auto; min-width:0; font-size:12px; color:var(--t-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.kbcard__tx b { color:var(--brand); font-weight:600; }
-.kbcard__go { flex:0 0 auto; color:var(--t-placeholder); }
-.kbcard__cats { display:flex; align-items:stretch; }
-.kbcard__cat { flex:1 1 0; text-align:center; text-decoration:none; padding:9px 0 8px; }
-.kbcard__cat + .kbcard__cat { border-left:1px solid var(--divider); }
-.kbcard__cat:active { background:var(--brand-light); }
-.kbcard__cat b { display:block; font-size:13px; font-weight:600; color:var(--t-title); line-height:18px; }
-.kbcard__cat s { display:block; margin-top:2px; font-size:10px; color:var(--t-secondary); line-height:14px; text-decoration:none; }
 </style>
 </head>
 <body>
@@ -299,18 +285,7 @@ function drugNormal(p){
     '<p>' + (p.why || '结合你的情况，我们建议在调整饮食和运动的同时，配合 GLP-1 类药物一起减：它通过延缓胃排空、降低食欲来减少摄入，让你在控制饮食的过程中少一些饥饿感，整体效果也比单靠生活方式更明确。') + '</p>' +
     '<p>根据你当前的体重情况，参考按临床数据，用药后的体重预计变化情况如下：</p>' +
     drugTable(p.w) +
-    '<p class="note">上述区间来自临床研究，个体差异较大，以实际随访数据为准。</p>' +
-    '<div class="kbcard">' +
-      '<a class="kbcard__row" href="../../patient-education/index.html?stage=1#/">' +
-        '<span class="kbcard__ico"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3.5" width="14" height="17" rx="2.5" fill="currentColor" opacity=".15"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>' +
-        '<span class="kbcard__tx"><b>体重管理小百科</b></span>' +
-        '<span class="kbcard__go">›</span>' +
-      '</a>' +
-      '<div class="kbcard__cats">' +
-        '<a class="kbcard__cat" href="../../patient-education/index.html?stage=1#/all"><b>花费</b><s>价格说明</s></a>' +
-        '<a class="kbcard__cat" href="../../patient-education/index.html?stage=1#/g/run"><b>使用</b><s>操作方法</s></a>' +
-      '</div>' +
-    '</div>';
+    '<p class="note">上述区间来自临床研究，个体差异较大，以实际随访数据为准。</p>';
 }
 function drugMild(p){
   return drugNormal(p);
