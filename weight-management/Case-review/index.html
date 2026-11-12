@@ -617,6 +617,7 @@ function renderDetail(c){
       '<ul class="qa">' + c.qa.map(function(a, i){
         return '<li><span class="qa__q">' + (i + 1) + '. ' + Q[i] + '</span><span class="qa__a">' + a[0] + '</span></li>';
       }).join('') + '</ul></div>' +
+    (curTab === 'monthly' && c.program ? monthlyCiHtml(c) : '') +
     '<div class="dt__foot">问卷答案为按真实用户答题习惯的模拟：多数人凭记忆粗略作答、不会照搬病历，开放题经常留空。</div>';
 }
 
@@ -873,6 +874,21 @@ C8: { start:'2026-06-08', periods:[
 
 /* ===== 右栏 Tab 与月报渲染 ===== */
 CASES.forEach(function(c){ if (PROGRAMS[c.id]) c.program = PROGRAMS[c.id]; });
+function getPeriod(c){
+  var p = PROGRAMS[c.id];
+  if (!p) return null;
+  var no = curNo[c.id] || p.periods[p.periods.length - 1].no;
+  return p.periods.filter(function(x){ return x.no === no; })[0];
+}
+/* 左栏：当期快问快答录入（月报 tab 下展示） */
+function monthlyCiHtml(c){
+  var r = getPeriod(c);
+  if (!r) return '';
+  return '<div class="dt__sec"><div class="dt__cap">第 ' + r.no + ' 期快问快答录入（模拟）</div>' +
+    '<table class="facts"><tr><td>体重（期末）</td><td>' + r.end + ' kg</td></tr><tr><td>腰围</td><td>' + r.waist + ' cm</td></tr>' +
+    r.ci.map(function(v, i){ return '<tr><td>' + CI_LABELS[i] + '</td><td>' + v + '</td></tr>'; }).join('') +
+    '</table></div>';
+}
 var curTab = 'report';
 var curCaseId = 'C1';
 var curNo = {};
@@ -921,8 +937,7 @@ function renderMonthly(c){
       '<div class="noprogram__d">这位用户的评估结论为「无需减重」，没有减重服务的入组记录，因此没有月报。<br>可点击左侧其他 case 查看月报。</div></section>';
     return;
   }
-  var no = curNo[c.id] || p.periods[p.periods.length - 1].no;
-  var r = p.periods.filter(function(x){ return x.no === no; })[0];
+  var r = getPeriod(c);
   var nextM = (r.month % 12) + 1;
   var h = '<div class="mchips">' + p.periods.map(function(x){
     return '<button type="button" class="mchip' + (x.no === r.no ? ' on' : '') + '" data-no="' + x.no + '">第 ' + x.no + ' 期 · ' + x.month + '月 · ' + x.tag + '</button>';
@@ -938,10 +953,6 @@ function renderMonthly(c){
     '<div><span class="n">' + r.bmi.toFixed(1) + '</span><span class="l">BMI</span></div>' +
     '<div><span class="n">' + r.waist + '<em>cm</em></span><span class="l">腰围</span></div>' +
     '</div></section>';
-  h += '<section class="card qa-rec"><div class="dt__cap" style="margin-bottom:6px">本期快问快答录入（模拟）</div>' +
-    '<table class="facts"><tr><td>体重（期末）</td><td>' + r.end + ' kg</td></tr><tr><td>腰围</td><td>' + r.waist + ' cm</td></tr>' +
-    r.ci.map(function(v, i){ return '<tr><td>' + CI_LABELS[i] + '</td><td>' + v + '</td></tr>'; }).join('') +
-    '</table></section>';
   h += '<section class="card sec"><div class="sec__hd"><span class="mod__no">01</span><span class="sec__t">减重数据分析</span></div>' +
     r.analysis.split('\n').map(function(t){ return '<p class="p">' + t + '</p>'; }).join('') + '</section>';
   h += '<section class="card sec"><div class="sec__hd"><span class="mod__no">02</span><span class="sec__t">' + nextM + '月的饮食与运动</span></div>' +
@@ -952,6 +963,7 @@ function renderMonthly(c){
   viewEl.querySelectorAll('.mchip').forEach(function(ch){
     ch.addEventListener('click', function(){
       curNo[c.id] = parseInt(ch.dataset.no, 10);
+      renderDetail(c);
       renderMonthly(c);
     });
   });
