@@ -172,6 +172,14 @@ button { font-family:var(--font); }
 .noprogram { margin-top:10px; padding:34px 20px; text-align:center; }
 .noprogram__t { font-size:15px; font-weight:600; color:var(--t-title); }
 .noprogram__d { font-size:13px; color:var(--t-secondary); margin-top:6px; line-height:22px; }
+.jlink {
+  display:inline-flex; align-items:center; gap:5px;
+  margin:0 0 12px; padding:8px 16px;
+  background:#FFF; border:1px solid var(--stroke); border-radius:999px;
+  font-size:13px; color:var(--brand); text-decoration:none; font-weight:500;
+  transition:all .15s var(--ease);
+}
+.jlink:hover { border-color:var(--brand); background:var(--brand-light); }
 
 </style>
 </head>
@@ -654,7 +662,8 @@ function renderReport(c){
         '<span class="mod__t">' + m.t + '</span></div>' +
         '<div class="mod__b-in">' + m.html + '</div></section>';
     }).join('') +
-    '<div class="disc">' + DISC + '</div>';
+    '<div class="disc">' + DISC + '</div>' +
+    (c.program ? '<a class="jlink" href="recap.html?case=' + c.id + '">进入减重流程后的完整回顾，见' + c.name + '的减重回顾（结营报告）→</a>' : '');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -942,6 +951,7 @@ function renderMonthly(c){
   var h = '<div class="mchips">' + p.periods.map(function(x){
     return '<button type="button" class="mchip' + (x.no === r.no ? ' on' : '') + '" data-no="' + x.no + '">第 ' + x.no + ' 期 · ' + x.month + '月 · ' + x.tag + '</button>';
   }).join('') + '</div>';
+  h += '<a class="jlink" href="recap.html?case=' + c.id + '">查看 ' + c.id + ' ' + c.name + ' 的减重回顾（结营报告）→</a>';
   h += '<div class="mo-hd"><div class="mo-eyebrow">体重管理 · 第 ' + r.no + ' 期月报（模拟）</div>' +
     '<div class="mo-t">' + r.title + '</div>' +
     '<div class="mo-meta">' + r.range + '｜' + r.span + '</div></div>';

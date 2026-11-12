@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#006F8A" />
+  <title>体重管理 · 减重回顾（Case 演示）</title>
+  <meta name="description" content="16 周减重回顾：体重曲线、身体变化、健康指标与你的减重人格。（脱敏 Case 演示数据）" />
+  <style>
+/* ==========================================================================
+   科学减重 · 减重回顾（Journey-Recap 同版式）
+   字体与插画素材引用同域名 lipulin222.github.io 下的 online-health-care 仓库
+   ========================================================================== */
+@font-face {
+  font-family: "ZZ-CuYuan";
+  src: url("/online-health-care/branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2");
+  font-weight: 400 700; font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("/online-health-care/branding-pic/fonts/方正准圆_GBK.woff2") format("woff2");
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("/online-health-care/branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("/online-health-care/branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");
+  font-weight: 700; font-display: swap;
+}
+:root {
+  --zz-blue-1: #006F8A;
+  --zz-blue-2: #00809E;
+  --zz-lightblue: #D9EEF2;
+  --zz-bg: #F6F6F6;
+  --zz-white: #FFFFFF;
+  --zz-text: #595757;
+  --f-title: "ZZ-CuYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --f-body: "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --f-num: "ZZ-Myriad", Helvetica, Arial, sans-serif;
+  --desk: #E9EBEF;
+  --hair: #E6E6E4;
+  --ease: cubic-bezier(.22, .61, .36, 1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--desk);
+  color: var(--zz-text);
+  font-family: var(--f-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  display: flex; justify-content: center;
+}
+.tnum { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+.shell { width: 100%; display: flex; justify-content: center; }
+.phone {
+  position: relative;
+  width: 100%; max-width: 375px;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  background: var(--zz-white);
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, .08);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: 12px; }
+}
+.screens {
+  flex: 1; min-height: 0;
+  overflow-y: auto; overflow-x: hidden;
+  scroll-snap-type: y proximity; scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.screens::-webkit-scrollbar { width: 0; height: 0; }
+.bar {
+  position: absolute; top: 0; left: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, #4EC3DA, var(--zz-blue-1));
+  z-index: 30; transition: width .18s linear;
+}
+.rail {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 8px; z-index: 30;
+}
+.rail b {
+  display: block; width: 2px; height: 8px; border-radius: 2px;
+  background: rgba(0, 111, 138, .22); cursor: pointer; transition: .3s var(--ease);
+}
+.rail b.on { height: 18px; background: var(--zz-blue-1); }
+.rail.dark b { background: rgba(255, 255, 255, .34); }
+.rail.dark b.on { background: #fff; }
+.screen {
+  position: relative; min-height: 100%;
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: calc(env(safe-area-inset-top) + 48px) 24px calc(env(safe-area-inset-bottom) + 48px);
+  background: var(--zz-white);
+  color: var(--zz-text);
+}
+.screen.no-after { min-height: 0; }
+.screen.no-after .gn { display: none; }
+.bleed {
+  justify-content: flex-end;
+  padding-bottom: 26px;
+  color: #fff;
+  background-image:
+    linear-gradient(to bottom,
+      rgba(0, 111, 138, .12) 0%,
+      rgba(0, 111, 138, .18) 18%,
+      rgba(0, 111, 138, .26) 34%,
+      rgba(0, 111, 138, .37) 48%,
+      rgba(0, 111, 138, .44) 60%,
+      rgba(0, 111, 138, .48) 72%,
+      rgba(0, 111, 138, .52) 82%,
+      rgba(0, 111, 138, .60) 100%),
+    var(--cover-img, url("/online-health-care/Journey-Recap/img/f/hero.jpg"));
+  background-size: cover;
+  background-position: center;
+}
+.persona { justify-content: flex-end; padding-top: 0; }
+.persona .pimg {
+  position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+  background-size: cover; background-position: center 30%;
+  z-index: 0;
+}
+.persona .pscrim {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 74%;
+  background: linear-gradient(to top,
+    rgba(255, 255, 255, .99) 0%,
+    rgba(255, 255, 255, .97) 45%,
+    rgba(255, 255, 255, .92) 60%,
+    rgba(255, 255, 255, .70) 72%,
+    rgba(255, 255, 255, .32) 84%,
+    rgba(255, 255, 255, 0) 95%);
+  z-index: 1; pointer-events: none;
+}
+.persona .eyebrow, .persona .h2, .persona .body,
+.persona .metric, .persona .btn { position: relative; z-index: 2; }
+.persona .h2 { font-size: 26px; }
+.persona .metric {
+  margin-top: 16px; padding: 12px 0;
+  border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+}
+.persona .btn { margin-top: 20px; }
+@media (max-width: 360px) { .persona .h2 { font-size: 23px; } }
+.band {
+  height: 150px; border-radius: 12px;
+  background-size: cover; background-position: center;
+  margin: 20px 0 14px;
+}
+.eyebrow {
+  font-family: var(--f-num); font-size: 11px; letter-spacing: .16em;
+  color: var(--zz-blue-1); margin-bottom: 16px;
+}
+.bleed .eyebrow { color: var(--zz-lightblue); margin-bottom: 12px; }
+.h2 { font-family: var(--f-title); font-size: 22px; line-height: 1.55; text-wrap: balance; }
+.h1 { font-family: var(--f-title); font-size: 24px; line-height: 1.5; color: #fff; }
+.body { margin-top: 26px; font-size: 13.5px; line-height: 1.65; }
+.bleed .body { color: rgba(255, 255, 255, .96); }
+.strong { font-family: var(--f-title); }
+.bleed .strong { color: #fff; }
+.k {
+  display: block; font-family: var(--f-num); font-size: 10.5px;
+  letter-spacing: .14em; color: var(--zz-blue-1);
+}
+.bleed .k { color: var(--zz-lightblue); }
+.big {
+  font-family: var(--f-num); font-weight: 700; font-size: 50px; line-height: 1.15;
+  margin-top: 6px; color: var(--zz-blue-1);
+}
+.big i { font-style: normal; font-size: 14px; opacity: .65; margin-left: 5px; }
+.bleed .big { color: #fff; }
+.fine {
+  margin-top: 12px; padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, .32);
+  font-size: 10.5px; line-height: 1.6; color: #E3EAEC;
+}
+.logo { width: 76px; display: block; }
+.bleed .logo { position: absolute; right: 24px; bottom: 22px; z-index: 2; }
+.gn {
+  position: absolute; right: -4px; bottom: -18px;
+  font-family: var(--f-num); font-weight: 700; font-size: 120px; line-height: 1;
+  opacity: .06; pointer-events: none;
+}
+.bleed .gn { opacity: .1; color: #fff; }
+.grid4 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  margin-top: 20px; border-top: 1px solid var(--hair);
+}
+.grid4 .cell { padding: 13px 12px 13px 0; border-bottom: 1px solid var(--hair); }
+.grid4 .cell:nth-child(odd) { border-right: 1px solid var(--hair); }
+.grid4 .cell:nth-child(even) { padding-left: 12px; }
+.grid4 .v {
+  font-family: var(--f-num); font-weight: 700; font-size: 23px;
+  color: var(--zz-blue-1); line-height: 1.3;
+}
+.grid4 .v i { font-style: normal; font-size: 12px; opacity: .6; margin-left: 2px; }
+.chk {
+  display: flex; gap: 11px; align-items: flex-start;
+  padding: 11px 0; border-bottom: 1px solid var(--hair);
+}
+.chk:first-of-type { border-top: 1px solid var(--hair); margin-top: 18px; }
+.chk svg { flex: none; width: 22px; height: 22px; margin-top: 3px; }
+.chk .ci { flex: 1; min-width: 0; }
+.chk .r1 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.chk .t { font-size: 15.5px; font-family: var(--f-title); line-height: 1.5; }
+.chk .val {
+  font-family: var(--f-num); font-weight: 700; font-size: 16px;
+  color: var(--zz-blue-1); white-space: nowrap;
+}
+.chk .why { font-size: 12px; color: #7A7A78; line-height: 1.65; margin-top: 2px; }
+.stats {
+  display: flex; margin-top: 22px;
+  border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+}
+.stats > div { flex: 1; padding: 15px 0; }
+.stats > div + div { border-left: 1px solid var(--hair); padding-left: 14px; }
+.stats .v {
+  font-family: var(--f-num); font-weight: 700; font-size: 26px;
+  color: var(--zz-blue-1); line-height: 1.2;
+}
+.stats .v i { font-style: normal; font-size: 12px; opacity: .6; margin-left: 2px; }
+.stats .k { margin-top: 4px; }
+.chart {
+  margin: 20px 0 2px; background: var(--zz-bg);
+  border-radius: 14px; padding: 14px 10px 8px;
+}
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .gl { stroke: #D5D5D3; stroke-dasharray: 4 6; stroke-width: 2; }
+.chart .area { fill: var(--zz-blue-1); opacity: .12; }
+.chart .line {
+  stroke: var(--zz-blue-1); stroke-width: 5; fill: none;
+  stroke-linejoin: round; stroke-linecap: round;
+}
+.chart circle { fill: var(--zz-blue-1); }
+.chart text {
+  font-family: var(--f-num); font-size: 26px; fill: var(--zz-text); opacity: .8;
+  paint-order: stroke; stroke: #fff; stroke-width: 6px; stroke-linejoin: round;
+}
+.chart .an { font-size: 22px; opacity: .9; stroke-width: 7px; }
+.chart .ldr { stroke: #D5D5D3; stroke-width: 2; }
+.chart .area { opacity: 0; transition: opacity .7s var(--ease) .35s; }
+.chart .line { stroke-dasharray: 700; stroke-dashoffset: 700; transition: stroke-dashoffset 1.5s var(--ease); }
+.chart circle { opacity: 0; transition: opacity .45s var(--ease) 1.2s; }
+.chart .an, .chart .ldr { opacity: 0; transition: opacity .5s var(--ease) 1.5s; }
+.r.in .chart .area, .chart.r.in .area { opacity: .12; }
+.r.in .chart .line, .chart.r.in .line { stroke-dashoffset: 0; }
+.r.in .chart circle, .chart.r.in circle { opacity: 1; }
+.r.in .chart .an, .chart.r.in .an,
+.r.in .chart .ldr, .chart.r.in .ldr { opacity: 1; }
+.cta-row { display: flex; align-items: center; gap: 14px; margin-top: 24px; }
+.cta-row .btn { margin-top: 0; }
+.btn {
+  align-self: flex-start; margin-top: 24px; padding: 12px 26px;
+  font-size: 13.5px; font-family: var(--f-body);
+  border: 0; border-radius: 22px;
+  background: var(--zz-blue-1); color: #fff; cursor: pointer;
+  transition: transform .14s var(--ease), opacity .2s;
+}
+.btn:active { transform: scale(.98); }
+.bleed .btn { background: #fff; color: var(--zz-blue-1); }
+.sheet { position: absolute; inset: 0; z-index: 40; }
+.sheet[hidden] { display: none; }
+.sheet-mask { position: absolute; inset: 0; background: rgba(20, 30, 34, .45); }
+.sheet-card {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--zz-white); border-radius: 22px 22px 0 0;
+  padding: 28px 24px calc(env(safe-area-inset-bottom) + 30px);
+  text-align: center;
+  animation: sheetUp .28s var(--ease);
+}
+@keyframes sheetUp {
+  from { transform: translateY(40%); opacity: .4; }
+  to { transform: none; opacity: 1; }
+}
+.sheet-x {
+  position: absolute; top: 12px; right: 14px; width: 30px; height: 30px;
+  border: 0; border-radius: 50%; background: var(--zz-bg); color: #8A8A87;
+  font-size: 16px; line-height: 1; cursor: pointer;
+}
+.sheet-t { font-family: var(--f-title); font-size: 17px; color: var(--zz-blue-1); }
+.sheet-sub { margin-top: 6px; font-size: 12px; color: #8B8B88; }
+.sheet-qr { width: 200px; height: auto; display: block; margin: 16px auto 10px; }
+.sheet-s { font-size: 12px; color: #8B8B88; }
+.share-card { padding-bottom: calc(env(safe-area-inset-bottom) + 24px); }
+.share-img {
+  width: 186px; height: auto; display: block; margin: 14px auto 10px;
+  border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 111, 138, .14);
+}
+.share-opt {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  font-size: 12px; color: #6E6E6C; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.share-opt input { width: 14px; height: 14px; margin: 0; accent-color: var(--zz-blue-1); cursor: pointer; }
+.share-save {
+  display: inline-block; margin-top: 14px; padding: 10px 26px;
+  border-radius: 22px; background: var(--zz-blue-1); color: #fff;
+  font-family: var(--f-body); font-size: 13.5px; text-decoration: none; cursor: pointer;
+}
+.share-fab {
+  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 16px; z-index: 32;
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 11px; border-radius: 15px;
+  border: 1px solid rgba(0, 111, 138, .12); background: rgba(255, 255, 255, .92);
+  color: var(--zz-blue-1); font-family: var(--f-body); font-size: 11px; line-height: 1;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0, 111, 138, .14);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: transform .14s var(--ease), opacity .2s;
+}
+.share-fab:active { transform: scale(.96); }
+.share-fab svg { width: 12px; height: 12px; flex: none; }
+.pswitch {
+  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 86px; z-index: 32;
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  width: 34px; height: 26px; padding: 0; border-radius: 15px;
+  border: 1px solid rgba(0, 111, 138, .12); background: rgba(255, 255, 255, .92);
+  color: var(--zz-blue-1); cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 111, 138, .14);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.pswitch span { width: 3.5px; height: 3.5px; border-radius: 50%; background: currentColor; display: block; }
+.pswitch-menu {
+  position: absolute; top: calc(env(safe-area-inset-top) + 54px); right: 16px; z-index: 60;
+  width: 240px; max-height: 70vh; max-height: min(70vh, 520px); overflow-y: auto;
+  padding: 4px; background: #fff; border-radius: 10px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .18);
+  animation: viewIn .18s var(--ease);
+}
+.pswitch-menu[hidden] { display: none; }
+.pswitch-cap { display: block; padding: 6px 12px 4px; font-size: 10px; color: #8B8B88; line-height: 1.5; }
+.pswitch-menu button {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  border: 0; background: none; border-radius: 6px;
+  font-family: var(--f-body); font-size: 12px; color: #33393B; padding: 8px 12px;
+}
+.pswitch-menu button:active { background: #EDFAFC; }
+.pswitch-menu button.is-cur { color: var(--zz-blue-1); background: #EDFAFC; }
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.back-link {
+  position: absolute; top: calc(env(safe-area-inset-top) + 20px); left: 16px; z-index: 32;
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 11px; border-radius: 15px;
+  border: 1px solid rgba(0, 111, 138, .12); background: rgba(255, 255, 255, .92);
+  color: var(--zz-blue-1); font-family: var(--f-body); font-size: 11px; line-height: 1;
+  text-decoration: none; box-shadow: 0 2px 8px rgba(0, 111, 138, .14);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.r { opacity: 0; transform: translateY(16px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.r.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .screens { scroll-behavior: auto; }
+  .sheet-card { animation: none; }
+  .r { opacity: 1; transform: none; transition: none; }
+  .chart .area { opacity: .12; }
+  .chart .line { stroke-dashoffset: 0; }
+  .chart circle, .chart .an, .chart .ldr { opacity: 1; }
+}
+@media (max-width: 360px) {
+  .screen { padding-left: 20px; padding-right: 20px; }
+  .h2 { font-size: 21px; }
+  .h1 { font-size: 22px; }
+  .band { height: 130px; }
+  .gn { font-size: 100px; }
+  .pswitch { right: 82px; }
+  .pswitch-menu { right: 12px; width: 210px; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="phone" id="phone">
+    <div class="bar" id="bar"></div>
+    <div class="rail" id="rail"></div>
+    <div class="screens" id="screens">
+
+      <!-- 封面（不编号） -->
+      <section class="screen bleed">
+        <div class="h1 r">这是一个，<br />成为更好的自己的故事。</div>
+        <div class="r" style="margin-top:10px">
+          <span class="k">体重变化</span>
+          <div class="big tnum" id="heroNum" style="font-size:44px">0.0<i>kg</i></div>
+        </div>
+        <p class="body r" style="margin-top:12px"><span class="strong" id="heroPeriod">16 周，113 天。</span></p>
+        <div class="fine r">本页为脱敏 Case 演示数据（模拟入组与逐月录入），不构成诊疗建议</div>
+        <img class="logo" src="/online-health-care/branding-pic/卓正医疗反白Logo透明底.png" alt="卓正医疗" />
+      </section>
+
+      <!-- 01 第一次看见变化 -->
+      <section class="screen">
+        <div class="eyebrow r">01 / 第一次看见变化</div>
+        <div class="h2 r" id="s1H2">还记得，第一次看见变化的时候吗？</div>
+        <div class="band r" data-img="s01"></div>
+        <div class="r">
+          <span class="k" id="s1K">第 2 周 · 较起点</span>
+          <div class="big tnum" id="s1Num" style="font-size:42px">−1.4<i>kg</i></div>
+        </div>
+        <p class="body r" id="s1Body">第一次记录下身体的阶段性变化。<br />一个目标开始变得具体，<br />也让接下来的每一步，有了新的期待。</p>
+        <div class="gn">01</div>
+      </section>
+
+      <!-- 02 曲线 -->
+      <section class="screen">
+        <div class="eyebrow r" id="s2Eyebrow">02 / 16 周，见证蜕变</div>
+        <div class="h2 r" id="s2H2">过程有曲折，结果有成就。</div>
+        <div class="chart r">
+          <svg id="chartSvg" viewBox="0 0 640 372" role="img" aria-label="16 周体重变化曲线"></svg>
+        </div>
+        <p class="body r" id="s2Body"></p>
+        <div class="gn">02</div>
+      </section>
+
+      <!-- 03 身体更轻盈 -->
+      <section class="screen">
+        <div class="eyebrow r">03 / 身体更轻盈</div>
+        <div class="h2 r" id="s3H2">欣喜的发现，裤子悄悄变大了。</div>
+        <div class="band r" data-img="s03"></div>
+        <div class="grid4 r" id="s3Grid"></div>
+        <p class="body r" id="s3Body"></p>
+        <div class="gn">03</div>
+      </section>
+
+      <!-- 04 从内到外，都变得更好 -->
+      <section class="screen">
+        <div class="eyebrow r">04 / 从内到外，都变得更好</div>
+        <div class="h2 r" id="s4H2">指标会说话，身体更健康了。</div>
+        <div class="band r" data-img="s04"></div>
+        <p class="strong r" id="s4Head" style="font-size:16px;margin-top:4px"></p>
+        <div class="r" id="s4List"></div>
+        <div class="gn">04</div>
+      </section>
+
+      <!-- 05 专业支持的陪伴 -->
+      <section class="screen">
+        <div class="eyebrow r">05 / 专业支持的陪伴</div>
+        <div class="h2 r" id="s5H2">这段旅程，卓正为你保驾护航</div>
+        <div class="band r" data-img="s05"></div>
+        <p class="body r" id="s5Before" style="margin-top:4px">卓正医疗以专业和关怀，一路陪伴你的减重之旅。</p>
+        <div class="stats r" id="s5Stats"></div>
+        <p class="body r" id="s5After"></p>
+        <div class="gn">05</div>
+      </section>
+
+      <!-- 06 你的减重人格是（数据判定，见下方脚本 pickPersona） -->
+      <section class="screen persona">
+        <div class="pimg" id="personaImg" role="img" aria-label="减重人格插画"></div>
+        <div class="pscrim"></div>
+        <div class="eyebrow r">06 / 你的减重人格是</div>
+        <div class="h2 r" id="personaName">稳扎稳打的<br />实干家。</div>
+        <p class="body r" id="personaReason" style="margin-top:14px"></p>
+        <div class="metric r">
+          <span class="k">成功减重</span>
+          <div class="big tnum" id="s6Num" style="font-size:38px">−0.0<i>kg</i></div>
+        </div>
+        <p class="body r" id="s6Closing">时间会奖励努力的人。</p>
+        <button class="btn r" type="button" data-cta="share">分享</button>
+        <div class="gn">06</div>
+      </section>
+
+      <!-- 07 让健康持续 -->
+      <section class="screen">
+        <div class="eyebrow r">07 / 让健康成为常态</div>
+        <div class="h2 r" id="s7H2">健康，是一种长期主义。</div>
+        <div class="band r" data-img="s07"></div>
+        <p class="body r"><span class="strong" id="s7Lead"></span></p>
+        <p class="body r" id="s7Body1">继续关注身体的变化，保持适合自己的节奏，让健康管理融入更长久的生活。</p>
+        <p class="body r" id="s7Body2">卓正与你一路同行，为你提供全家人的健康管理支持。</p>
+        <div class="cta-row r">
+          <a class="btn" id="backBtn" href="index.html">返回 Case 列表</a>
+          <a class="qr-link" id="qrLink" href="javascript:void(0)">查看二维码</a>
+        </div>
+        <div class="gn">07</div>
+      </section>
+
+    </div><!-- /.screens -->
+
+    <a class="back-link" href="index.html">‹ 返回</a>
+
+    <button class="share-fab" id="shareFab" type="button" aria-label="分享"
+      style="position:absolute;top:calc(env(safe-area-inset-top) + 20px);right:16px;z-index:32;display:flex;align-items:center;gap:5px;color:#006F8A">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#006F8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="18" cy="5" r="2.4" /><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="19" r="2.4" />
+        <path d="M8.2 10.8 15.8 6.4M8.2 13.2l7.6 4.4" />
+      </svg>
+      <span>分享</span>
+    </button>
+
+    <button class="pswitch" id="pswitch" type="button" aria-label="切换患者" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="pswitch-menu" id="pswitchMenu" hidden>
+      <span class="pswitch-cap">切换用户 · 8 位可减重 Case（脱敏模拟数据）</span>
+    </div>
+
+    <!-- 二维码半浮层 -->
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet-mask" data-close></div>
+      <div class="sheet-card">
+        <button class="sheet-x" type="button" data-close aria-label="关闭">×</button>
+        <div class="sheet-t">扫码添加专属健康管理助手</div>
+        <img class="sheet-qr" src="/online-health-care/Journey-Recap/img/qr-assistant.png" alt="专属健康管理助手二维码" />
+        <div class="sheet-s">微信扫一扫，添加你的专属健康管理助手</div>
+      </div>
+    </div>
+
+    <!-- 分享卡半浮层（图片由 canvas 实时生成） -->
+    <div class="sheet" id="shareSheet" hidden>
+      <div class="sheet-mask" data-share-close></div>
+      <div class="sheet-card share-card">
+        <button class="sheet-x" type="button" data-share-close aria-label="关闭">×</button>
+        <div class="sheet-t">测测你的减重人格</div>
+        <div class="sheet-sub">追求健康与美丽，成为更好的自己</div>
+        <img class="share-img" id="shareImg" alt="减重人格分享卡" />
+        <label class="share-opt" for="sharePrivate">
+          <input type="checkbox" id="sharePrivate" />
+          <span>隐藏姓名及数据</span>
+        </label>
+        <a class="share-save" id="shareSave" download="减重人格-分享卡.png">保存图片</a>
+      </div>
+    </div>
+  </div><!-- /.phone -->
+</div><!-- /.shell -->
+
+<script>
+(function () {
+'use strict';
+
+/* ================= 滚动 / 进度条 / 刻度导航 / 入场动画 ================= */
+var scroller = document.getElementById('screens');
+var rail = document.getElementById('rail');
+var bar = document.getElementById('bar');
+if (!scroller) return;
+var screens = [].slice.call(document.querySelectorAll('.screen'));
+
+var curTotal = 0;
+var curPersona = null;
+var curSample = null;
+
+var G = 'f';
+applyImages();
+
+screens.forEach(function (s, i) {
+  var b = document.createElement('b');
+  if (i === 0) b.className = 'on';
+  b.addEventListener('click', function () { s.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  rail.appendChild(b);
+});
+var ticks = [].slice.call(rail.querySelectorAll('b'));
+
+function screenOf(elId) {
+  var el = document.getElementById(elId);
+  return el && el.closest ? el.closest('.screen') : null;
+}
+function hideScreen(elId, hide) {
+  var s = screenOf(elId), i;
+  if (!s) return;
+  s.style.display = hide ? 'none' : '';
+  i = screens.indexOf(s);
+  if (i >= 0 && ticks[i]) ticks[i].style.display = hide ? 'none' : '';
+}
+function showAllScreens() {
+  screens.forEach(function (s, i) {
+    s.style.display = '';
+    if (ticks[i]) ticks[i].style.display = '';
+  });
+}
+function onScroll() {
+  var top = scroller.scrollTop;
+  var max = scroller.scrollHeight - scroller.clientHeight;
+  var h = scroller.clientHeight;
+  bar.style.width = (max > 0 ? (top / max) * 100 : 0) + '%';
+  var cTop = scroller.getBoundingClientRect().top;
+  var idx = 0;
+  screens.forEach(function (s, i) {
+    if (s.style.display === 'none') return;
+    if (s.getBoundingClientRect().top - cTop <= h * 0.5) idx = i;
+  });
+  ticks.forEach(function (d, i) { d.className = (i === idx && screens[i].style.display !== 'none') ? 'on' : ''; });
+  rail.className = 'rail' + (screens[idx].classList.contains('bleed') ? ' dark' : '');
+}
+var ticking = false;
+scroller.addEventListener('scroll', function () {
+  if (!ticking) {
+    ticking = true;
+    window.requestAnimationFrame(function () { onScroll(); ticking = false; });
+  }
+}, { passive: true });
+
+var items = [].slice.call(document.querySelectorAll('.r'));
+if (window.IntersectionObserver) {
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { root: scroller, threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+} else {
+  items.forEach(function (el) { el.classList.add('in'); });
+}
+
+var num = document.getElementById('heroNum');
+var started = false;
+function runNum() {
+  started = true;
+  var dur = 1300, t0 = null;
+  function step(ts) {
+    if (t0 === null) t0 = ts;
+    var p = Math.min((ts - t0) / dur, 1);
+    var e = 1 - Math.pow(1 - p, 3);
+    var v = (-curTotal * e).toFixed(1);
+    num.innerHTML = (v === '-0.0' ? '0.0' : v) + '<i>kg</i>';
+    if (p < 1) window.requestAnimationFrame(step);
+  }
+  window.requestAnimationFrame(step);
+}
+if (window.IntersectionObserver) {
+  var io2 = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting && !started) { runNum(); io2.disconnect(); } });
+  }, { root: scroller, threshold: 0.4 });
+  io2.observe(num);
+} else { window.setTimeout(runNum, 400); }
+
+/* ================= 派生函数与七型人格（口径同 Journey-Recap） ================= */
+function deltas(ws) { var a = [], i; for (i = 1; i < ws.length; i++) a.push(ws[i - 1] - ws[i]); return a; }
+function sum(a) { var s = 0, i; for (i = 0; i < a.length; i++) s += a[i]; return s; }
+function std(a) { var m = sum(a) / a.length, v = 0, i; for (i = 0; i < a.length; i++) v += (a[i] - m) * (a[i] - m); return Math.sqrt(v / a.length); }
+function rises(ds) { var n = 0, i; for (i = 0; i < ds.length; i++) if (ds[i] < 0) n++; return n; }
+function plateauInfo(ds) {
+  var best = { len: 0, start: 0, end: -1 }, i = 0;
+  while (i < ds.length) {
+    if (Math.abs(ds[i]) <= 0.25) {
+      var j = i; while (j < ds.length && Math.abs(ds[j]) <= 0.25) j++;
+      if (j - i > best.len) best = { len: j - i, start: i, end: j - 1 };
+      i = j;
+    } else i++;
+  }
+  var after = 0, k;
+  for (k = best.end + 1; k < ds.length; k++) after += ds[k];
+  return { run: best.len, start: best.start, range: (best.start + 1) + '–' + (best.end + 1) + ' 周', after: after };
+}
+function thirds(ds) {
+  var n = Math.ceil(ds.length / 3), t = sum(ds);
+  return { r1: sum(ds.slice(0, n)) / t, r3: sum(ds.slice(-n)) / t };
+}
+var PERSONAS = [
+  { code: 'PERSEVERE', name: '沉得住气的|长期主义者',
+    share: '不急于一时的结果，也不轻易否定当下的努力。相信时间的力量，让每一步都有意义。',
+    hit: function (d) { var p = plateauInfo(deltas(d.weeks)); return p.run >= 3 && p.after >= 1.0; } },
+  { code: 'LATE_BLOOM', name: '渐入佳境的|实力派',
+    share: '真正的实力，不在于一开始有多耀眼，而在于不断积累之后，越来越好的自己。',
+    hit: function (d) { var t = thirds(deltas(d.weeks)); return t.r1 <= 0.15 && t.r3 >= 0.35; } },
+  { code: 'TIDE', name: '从容的|乐观主义者',
+    share: '不因一时变化而患得患失，也不让短暂波动定义自己。心有方向，便能从容前行。',
+    hit: function (d) { var ds = deltas(d.weeks); return rises(ds) >= 2 && sum(ds) > 0; } },
+  { code: 'STEADY', name: '稳扎稳打的|实干家',
+    share: '真正的改变，从来不是一时的热情，而是把每一步都走扎实。时间会为认真做事的人留下答案。',
+    hit: function (d) { var ds = deltas(d.weeks); return rises(ds) === 0 && std(ds) <= 0.35 && sum(ds) > 0; } },
+  { code: 'INSIGHT', name: '洞察本质的|理性派',
+    share: '不止关注眼前的数字，更愿意探寻身体真正需要什么。看见本质，才能做出长远的选择。',
+    hit: function (d) { return d.bloodTests >= 2 && d.inbodyTests >= 2; } },
+  { code: 'DISCIPLINE', name: '认真务实的|行动派',
+    share: '比起空想目标，更相信行动的力量。把每一件该做的事做好，就是最踏实的进步。',
+    hit: function (d) { return d.medTimes >= d.medPlanned && d.visitTimes >= d.visitPlanned && rises(deltas(d.weeks)) === 0; } },
+  { code: 'NORTH', name: '有节奏的|生活家',
+    share: '不必追赶别人的步伐，也不必苛求每一天都完美。找到自己的节奏，就是一种难得的智慧。',
+    hit: function () { return true; } }
+];
+function pickPersona(d) {
+  var i;
+  for (i = 0; i < PERSONAS.length; i++) { if (PERSONAS[i].hit(d)) return PERSONAS[i]; }
+  return PERSONAS[PERSONAS.length - 1];
+}
+
+/* ================= 8 位可减重 Case（脱敏模拟；轨迹与月报/快问快答一致） =================
+   weeks 为 16 周 17 个记录点，与 Case-review 页 4 期月报的周数据首尾相接；
+   腰围/BMI 来自模拟的期末复测；labsProgress 为模拟的结营复查（演示数据）。 */
+var SAMPLES = [
+  { id: 'C1', name: '林嘉禾', gender: 'f', age: 23, h: 163, start: '2026-06-15', end: '2026-10-04',
+    weeks: [86, 84.6, 83.8, 83.2, 82.6, 81.8, 81.1, 80.5, 80, 79.6, 79.3, 79.1, 79, 78.4, 77.9, 77.5, 77.2],
+    metrics: [
+      { k: '腰围变化', v: '−7.0', u: 'cm' },
+      { k: 'BMI 变化', v: '−10%', u: '' }
+    ],
+    labsProgress: [],
+    service: { consult: 17, adjust: 1, visit: 4, blood: 1, inbody: 1, med: 112, medPlan: 112, visitTimes: 4, visitPlan: 4 },
+    evidence: '8 月月报写着加班日晚上常有一顿加餐，9 月把运动重新排回每周 3–4 次后，体重恢复下降。' },
+  { id: 'C2', name: '周子昂', gender: 'm', age: 28, h: 175, start: '2026-05-11', end: '2026-08-30',
+    weeks: [74.5, 73.6, 73, 72.5, 72.1, 71.5, 71, 70.6, 70.2, 70, 69.8, 69.7, 69.6, 69.2, 68.9, 68.7, 68.5],
+    metrics: [
+      { k: '腰围变化', v: '−3.5', u: 'cm' },
+      { k: 'BMI 变化', v: '−8%', u: '' }
+    ],
+    labsProgress: [
+      { t: '谷丙转氨酶', val: '76 → 38 U/L', improved: true, why: '结营复查（模拟）：入组时 76U/L，复查回落到参考范围内，随体重下降改善。' },
+      { t: '血尿酸', val: '684 → 452 μmol/L', improved: true, why: '结营复查（模拟）：较入组时明显下降，仍高于参考范围上限，由医生评估后续治疗。' }
+    ],
+    service: { consult: 16, adjust: 1, visit: 4, blood: 2, inbody: 1, med: 112, medPlan: 112, visitTimes: 4, visitPlan: 4 },
+    evidence: '7 月月报写着应酬酒后三周几乎没动，8 月聚餐换了清淡做法，体重重新往下走。' },
+  { id: 'C3', name: '吴书宜', gender: 'f', age: 42, h: 162, start: '2026-07-06', end: '2026-10-25',
+    weeks: [66.5, 65.7, 65.1, 64.6, 64.2, 63.7, 63.3, 63, 62.7, 62.6, 62.6, 62.5, 62.4, 62.1, 61.8, 61.6, 61.4],
+    metrics: [
+      { k: '腰围变化', v: '−3.0', u: 'cm' },
+      { k: 'BMI 变化', v: '−8%', u: '' }
+    ],
+    labsProgress: [
+      { t: '高密度脂蛋白', val: '1.09 → 1.24 mmol/L', improved: true, why: '结营复查（模拟）：偏低的 HDL 较入组时回升，血脂其余各项按随访计划复查。' }
+    ],
+    service: { consult: 15, adjust: 2, visit: 4, blood: 2, inbody: 1, med: 112, medPlan: 112, visitTimes: 4, visitPlan: 4 },
+    evidence: '9 月月报写着孩子开学后三餐跟着往后拖，10 月三餐定回固定时间，速度就回来了。' },
+  { id: 'C4', name: '郑语棠', gender: 'f', age: 34, h: 159, start: '2026-06-01', end: '2026-09-20',
+    weeks: [65, 64.4, 63.9, 63.5, 63.1, 62.7, 62.4, 62.1, 61.9, 61.7, 61.6, 61.5, 61.4, 61.1, 60.9, 60.7, 60.5],
+    metrics: [
+      { k: '腰围变化', v: '−3.0', u: 'cm' },
+      { k: 'BMI 变化', v: '−7%', u: '' }
+    ],
+    labsProgress: [
+      { t: '空腹胰岛素', val: '28.5 → 19.6 μIU/mL', improved: true, why: '结营复查（模拟）：胰岛素抵抗较入组时减轻，多囊的代谢指标由妇科与内分泌共同随访。' }
+    ],
+    service: { consult: 16, adjust: 2, visit: 4, blood: 2, inbody: 1, med: 112, medPlan: 112, visitTimes: 4, visitPlan: 4 },
+    evidence: '8 月月报写明放缓是医生定的节奏：胆囊有结石，减得太快反而容易诱发胆囊症状。' },
+  { id: 'C5', name: '赵启铭', gender: 'm', age: 35, h: 166, start: '2026-07-13', end: '2026-11-01',
+    weeks: [83, 82.2, 81.6, 81.1, 80.7, 80.1, 79.6, 79.2, 78.8, 78.6, 78.4, 78.3, 78.2, 78, 77.7, 77.4, 77.1],
+    metrics: [
+      { k: '腰围变化', v: '−6.0', u: 'cm' },
+      { k: 'BMI 变化', v: '−7%', u: '' }
+    ],
+    labsProgress: [
+      { t: '血压', val: '148/94 → 128/82 mmHg', improved: true, why: '结营复查（模拟）：服药中的血压较入组时下降，用药方案由内科医生对照记录评估。' },
+      { t: '血尿酸', val: '539 → 448 μmol/L', improved: true, why: '结营复查（模拟）：较入组时下降，仍偏高，继续饮食管理与随访。' }
+    ],
+    service: { consult: 17, adjust: 3, visit: 4, blood: 2, inbody: 1, med: 110, medPlan: 112, visitTimes: 4, visitPlan: 4 },
+    evidence: '9 月月报写着应酬酒 3 次以上、快走只剩每周 1–2 次，10 月重新排回每周 3–4 次。' },
+  { id: 'C6', name: '孙佩兰', gender: 'f', age: 58, h: 164, start: '2026-05-18', end: '2026-09-06',
+    weeks: [67, 66.3, 65.8, 65.4, 65, 64.6, 64.2, 63.9, 63.6, 63.5, 63.4, 63.5, 63.4, 63.1, 62.9, 62.7, 62.5],
+    metrics: [
+      { k: '腰围变化', v: '−3.0', u: 'cm' },
+      { k: 'BMI 变化', v: '−7%', u: '' }
+    ],
+    labsProgress: [
+      { t: '糖化血红蛋白', val: '6.5% → 6.1%', improved: true, why: '结营复查（模拟）：血糖控制较入组时改善，降糖方案由内科医生对照记录评估。' },
+      { t: '低密度脂蛋白', val: '3.7 → 2.9 mmol/L', improved: true, why: '结营复查（模拟）：他汀治疗中较入组时下降，颈动脉斑块按随访计划复查。' }
+    ],
+    service: { consult: 16, adjust: 2, visit: 4, blood: 3, inbody: 2, med: 0, medPlan: 0, visitTimes: 4, visitPlan: 4 },
+    evidence: '7 月月报写着平台期三餐、走动和睡眠都没有变，8 月走动提速后体重重新下降。' },
+  { id: 'C7', name: '唐若琳', gender: 'f', age: 38, h: 159, start: '2026-04-13', end: '2026-08-02',
+    weeks: [77, 76, 75.2, 74.6, 74, 73.3, 72.7, 72.2, 71.8, 71.8, 71.7, 71.7, 71.6, 71.2, 70.9, 70.6, 70.4],
+    metrics: [
+      { k: '腰围变化', v: '−5.0', u: 'cm' },
+      { k: 'BMI 变化', v: '−9%', u: '' }
+    ],
+    labsProgress: [
+      { t: '空腹血糖', val: '6.3 → 5.5 mmol/L', improved: true, why: '结营复查（模拟）：较入组时下降，优甲乐与甲功按原计划复查。' }
+    ],
+    service: { consult: 17, adjust: 2, visit: 4, blood: 2, inbody: 1, med: 110, medPlan: 112, visitTimes: 4, visitPlan: 4 },
+    evidence: '6 月月报写着快走一次都没排上、晚上靠零食解压，7 月把快走排回每周 2–3 次。' },
+  { id: 'C8', name: '高铭远', gender: 'm', age: 33, h: 182, start: '2026-06-08', end: '2026-09-27',
+    weeks: [81, 80.4, 79.9, 79.5, 79.1, 78.7, 78.4, 78.1, 77.9, 77.8, 77.7, 77.6, 77.5, 77.3, 77.1, 76.9, 76.8],
+    metrics: [
+      { k: '腰围变化', v: '−3.0', u: 'cm' },
+      { k: 'BMI 变化', v: '−5%', u: '' }
+    ],
+    labsProgress: [
+      { t: '甘油三酯', val: '2.9 → 1.8 mmol/L', improved: true, why: '结营复查（模拟）：较入组时下降，血脂其余各项由医生对照复查评估。' },
+      { t: '肝脏超声', val: '脂肪肝较前减轻', improved: true, why: '结营复查（模拟）：超声提示脂肪肝较入组时减轻，继续维持期随访。' }
+    ],
+    service: { consult: 15, adjust: 1, visit: 4, blood: 2, inbody: 1, med: 112, medPlan: 112, visitTimes: 4, visitPlan: 4 },
+    evidence: '8 月月报写着聚餐恢复了喝酒、夜宵跟着回来，9 月停酒后体重恢复下降。' }
+];
+
+var CHK = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#006F8A" stroke-width="1.6"/><path d="M7.5 12.4l3 3 6-6.4" stroke="#006F8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var IMG_BASE = '/online-health-care/Journey-Recap/img';
+
+function applyImages() {
+  document.documentElement.style.setProperty('--cover-img', 'url("' + IMG_BASE + '/' + G + '/hero.jpg")');
+  [].slice.call(document.querySelectorAll('.band[data-img]')).forEach(function (el) {
+    el.style.backgroundImage = 'url("' + IMG_BASE + '/' + G + '/' + el.getAttribute('data-img') + '.jpg")';
+  });
+}
+
+function n1(v) { return Number(v).toFixed(1); }
+function neg(v) { return '−' + Math.abs(v).toFixed(1); }
+function md(s) { var p = s.split('-'); return parseInt(p[1], 10) + ' 月 ' + parseInt(p[2], 10) + ' 日'; }
+function sd(s) { var p = s.split('-'); return parseInt(p[1], 10) + '/' + parseInt(p[2], 10); }
+function daysBetween(a, b) { return Math.round((Date.parse(b + 'T00:00:00') - Date.parse(a + 'T00:00:00')) / 86400000); }
+function weekDates(s) {
+  var out = [], i;
+  for (i = 0; i <= 15; i++) {
+    out.push(new Date(Date.parse(s.start + 'T00:00:00') + i * 7 * 86400000).toISOString().slice(0, 10));
+  }
+  out.push(s.end);
+  return out;
+}
+function setText(id, t) { var el = document.getElementById(id); if (el) el.textContent = t; }
+function setHtml(id, h) { var el = document.getElementById(id); if (el) el.innerHTML = h; }
+
+function toData(s) {
+  var v = s.service;
+  return {
+    days: daysBetween(s.start, s.end) + 1, weeks: s.weeks,
+    bloodTests: v.blood, inbodyTests: v.inbody,
+    medTimes: v.med, medPlanned: v.medPlan,
+    visitTimes: v.visitTimes, visitPlanned: v.visitPlan
+  };
+}
+
+function derive(s) {
+  var w = s.weeks, n = w.length - 1, i;
+  var wd = weekDates(s);
+  var days = daysBetween(s.start, s.end) + 1;
+  var total = +(w[0] - w[n]).toFixed(1);
+  var ds = deltas(w);
+  var p = plateauInfo(ds);
+  var first = -1;
+  for (i = 1; i <= n; i++) { if (ds[i - 1] > 0.5) { first = i; break; } }
+  if (first < 0) { for (i = 1; i <= n; i++) { if (w[0] - w[i] > 0.5) { first = i; break; } } }
+  var hasDrop = first >= 0;
+  if (first < 0) first = 1;
+  var gap = 0;
+  try { gap = daysBetween(s.start, wd[first]); } catch (e) {}
+  var pts = [], line = '';
+  for (i = 0; i < w.length; i++) {
+    var x = +(40 + i * 560 / n).toFixed(1);
+    var y = +(60 + (w[0] - w[i]) / (w[0] - w[n]) * 240).toFixed(1);
+    pts.push([x, y]);
+    line += (i ? ' L' : 'M') + x + ',' + y;
+  }
+  var stalled = p.run >= 3 && p.after >= 1.0;
+  var ann = null;
+  if (stalled) {
+    var ax = pts[p.start + 1][0], ay = pts[p.start + 1][1];
+    ann = { x: ax, y: Math.max(26, +(ay - 44).toFixed(1)), y2: +(ay - 1).toFixed(1),
+      text: '第 ' + p.range + ' · 变化放缓' };
+  }
+  var fast = null, rs = -1;
+  for (i = 0; i <= ds.length; i++) {
+    var ok = i < ds.length && ds[i] >= 0.8;
+    if (ok && rs < 0) rs = i;
+    if (!ok && rs >= 0) {
+      if (i - rs >= 2) {
+        var mi = Math.min(rs + Math.floor((i - rs) / 2) + 1, n);
+        var fx = pts[mi][0], fy = pts[mi][1];
+        var fyTop = Math.max(26, +(fy - 44).toFixed(1));
+        if (ann && Math.abs(fx - ann.x) < 80) fyTop = +(fyTop + 28).toFixed(1);
+        fast = { x: fx, y: fyTop, y2: +(fy - 1).toFixed(1),
+          text: '第 ' + (rs + 1) + '–' + i + ' 周 · 下降明显' };
+      }
+      rs = -1;
+    }
+  }
+  return { s: s, w: w, n: n, total: total, totalText: neg(total), days: days, wd: wd,
+    p: p, first: first, hasDrop: hasDrop, gap: gap, pts: pts, line: line,
+    area: line + ' L600,318 L40,318 Z', ann: ann, fast: fast };
+}
+
+function chartInner(c) {
+  var h = '<line class="gl" x1="40" y1="60" x2="600" y2="60"/><line class="gl" x1="40" y1="300" x2="600" y2="300"/>';
+  h += '<path class="area" d="' + c.area + '"/><path class="line" d="' + c.line + '"/>';
+  h += '<circle cx="' + c.pts[0][0] + '" cy="' + c.pts[0][1] + '" r="7"/>';
+  h += '<circle cx="' + c.pts[c.n][0] + '" cy="' + c.pts[c.n][1] + '" r="7"/>';
+  var marks = [c.ann, c.fast], k, m;
+  for (k = 0; k < marks.length; k++) {
+    m = marks[k];
+    if (!m) continue;
+    h += '<line class="ldr" x1="' + m.x + '" y1="' + (m.y + 8) + '" x2="' + m.x + '" y2="' + m.y2 + '"/>';
+  }
+  h += '<text x="54" y="50">起点 ' + n1(c.w[0]) + ' kg</text>';
+  h += '<text x="588" y="326" text-anchor="end">终点 ' + n1(c.w[c.n]) + ' kg</text>';
+  h += '<text x="40" y="360">' + sd(c.s.start) + '</text>';
+  h += '<text x="600" y="360" text-anchor="end">' + sd(c.s.end) + '</text>';
+  for (k = 0; k < marks.length; k++) {
+    m = marks[k];
+    if (!m) continue;
+    var tx = Math.max(150, Math.min(490, m.x));
+    h += '<text class="an" x="' + tx + '" y="' + m.y + '" text-anchor="middle">' + m.text + '</text>';
+  }
+  return h;
+}
+
+/* ================= 分享卡 ================= */
+var SHARE_NICKNAME = '';
+var shareSheet = document.getElementById('shareSheet');
+var shareImg = document.getElementById('shareImg');
+var shareSave = document.getElementById('shareSave');
+var sharePrivate = document.getElementById('sharePrivate');
+var shareAssets = null;
+var shareUrl = null;
+var shareBusy = false;
+
+function wrapLines(c, text, maxW) {
+  var out = [], line = '', i;
+  for (i = 0; i < text.length; i++) {
+    var t = line + text.charAt(i);
+    if (c.measureText(t).width > maxW && line) { out.push(line); line = text.charAt(i); }
+    else line = t;
+  }
+  if (line) out.push(line);
+  return out;
+}
+function drawCover(c, img, w, h) {
+  var ir = img.width / img.height, tr = w / h, sw, sh, sx, sy;
+  if (ir > tr) { sh = img.height; sw = sh * tr; sx = (img.width - sw) / 2; sy = 0; }
+  else { sw = img.width; sh = sw / tr; sx = 0; sy = (img.height - sh) / 2; }
+  c.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+}
+function drawAvatar(c, img, x, y, size) {
+  c.save();
+  c.beginPath();
+  c.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+  c.clip();
+  c.fillStyle = '#D9EEF2';
+  c.fillRect(x, y, size, size);
+  if (img && img.naturalWidth) {
+    var s = Math.min(img.width, img.height);
+    c.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, x, y, size, size);
+  } else {
+    c.fillStyle = '#006F8A';
+    c.font = '16px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.textAlign = 'center';
+    c.fillText(SHARE_NICKNAME.charAt(0), x + size / 2, y + size / 2 + 6);
+  }
+  c.restore();
+}
+function paintShareCard(a, onDone) {
+  var W = 375, H = 667;
+  var hide = !!(sharePrivate && sharePrivate.checked);
+  var cv = document.createElement('canvas');
+  cv.width = W * 2; cv.height = H * 2;
+  var c = cv.getContext('2d');
+  c.scale(2, 2);
+  c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
+  if (a.persona) drawCover(c, a.persona, W, H);
+  var g = c.createLinearGradient(0, 260, 0, H);
+  g.addColorStop(0, 'rgba(255,255,255,0)');
+  g.addColorStop(.30, 'rgba(255,255,255,.95)');
+  g.addColorStop(1, 'rgba(255,255,255,.99)');
+  c.fillStyle = g; c.fillRect(0, 260, W, H - 260);
+  c.shadowColor = 'rgba(255,255,255,.95)'; c.shadowBlur = 6;
+  c.fillStyle = '#006F8A';
+  c.font = '11px "ZZ-Myriad", Helvetica, sans-serif';
+  c.fillText('体重管理 · 减重回顾', 24, 34);
+  c.shadowBlur = 0;
+  var p = curPersona || PERSONAS[PERSONAS.length - 1];
+  var parts = p.name.split('|');
+  c.fillStyle = '#006F8A';
+  c.font = '11px "ZZ-Myriad", Helvetica, sans-serif';
+  c.fillText('06 / 你的减重人格是', 24, 388);
+  c.fillStyle = '#33393B';
+  c.font = '27px "ZZ-CuYuan", "PingFang SC", sans-serif';
+  c.fillText(parts[0], 24, 432);
+  c.fillText(parts[1] + '。', 24, 470);
+  if (!hide) {
+    c.textAlign = 'right';
+    c.fillStyle = '#8B8B88';
+    c.font = '10.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.fillText('成功减重', 351, 418);
+    c.fillStyle = '#006F8A';
+    c.font = '700 29px "ZZ-Myriad", Helvetica, sans-serif';
+    c.fillText('-' + curTotal.toFixed(1) + 'kg', 351, 454);
+    c.textAlign = 'left';
+  }
+  c.fillStyle = '#595757';
+  c.font = '13.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+  var lines = wrapLines(c, p.share, 327), y = 510;
+  lines.slice(0, 4).forEach(function (ln) { c.fillText(ln, 24, y); y += 24; });
+  if (!hide) {
+    drawAvatar(c, a.avatar, 24, 600, 36);
+    c.fillStyle = '#595757';
+    c.font = '13px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.fillText(SHARE_NICKNAME, 68, 624);
+  }
+  var qx = 299, qy = 592;
+  if (a.qr && a.qr.naturalWidth) {
+    c.fillStyle = '#FFFFFF';
+    c.fillRect(qx - 3, qy - 3, 56, 56);
+    c.drawImage(a.qr, qx, qy, 50, 50);
+  }
+  c.textAlign = 'center';
+  c.fillStyle = '#8B8B88';
+  c.font = '10px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+  c.fillText('扫码了解', qx + 25, 656);
+  c.textAlign = 'left';
+  function done(url) { if (onDone) onDone(url); }
+  if (cv.toBlob) {
+    cv.toBlob(function (blob) {
+      done(blob ? URL.createObjectURL(blob) : cv.toDataURL('image/png'));
+    }, 'image/png');
+  } else {
+    done(cv.toDataURL('image/png'));
+  }
+}
+function renderShareCard(onDone) {
+  if (!shareAssets) { if (onDone) onDone(); return; }
+  paintShareCard(shareAssets, function (url) {
+    if (shareUrl && shareUrl.indexOf('blob:') === 0 && window.URL && URL.revokeObjectURL) {
+      URL.revokeObjectURL(shareUrl);
+    }
+    shareUrl = url;
+    if (shareImg) shareImg.src = url;
+    if (shareSave) shareSave.href = url;
+    if (shareSheet) shareSheet.hidden = false;
+    if (onDone) onDone();
+  });
+}
+function openShareCard(onDone) {
+  if (shareBusy) return;
+  shareBusy = true;
+  var fallback = PERSONAS[PERSONAS.length - 1].code;
+  var srcs = [
+    IMG_BASE + '/' + G + '/' + (curPersona ? curPersona.code : fallback) + '.jpg',
+    IMG_BASE + '/avatar.jpg',
+    IMG_BASE + '/qr-assistant.png'
+  ];
+  var imgs = [], left = srcs.length, painted = false, i;
+  function allReady() {
+    shareAssets = { persona: imgs[0], avatar: imgs[1], qr: imgs[2] };
+    function paint() {
+      if (painted) return;
+      painted = true;
+      renderShareCard(function () { shareBusy = false; onDone(); });
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(paint, paint);
+    else paint();
+    window.setTimeout(paint, 800);
+  }
+  for (i = 0; i < srcs.length; i++) {
+    (function (k) {
+      var im = new Image();
+      im.onload = im.onerror = function () {
+        imgs[k] = (im.complete && im.naturalWidth) ? im : null;
+        if (--left === 0) allReady();
+      };
+      im.src = srcs[k];
+    })(i);
+  }
+}
+if (shareSheet) {
+  [].slice.call(shareSheet.querySelectorAll('[data-share-close]')).forEach(function (el) {
+    el.addEventListener('click', function () { shareSheet.hidden = true; });
+  });
+}
+if (sharePrivate) {
+  sharePrivate.addEventListener('change', function () {
+    if (shareSheet && !shareSheet.hidden) renderShareCard();
+  });
+}
+var shareFab = document.getElementById('shareFab');
+if (shareFab) {
+  shareFab.addEventListener('click', function () {
+    if (shareBusy) return;
+    shareFab.disabled = true;
+    openShareCard(function () { shareFab.disabled = false; });
+  });
+}
+[].slice.call(document.querySelectorAll('[data-cta]')).forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    btn.disabled = true;
+    btn.textContent = '正在生成分享卡…';
+    openShareCard(function () { btn.disabled = false; btn.textContent = '分享'; });
+  });
+});
+var sheet = document.getElementById('sheet');
+var qrLink = document.getElementById('qrLink');
+if (qrLink) qrLink.addEventListener('click', function () { if (sheet) sheet.hidden = false; });
+if (sheet) {
+  [].slice.call(sheet.querySelectorAll('[data-close]')).forEach(function (el) {
+    el.addEventListener('click', function () { sheet.hidden = true; });
+  });
+}
+
+/* ================= 患者切换 ================= */
+var pswitch = document.getElementById('pswitch');
+var pswitchMenu = document.getElementById('pswitchMenu');
+function personaLabel(p) { var a = p.name.split('|'); return a[0] + a[1]; }
+
+function applyPatient(id) {
+  var s = null, i;
+  for (i = 0; i < SAMPLES.length; i++) if (SAMPLES[i].id === id) s = SAMPLES[i];
+  if (!s || !s.weeks || s.weeks.length < 3) return;
+  showAllScreens();
+  curSample = s;
+  G = s.gender;
+  applyImages();
+  var data = toData(s);
+  var c = derive(s);
+  curTotal = c.total;
+  SHARE_NICKNAME = s.name;
+
+  function disp(elId, show) { var el = document.getElementById(elId); if (el) el.style.display = show ? '' : 'none'; }
+
+  /* 封面 */
+  setHtml('heroNum', '-' + curTotal.toFixed(1) + '<i>kg</i>');
+  setHtml('heroPeriod', c.n + ' 周，' + n1(c.w[0]) + 'kg 到 ' + n1(c.w[c.n]) + 'kg。');
+
+  /* 01 第一次看见变化 */
+  var fw = c.first, fdrop = +(c.w[0] - c.w[fw]).toFixed(1);
+  setText('s1H2', c.hasDrop
+    ? '第 ' + (fw + 1) + ' 周，轻了 ' + fdrop.toFixed(1) + ' kg。'
+    : '这一程的变化，是从记录里一点一点看出来的。');
+  setText('s1K', '第 ' + (fw + 1) + ' 周 · ' + md(c.wd[fw]) + ' · 较起点');
+  setHtml('s1Num', neg(fdrop) + '<i>kg</i>');
+  setHtml('s1Body', c.gap <= 21
+    ? '变化来得比预想中早，身体已经给出了回应。<br />这个起点，值得好好记下来。'
+    : '从开始记录到这一次，中间隔了一段日子。<br />你没有停，身体也慢慢给出了回应。');
+
+  /* 02 曲线 */
+  setText('s2Eyebrow', '02 / ' + c.n + ' 周，' + c.w.length + ' 次记录');
+  var svg = document.getElementById('chartSvg');
+  if (svg) {
+    svg.innerHTML = chartInner(c);
+    svg.setAttribute('aria-label', c.n + ' 周体重变化曲线，起点 ' + n1(c.w[0]) + ' kg，终点 ' + n1(c.w[c.n]) + ' kg');
+  }
+  var up = rises(deltas(c.w)), stalled = c.p.run >= 3 && c.p.after >= 1.0;
+  setText('s2H2', up >= 2 ? '有起伏，但方向没变。'
+    : up === 0 ? (stalled ? '停了一段，又稳稳接上。' : '一路平稳，没有反复。')
+    : '有快有慢，一直往前。');
+  setHtml('s2Body', up >= 2
+    ? '数字上上下下的时候，你还是把这段路走完了。<br />这份稳住的心态，和最后的结果一样值得高兴。'
+    : up === 0 ? (stalled
+      ? '中间有一段变化放缓，之后又接着往下。<br />把整段放在一起看，方向一直没有变。'
+      : '一路平稳地往下，是身体最舒服的节奏。<br />这样的变化，来得扎实也看得清楚。')
+    : '有一次小幅回升，之后继续往下。<br />回头看，这段路走得比想象中稳。');
+
+  /* 03 变化量：体重 + 腰围 / BMI 复测变化 */
+  var mc = [{ k: '体重', v: c.totalText, u: 'kg' }].concat(s.metrics || []), gh = '', i;
+  for (i = 0; i < mc.length; i++) {
+    gh += '<div class="cell"><span class="k">' + mc[i].k + '</span><div class="v tnum">' + mc[i].v +
+      (mc[i].u ? '<i>' + mc[i].u + '</i>' : '') + '</div></div>';
+  }
+  setHtml('s3Grid', gh);
+  disp('s3Grid', mc.length > 0);
+  setHtml('s3Body', s.gender === 'f' && s.age < 40
+    ? '体重、腰围和 BMI 的变化都来自期末复测的记录，<br />这份好看，是你一点一点认真换来的。'
+    : '比起秤上的数字，更让人高兴的是身体轻快了、状态稳了。<br />腰围和 BMI 的变化写在期末复测记录里。');
+
+  /* 04 改善的内在指标 */
+  var prog = s.labsProgress || [], lh = '', pc = 0;
+  for (i = 0; i < prog.length; i++) {
+    var L = prog[i];
+    if (!L || !L.improved) continue;
+    pc++;
+    lh += '<div class="chk">' + CHK + '<div class="ci"><div class="r1"><span class="t">' + L.t +
+      '</span><span class="val tnum">' + L.val + '</span></div><div class="why">' + L.why + '</div></div></div>';
+  }
+  setHtml('s4List', lh);
+  disp('s4Head', pc > 0);
+  disp('s4List', pc > 0);
+  if (pc) setText('s4Head', pc + ' 项身体健康指标');
+
+  /* 05 服务统计 + 月报里的实例 */
+  var ev = s.evidence || '';
+  setHtml('s5After', ev ? '月报里的记录：' + ev : '');
+  disp('s5After', !!ev);
+  var s5Sec = screenOf('s5Stats');
+  if (s5Sec) s5Sec.classList.toggle('no-after', !ev);
+  var st = [s.service.consult, s.service.adjust, s.service.visit];
+  var stk = ['顾问沟通', '方案调整', '复查'], sh = '', statCount = 0;
+  for (i = 0; i < 3; i++) {
+    if (!st[i]) continue;
+    statCount++;
+    sh += '<div><div class="v tnum">' + st[i] + '<i>次</i></div><div class="k">' + stk[i] + '</div></div>';
+  }
+  setHtml('s5Stats', sh);
+  disp('s5Stats', statCount > 0);
+
+  /* 06 人格（命中即停） */
+  var forced = '';
+  try { forced = (new URLSearchParams(location.search).get('p') || '').toUpperCase(); } catch (e) {}
+  var cur = null;
+  for (i = 0; i < PERSONAS.length; i++) { if (PERSONAS[i].code === forced) cur = PERSONAS[i]; }
+  if (!cur) cur = pickPersona(data);
+  curPersona = cur;
+  var parts = cur.name.split('|');
+  setHtml('personaName', parts[0] + '<br />' + parts[1] + '。');
+  setText('personaReason', cur.share);
+  var imgEl = document.getElementById('personaImg');
+  if (imgEl) {
+    imgEl.style.backgroundImage = 'url("' + IMG_BASE + '/persona/' + G + '/' + cur.code + '.jpg")';
+    imgEl.setAttribute('aria-label', '「' + parts[0] + parts[1] + '」人格插画');
+  }
+  setHtml('s6Num', c.totalText + '<i>kg</i>');
+
+  /* 07 收尾 */
+  setHtml('s7Lead', (c.total > 0 ? c.n + ' 周的阶段成果' : c.n + ' 周的记录') + '，值得继续守护。');
+
+  /* 一屏没有任何可展示内容就整屏不出现 */
+  hideScreen('s3Grid', mc.length === 0);
+  hideScreen('s4List', pc === 0);
+  hideScreen('s5Stats', statCount === 0 && !ev);
+  onScroll();
+
+  if (pswitchMenu) {
+    [].slice.call(pswitchMenu.querySelectorAll('button[data-p]')).forEach(function (b) {
+      b.classList.toggle('is-cur', b.getAttribute('data-p') === id);
+    });
+    pswitchMenu.hidden = true;
+  }
+  if (pswitch) pswitch.setAttribute('aria-expanded', 'false');
+  document.title = s.name + ' · 减重回顾（Case 演示）';
+  try {
+    var u = new URL(location.href);
+    u.searchParams.set('case', id);
+    history.replaceState(null, '', u.pathname + u.search + u.hash);
+  } catch (e) {}
+}
+
+if (pswitchMenu) {
+  SAMPLES.forEach(function (s) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('data-p', s.id);
+    b.textContent = s.id + ' ' + s.name + ' · ' + personaLabel(pickPersona(toData(s)));
+    b.addEventListener('click', function () { applyPatient(s.id); });
+    pswitchMenu.appendChild(b);
+  });
+}
+if (pswitch && pswitchMenu) {
+  pswitch.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = pswitchMenu.hidden;
+    pswitchMenu.hidden = !open;
+    pswitch.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function (e) {
+    if (!pswitch.contains(e.target) && !pswitchMenu.contains(e.target)) {
+      pswitchMenu.hidden = true;
+      pswitch.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+/* ?case=C1 深链，默认第一位 */
+var initId = SAMPLES[0].id;
+try {
+  var Q = new URLSearchParams(location.search);
+  if (Q.get('case')) {
+    for (var k = 0; k < SAMPLES.length; k++) { if (SAMPLES[k].id === Q.get('case')) initId = SAMPLES[k].id; }
+  }
+} catch (e) {}
+applyPatient(initId);
+onScroll();
+
+})();
+</script>
+</body>
+</html>
