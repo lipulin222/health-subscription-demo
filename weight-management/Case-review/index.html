@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>减重评估 · 真实用户 Case 演示（脱敏）</title>
+<style>
+/* 复用 weight-management/Assessment-report（DistinctUI 3.0）的视觉体系 */
+:root {
+  --bg-page:#F2F5F6; --stroke:#E1E1E1; --divider:#E8E8E8;
+  --t-title:#1A1A1A; --t-primary:#333333; --t-secondary:#666666; --t-placeholder:#999999;
+  --brand:#009BBF; --brand-focus:#CAECF3; --brand-light:#EDFAFC; --brand-light-active:#DEF3F7; --brand-active:#007C99;
+  --warn:#E6732F; --gray:#98A2A8;
+  --radius-small:2px; --radius-default:4px; --radius-large:6px; --radius-card:8px; --radius-panel:12px;
+  --space-card-gap:10px; --space-module-gap:15px;
+  --fs-1:11px; --fs-2:12px; --fs-3:14px; --fs-4:16px; --fs-5:17px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --font:"PingFang SC","HarmonyOS Sans SC","MiSans",-apple-system,"Microsoft YaHei",sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { font-family:var(--font); color:var(--t-primary); background:#EBEFF0; -webkit-font-smoothing:antialiased; line-height:1.7; }
+button { font-family:var(--font); }
+
+/* ===== 页头 ===== */
+.top { background:#FFF; border-bottom:1px solid var(--divider); padding:18px 28px 16px; }
+.top__hd { display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+.top__t { font-size:20px; font-weight:600; color:var(--t-title); }
+.top__tag { font-size:12px; color:var(--brand); background:var(--brand-light); border-radius:999px; padding:3px 12px; }
+.top__d { margin-top:6px; font-size:13px; color:var(--t-secondary); line-height:21px; max-width:1080px; }
+.top__d b { color:var(--t-primary); font-weight:500; }
+
+/* ===== 布局 ===== */
+.wrap { display:flex; gap:20px; padding:20px 28px 40px; align-items:flex-start; max-width:1560px; margin:0 auto; }
+.left { flex:0 0 400px; position:sticky; top:20px; max-height:calc(100vh - 60px); overflow-y:auto; scrollbar-width:thin; }
+.right { flex:1 1 auto; min-width:0; display:flex; justify-content:center; }
+.report { width:100%; max-width:640px; background:var(--bg-page); border-radius:var(--radius-panel); box-shadow:0 0 30px rgba(0,0,0,.06); padding:14px 15px var(--space-module-gap); }
+@media (max-width:1080px) { .wrap { flex-direction:column; } .left { position:static; max-height:none; flex:none; width:100%; } }
+
+/* ===== 左栏：case 列表 ===== */
+.card { background:#FFF; border-radius:var(--radius-card); }
+.list { padding:8px; }
+.list__cap { padding:8px 10px 4px; font-size:11px; color:var(--t-placeholder); }
+.case-btn { display:flex; align-items:center; gap:10px; width:100%; text-align:left; cursor:pointer; border:none; background:none; border-radius:var(--radius-large); padding:9px 10px; transition:background .15s var(--ease); }
+.case-btn:hover { background:var(--bg-page); }
+.case-btn.is-cur { background:var(--brand-light); }
+.case-btn.is-cur .cb__name { color:var(--brand); }
+.cb__name { flex:0 0 auto; font-size:14px; font-weight:600; color:var(--t-title); min-width:56px; }
+.cb__tag { flex:1 1 auto; min-width:0; font-size:12px; color:var(--t-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.badge { flex:0 0 auto; font-size:10px; border-radius:999px; padding:2px 8px; line-height:1.5; }
+.badge--1 { color:var(--gray); background:#EEF1F2; }
+.badge--2 { color:var(--brand); background:var(--brand-light); }
+.badge--3 { color:var(--warn); background:#FBF0E7; }
+
+/* ===== 左栏：case 详情 ===== */
+.detail { margin-top:12px; }
+.dt__hd { padding:14px 16px 4px; }
+.dt__name { font-size:17px; font-weight:600; color:var(--t-title); display:flex; align-items:center; gap:10px; }
+.dt__sec { padding:12px 16px 2px; }
+.dt__cap { font-size:11px; color:var(--t-placeholder); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.dt__cap::before { content:""; width:3px; height:11px; border-radius:2px; background:var(--brand); }
+.facts { width:100%; border-collapse:separate; border-spacing:0; font-size:13px; }
+.facts td { padding:7px 10px; border-bottom:1px solid var(--divider); vertical-align:top; line-height:1.6; }
+.facts tr:last-child td { border-bottom:none; }
+.facts td:first-child { width:88px; color:var(--t-placeholder); }
+.facts td:last-child { color:var(--t-primary); }
+.klist { list-style:none; }
+.klist li { position:relative; padding-left:14px; font-size:13px; color:var(--t-secondary); line-height:1.7; }
+.klist li + li { margin-top:5px; }
+.klist li::before { content:""; position:absolute; left:2px; top:.68em; width:4px; height:4px; border-radius:50%; background:var(--brand); }
+.qa { list-style:none; }
+.qa li { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--divider); font-size:12.5px; line-height:1.6; }
+.qa li:last-child { border-bottom:none; }
+.qa__q { flex:0 0 190px; color:var(--t-placeholder); }
+.qa__a { flex:1 1 auto; min-width:0; color:var(--t-primary); }
+.qa__a em { font-style:normal; color:var(--t-placeholder); }
+.dt__foot { padding:6px 16px 14px; font-size:11px; color:var(--t-placeholder); line-height:18px; }
+
+/* ===== 右栏：评估报告（同 Assessment-report）===== */
+.hero { border-radius:var(--radius-card); padding:15px; background:#FFF; }
+.hero__name { display:block; font-size:17px; font-weight:600; color:var(--t-title); line-height:24px; }
+.hero__meta { display:block; margin-top:4px; font-size:var(--fs-2); color:var(--t-placeholder); line-height:17px; }
+.grade { margin-top:12px; background:var(--brand-light); border-radius:var(--radius-default); padding:11px 13px 12px; }
+.grade__h { display:flex; align-items:center; gap:8px; font-size:var(--fs-1); line-height:1.4; color:var(--t-secondary); }
+.grade__h b { font-size:var(--fs-3); color:var(--brand); font-weight:600; }
+.grade__bar { display:flex; gap:4px; margin-top:9px; }
+.grade__bar i { flex:1; height:3px; border-radius:2px; background:var(--brand-focus); }
+.grade__bar i.is-on { background:var(--brand); }
+.grade__ax { display:flex; gap:4px; margin-top:6px; }
+.grade__ax span { flex:1; text-align:center; font-size:10px; color:var(--t-placeholder); line-height:1.35; }
+.grade__ax span.is-on { color:var(--brand); font-weight:500; }
+.hero__hint { display:block; margin-top:10px; font-size:var(--fs-3); line-height:23px; color:var(--t-secondary); text-align:left; }
+.mod { margin-top:var(--space-card-gap); overflow:hidden; }
+.mod__h { display:flex; align-items:center; gap:9px; padding:12px 15px; }
+.mod__no { flex-shrink:0; font-size:10px; font-weight:500; letter-spacing:.04em; color:#FFF; background:var(--brand); border-radius:var(--radius-small); padding:2px 6px; line-height:1.5; }
+.mod__t { flex:1; min-width:0; font-size:15px; font-weight:600; color:var(--t-title); line-height:22px; }
+.mod__b-in { padding:0 15px 15px; }
+.mod__b-in p { font-size:var(--fs-3); line-height:24px; color:var(--t-secondary); }
+.mod__b-in > * + * { margin-top:10px; }
+.mod__b-in .note { font-size:var(--fs-2); line-height:19px; color:var(--t-placeholder); }
+.ul { list-style:none; }
+.ul li { position:relative; padding-left:16px; font-size:var(--fs-3); color:var(--t-secondary); line-height:24px; }
+.ul li::before { content:""; position:absolute; left:4px; top:.72em; width:4px; height:4px; border-radius:50%; background:var(--brand); }
+.ul b { color:inherit; font-weight:400; }
+.mbar { display:flex; align-items:center; gap:10px; }
+.mbar__lab { font-size:var(--fs-2); color:var(--t-secondary); flex-shrink:0; }
+.mbar__lv { font-size:var(--fs-3); font-weight:600; color:var(--brand); flex-shrink:0; }
+.mbar__tr { flex:1 1 auto; max-width:320px; height:4px; border-radius:2px; background:var(--stroke); overflow:hidden; }
+.mbar__tr i { display:block; height:100%; border-radius:2px; background:var(--brand); }
+.tb { width:100%; border-collapse:separate; border-spacing:0; margin-top:var(--space-card-gap); font-size:13px; }
+.tb th, .tb td { padding:9px 11px; text-align:left; vertical-align:top; line-height:1.7; }
+.tb th { background:var(--bg-page); color:var(--t-secondary); font-size:var(--fs-1); font-weight:500; }
+.tb th:first-child { border-radius:var(--radius-default) 0 0 0; }
+.tb th:last-child { border-radius:0 var(--radius-default) 0 0; }
+.tb td { border-bottom:1px solid var(--divider); color:var(--t-primary); }
+.tb tr:last-child td { border-bottom:none; }
+.tb td:first-child { width:76px; }
+.disc { margin-top:var(--space-card-gap); padding:0 2px 4px; font-size:var(--fs-1); color:var(--t-placeholder); line-height:18px; text-align:left; }
+.hl { font-style:normal; color:var(--brand); }
+/* 健康影响链 */
+.chain { margin:2px 0 14px; display:flex; align-items:flex-start; }
+.chain__col { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; }
+.chain__ico { width:100%; max-width:46px; aspect-ratio:1/1; }
+.chain__ico img { width:100%; height:100%; display:block; }
+.chain__t { margin-top:5px; font-size:12px; font-weight:400; color:#1F8CA8; line-height:17px; white-space:nowrap; }
+.chain__lk { flex:0 0 auto; padding-top:14px; color:#999999; font-size:12px; line-height:17px; white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top__hd">
+    <span class="top__t">减重评估 · 真实用户 Case 演示</span>
+    <span class="top__tag">数据已脱敏 · 10 位代表性画像</span>
+  </div>
+  <p class="top__d"><b>说明：</b>左侧 case 关键信息提炼自两批真实服务数据（患者已改用假名，年龄、体测与细节做了模糊化处理，不含真实姓名、ID、就诊机构与医生）；问卷答案按真实用户答题习惯<b>模拟</b>（多数人不会照搬病历、也懒得写字）；右侧评估报告按 <b>REQ-WL-PLAN-06 减重评估报告提示词</b>口径生成，页面样式对齐线上评估报告页。本页仅用于内部演示，不构成医疗建议。</p>
+</header>
+
+<div class="wrap">
+  <aside class="left">
+    <div class="card list" id="caseList"><div class="list__cap">Case 用户（点击切换）</div></div>
+    <div class="card detail" id="caseDetail"></div>
+  </aside>
+  <main class="right">
+    <div class="report" id="view"></div>
+  </main>
+</div>
+
+<script>
+'use strict';
+/* ===== 工具（与 Assessment-report 同口径）===== */
+var DISC = '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。';
+var AXIS = ['无需减重','需要减重管理','需要减重与慢病结合管理'];
+var TIER = {
+  exclude:   { value:'无需减重', cur:1, b:'badge--1', bt:'第1档 · 无需减重' },
+  normal:    { value:'需要减重管理', cur:2, b:'badge--2', bt:'第2档 · 需要减重管理' },
+  offline:   { value:'需要减重与慢病结合管理', cur:3, b:'badge--3', bt:'第3档 · 需要减重与慢病结合管理' }
+};
+var ARW = '';
+function ul(items){ return '<ul class="ul">' + items.map(function(it){ return '<li><b>'+it[0]+'</b>：'+it[1]+'</li>'; }).join('') + '</ul>'; }
+function jin(w,pct){ return Math.round(w*pct/100*2); }
+function drugTable(w){
+  var TB = [['1 个月','3%–4%','−'+jin(w,3)+'~'+jin(w,4)+' 斤'],['3 个月','8%–10%','−'+jin(w,8)+'~'+jin(w,10)+' 斤'],['6 个月','12%–15%','−'+jin(w,12)+'~'+jin(w,15)+' 斤'],['12 个月','18%–21%','−'+jin(w,18)+'~'+jin(w,21)+' 斤']];
+  return '<table class="tb"><thead><tr><th>周期</th><th>平均减重</th><th>你的参考值</th></tr></thead><tbody>' +
+    TB.map(function(r){ return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'; }).join('') + '</tbody></table>';
+}
+function mbar(level,pct){
+  return '<div class="mbar"><span class="mbar__lab">匹配度</span><span class="mbar__lv">'+level+'</span><span class="mbar__tr"><i style="width:'+pct+'%"></i></span></div>';
+}
+function chain(){
+  var ROWS = [
+    ['icons/ico-life.png','生活方式'],
+    ['icons/ico-weight.png','体重增加'],
+    ['icons/ico-index.png','指标异常'],
+    ['icons/ico-chronic.png','慢性疾病']
+  ];
+  var LINKS = ['影响','导致','发展'];
+  var h = '<div class="chain">';
+  ROWS.forEach(function(r,i){
+    h += '<div class="chain__col"><span class="chain__ico"><img loading="lazy" decoding="async" src="'+r[0]+'" alt="" aria-hidden="true"></span>' +
+      '<b class="chain__t">'+r[1]+'</b></div>';
+    if (i < LINKS.length) h += '<div class="chain__lk">'+LINKS[i]+' &gt;</div>';
+  });
+  return h + '</div>';
+}
+var FIXED_P = '<p>不良的生活方式（暴饮暴食、缺乏运动、作息不佳）导致体重增加，进而引起血压、血糖、血脂等指标异常。异常指标持续发展，最终演变为高血压、糖尿病等不可逆的慢性疾病。</p>';
+var DRUG_LEAD = '根据你当前的体重情况，参考按临床数据，用药后的体重预计变化情况如下：';
+var DRUG_NOTE = '<p class="note">上述区间来自临床研究，个体差异较大，以实际随访数据为准。</p>';
+function drugFit(p, why){
+  return mbar('较高',78) +
+    '<p>结合你的情况，我们建议在调整饮食和运动的同时，配合 GLP-1 类药物一起减。核心理由是：<br><span class="hl">' + why + '</span></p>' +
+    '<p>' + DRUG_LEAD + '</p>' + drugTable(p.w) + DRUG_NOTE;
+}
+function drugOffline(){
+  return mbar('需医生面诊评估',65) +
+    '<p>GLP-1 类药物与你正在使用的药物可能相互影响，需要医生统一评估后才能使用。</p>' +
+    '<p class="note">匹配度基于初步信息估算，个体差异较大。</p>';
+}
+function drugNo(reason){
+  return mbar('不适用',10) + '<p>' + reason + '</p>';
+}
+
+/* ===== 10 位脱敏 case（问卷答案为模拟，报告按 REQ-WL-PLAN-06 口径生成）===== */
+var Q = ['你的性别','你的年龄','你的身高与体重','你认为导致你体重增加的主要原因','目前确诊过的疾病','最近体检提示偏高的指标','你或直系亲属是否被诊断过甲状腺髓样癌或 2 型多发性内分泌腺瘤病','安全筛查：你现在或曾经有过以下情况吗','你是否在备孕、怀孕或哺乳','除体重数字外，你的治疗目标','你还有什么想补充的（选填）'];
+
+var CASES = [
+/* ---------- C1 ---------- */
+{ id:'C1', name:'林嘉禾', tag:'23 岁大基数新客 · 无慢病', tier:'normal', gender:'女', age:23, h:163, w:86, bmi:32.4,
+  key:[
+    '23 岁女性，初诊体重约 86kg（BMI 32.2），无确诊慢病',
+    '体检提示甲状腺回声弥漫性改变，医生建议查甲状腺抗体（尚未确诊）',
+    '否认甲状腺髓样癌家族史及胰腺炎病史；屏障避孕',
+    'GLP-1 起始剂量 2.5mg，目标体重 60kg',
+    '画像要点：年轻、大基数、代谢指标尚未出问题，是干预窗口最好的类型'
+  ],
+  qa:[
+    ['女'],['23'],['身高 163cm、体重 86kg（BMI 32.4，自动计算）'],
+    ['饮食习惯（爱吃甜食、外卖多）、缺乏运动、睡眠不足'],
+    ['以上都没有'],['以上都没有'],['没有'],['以上都没有'],['否'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）、追求好身材，穿衣服好看'],
+    ['<em>未填写</em>']
+  ],
+  hint:'你的 BMI 已达 32.4，长期来看对血压、血脂和睡眠都是负担，减重的必要性明确。建议饮食、运动与药物治疗同步开展，三者结合能达到最好的效果。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为32.4，结合问卷信息，初步判断你当前正处于<em class="hl">指标异常向慢性疾病发展</em>的过渡期。体重增加的原因是甜食外卖偏多的饮食习惯、缺乏运动和长期熬夜；当下的主要任务是建立规律的三餐和活动节奏，把体重稳步降下来。</p>' },
+    { t:'饮食建议', html:'<p>你的饮食问题集中在甜食、外卖和熬夜带来的夜宵，调整就从这三个源头下手：</p>' +
+      ul([['含糖饮料和甜食先停','这是你体重增加最直接的来源，戒断后变化也最明显'],['外卖换成有选择的点法','优先蒸煮做法和荤素搭配，少点油炸、盖浇和重酱料'],['固定三餐，晚饭后不再进食','熬夜容易带来夜宵，先把这个循环断开']]) +
+      '<p class="note">进入后续流程后，营养师会结合你的口味与作息给出个性化食谱。</p>' },
+    { t:'运动建议', html:'<p>运动先把活动量建立起来，再逐步提升强度：</p>' +
+      ul([['每天快走 20–30 分钟','通勤提前下车、饭后散步都可以计入'],['久坐时每小时起身活动','设提醒即可，先打断连续久坐'],['两三周后加入力量训练','每周 2 次，保住肌肉量，减重后不易反弹']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ],
+  why:'体重基数较大时，减重初期单靠运动消耗有限、关节负担也重，而工作节奏快、常熬夜的生活方式又很难长期自律；药物可以先把体重降下来、加快减重进程，让你更早看到变化、更容易建立信心，提高减重的成功概率。' },
+
+/* ---------- C2 ---------- */
+{ id:'C2', name:'周子昂', tag:'28 岁男性 · 脂肪肝 + 高尿酸', tier:'normal', gender:'男', age:28, h:175, w:74.5, bmi:24.3,
+  key:[
+    '28 岁男性，基线体重约 80kg（BMI 28.9），就诊时已自行减至 74.7kg',
+    '重度脂肪肝、转氨酶升高（ALT 76U/L）；尿酸 684μmol/L',
+    '血脂异常（LDL 3.77 / HDL 0.83 / TG 3.04 mmol/L）；肌酐 100μmol/L（临界）',
+    '夜间打鼾，医生建议睡眠监测（未做）；HbA1c 5.6% 正常',
+    '玛仕度肽 2mg 因腹胀换用替尔泊肽 2.5mg',
+    '画像要点：年轻男性、代谢指标全面亮红灯、用药有胃肠不适'
+  ],
+  qa:[
+    ['男'],['28'],['身高 175cm、体重 74.5kg（BMI 24.3，自动计算）'],
+    ['饮食习惯（外卖多）、久坐'],
+    ['脂肪肝'],
+    ['血脂偏高、尿酸偏高、体检提示脂肪肝'],
+    ['没有'],['以上都没有'],['<em>男性，跳过</em>'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）'],
+    ['“转氨酶有点高，想顺便把肝的问题一起改善”']
+  ],
+  hint:'你的 BMI 24.3 刚过建议干预线，确诊的脂肪肝和偏高的血脂、尿酸都会随体重下降改善，现在是干预成本最低的时候。建议饮食、运动与药物治疗同步开展，肝酶和尿酸是你这次减重最先受益的指标。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为24.3，结合问卷信息，初步判断你当前正处于<em class="hl">指标异常向慢性疾病发展</em>的过渡期。体重增加的原因是外卖偏多的饮食习惯和久坐；你已经把体重往下减了一截，当下的主要任务是把这个节奏保持住，让脂肪肝和各项指标跟着改善。</p>' +
+      ul([['确诊脂肪肝、肝酶偏高','随体脂下降会改善，减重期间按随访安排复查肝功能'],['尿酸偏高','体重快速下降阶段可能诱发痛风发作，出现关节红肿疼痛及时就诊']]) },
+    { t:'饮食建议', html:'<p>饮食优先照顾脂肪肝和尿酸：</p>' +
+      ul([['外卖换成有选择的点法','优先蒸煮和荤素搭配，少点油炸和重酱料'],['酒、内脏和海鲜先减量','这几类对尿酸的影响最直接，每天足量喝水'],['主食三分之一换粗粮','燕麦、豆类和足量蔬菜每天保证']]) +
+      '<p class="note">进入后续流程后，营养师会给出更具体的食谱。</p>' },
+    { t:'运动建议', html:'<p>久坐是你的第二个源头，先把日常活动量建立起来：</p>' +
+      ul([['每天快走 30 分钟','可拆成 3 段完成，通勤提前下车、饭后散步都可以计入'],['久坐每小时起身活动','设提醒即可，先打断连续久坐'],['有基础后加力量训练','每周 2 次，保住肌肉量，减重后不易反弹']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ],
+  why:'你的体重基数不大，但脂肪肝和尿酸的问题已经实实在在出现，单靠饮食运动调整，指标改善通常需要较长时间；药物可以加快减重进程，让体重更早、更稳地降下来，肝酶和尿酸也随之更早改善，你已经开始的减重也更容易坚持到底。' },
+
+/* ---------- C3 ---------- */
+{ id:'C3', name:'吴书宜', tag:'42 岁产后女性 · 减重维持期', tier:'normal', gender:'女', age:42, h:162, w:66.5, bmi:25.3,
+  key:[
+    '42 岁女性，两年内体重 80.5kg → 66.3kg（BMI 30.6 → 25.3），处于维持期',
+    '确诊脂肪肝，HDL 偏低',
+    '血常规提示小细胞性贫血改变（疑缺铁或地中海贫血，未确诊）',
+    '替尔泊肽已加量至 7.5mg，有恶心、头晕乏力，易感冒',
+    '画像要点：产后中年女性、减重已见成效，重点是防反弹'
+  ],
+  qa:[
+    ['女'],['42'],['身高 162cm、体重 66.5kg（BMI 25.3，自动计算）'],
+    ['饮食习惯、缺乏运动、产后'],
+    ['脂肪肝'],
+    ['血脂偏高、体检提示脂肪肝'],
+    ['没有'],['以上都没有'],['否'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）、改善睡眠精力'],
+    ['<em>未填写</em>']
+  ],
+  hint:'你已经在一年多时间里减掉了 14 公斤，现在的任务是稳住成果、继续改善脂肪肝和血脂。建议在维持期把饮食、运动与药物配合好，防止反弹。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为25.3，结合问卷信息，初步判断你当前正处于<em class="hl">指标异常向慢性疾病发展</em>的过渡期。体重增加的原因是生育后的身体变化，加上饮食和活动量没跟上；你减重已经有明显成效，当下的主要任务是防止反弹，让脂肪肝和血脂继续改善。</p>' +
+      ul([['确诊脂肪肝','尚未到用药程度，随体脂下降会改善，按随访安排复查'],['血脂偏高','减重和维持期都按随访计划复查，观察改善情况']]) },
+    { t:'饮食建议', html:'<p>维持期的饮食，重点是稳住节奏、保住肌肉：</p>' +
+      ul([['三餐时间固定','带娃作息容易打乱吃饭节奏，先把三餐钉在固定时间'],['每餐先吃够蛋白质','鱼、禽、蛋、豆制品优先，抗饿的同时保住肌肉，防止反弹'],['主食换一半','白米白面换成一半杂粮杂豆，含糖饮料改为白水']]) +
+      '<p class="note">进入后续流程后，营养师会结合你的口味与作息给出个性化食谱。</p>' },
+    { t:'运动建议', html:'<p>维持期的运动，力量训练的优先级高于增加有氧量：</p>' +
+      ul([['每天累计快走 30 分钟','带娃出门的步行可以计入，拆成几段完成即可'],['每周 2 次力量训练','保住肌肉量是防反弹的基础，深蹲、弹力带在家都能做']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ],
+  why:'你已经用一年多减掉 14 公斤，最难的不是开始，而是接下来几年不反弹；维持期食欲容易回升、带娃又让规律运动变得困难，药物可以帮你把食欲稳住，守住已经拿到的成果，让脂肪肝和血脂有时间继续改善。' },
+
+/* ---------- C4 ---------- */
+{ id:'C4', name:'郑语棠', tag:'34 岁多囊 + 胆囊结石', tier:'normal', gender:'女', age:34, h:159, w:65, bmi:25.7,
+  key:[
+    '34 岁女性，产后 2 年；多囊卵巢综合征（PCOS）、胰岛素抵抗',
+    '胆囊结石 22mm，外科建议择期手术；脂肪肝；血脂、尿酸偏高',
+    '二甲双胍因腹泻停用；替尔泊肽 5mg 期间腹泻反复、脱发增多',
+    '画像要点：多囊让减重收益最大，但胆囊结石要求速度必须稳'
+  ],
+  qa:[
+    ['女'],['34'],['身高 159cm、体重 65kg（BMI 25.7，自动计算）'],
+    ['产后、饮食习惯、睡眠不足'],
+    ['脂肪肝'],
+    ['血脂偏高、体检提示脂肪肝'],
+    ['没有'],['胆结石或胆囊炎'],['否'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）、追求好身材，穿衣服好看'],
+    ['“有多囊卵巢综合征，胰岛素抵抗；胆囊有一颗结石，医生说先观察”']
+  ],
+  hint:'你的 BMI 25.7 已进入建议干预的范围，多囊带来的胰岛素抵抗正需要体重管理，减重本身就是改善代谢最有效的手段。胆囊有一颗结石，这次减重要走得稳，按周记录体重、不求快。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为25.7，结合问卷信息，初步判断你当前正处于<em class="hl">指标异常向慢性疾病发展</em>的过渡期。体重增加的原因是生育后的身体变化和带娃期的作息紊乱，多囊卵巢带来的胰岛素抵抗又让体重更难降；当下的主要任务是稳步减重改善代谢，同时照顾好胆囊。</p>' +
+      ul([['多囊卵巢综合征、胰岛素抵抗','体重下降 5%–10% 就能明显改善代谢，是对你性价比最高的干预'],['胆囊结石','体重下降过快可能诱发胆囊症状，按周记录体重、稳步下行，外科复查照常进行']]) },
+    { t:'饮食建议', html:'<p>饮食同时照顾多囊的代谢特点和胆囊的耐受：</p>' +
+      ul([['主食选低 GI','杂粮替换精制主食，减少血糖波动，对多囊的代谢改善最直接'],['三餐规律，油脂适度','避免长时间空腹后的过量进食，油炸食品先停'],['睡前 3 小时不再进食','晚饭提前，给消化和胆囊减负']]) +
+      '<p class="note">进入后续流程后，营养师会结合你的口味与作息给出个性化食谱。</p>' },
+    { t:'运动建议', html:'<p>运动从带娃也能完成的量开始：</p>' +
+      ul([['每天快走 20–30 分钟','推车散步也能完成，可拆成几段'],['每周 2 次力量训练','改善胰岛素抵抗、保住肌肉量，减重后不易反弹']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ],
+  why:'多囊带来的胰岛素抵抗会让人更容易饿、更难瘦，单靠饮食运动往往坚持得很辛苦；药物可以先把食欲和体重稳下来，体重每降一点，胰岛素抵抗都会跟着改善，是当下对你性价比最高的路径。' },
+
+/* ---------- C5 ---------- */
+{ id:'C5', name:'赵启铭', tag:'35 岁重度高血压 + 鼾症', tier:'offline', gender:'男', age:35, h:166, w:83, bmi:30.1,
+  key:[
+    '35 岁男性，BMI 30.2；就诊时血压 220/134mmHg，新诊断重度高血压',
+    '刚起始降压方案（硝苯地平控释片规律服 + 卡托普利临时）',
+    '糖耐量异常（HbA1c 5.8%）；尿酸 539μmol/L',
+    '鼾症已开始佩戴呼吸机（CPAP）；司美格鲁肽 0.25mg 起始',
+    '画像要点：血压极高且未稳定、多代谢问题聚集，安全边界最紧的一类'
+  ],
+  qa:[
+    ['男'],['35'],['身高 166cm、体重 83kg（BMI 30.1，自动计算）'],
+    ['饮食习惯（口味重、外卖多）、缺乏运动、工作压力大'],
+    ['高血压、睡眠呼吸暂停综合征（睡觉憋气）'],
+    ['血压偏高、血糖偏高、尿酸偏高'],
+    ['没有'],['以上都没有'],['<em>男性，跳过</em>'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）、改善睡眠精力'],
+    ['“血压是最近才查出来的，很高，医生已经开了药”']
+  ],
+  hint:'你的血压已经高到需要马上规范治疗，目前用药还在起步阶段，减重和降压必须统筹安排。建议先到内科面诊，由医生把血压、血糖和减重纳入同一个方案。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为30.1，结合问卷信息，初步判断你当前已进入<em class="hl">慢性疾病阶段</em>，高血压正在用药治疗。体重增加的原因是重口味饮食、久坐和工作压力大；你的血压还没有稳定，减重的节奏要先让位于血压管理；当下的主要任务是到内科面诊，由医生把降压治疗和减重纳入同一个方案。</p>' +
+      ul([['血压很高且刚开始用药','先把血压控制稳定，减重的方式和节奏由医生评估后确定'],['睡眠呼吸暂停已用呼吸机','继续坚持每晚佩戴，睡眠改善对血压和减重都有帮助'],['血糖和尿酸偏高','随体重下降会改善，按随访安排复查']]) },
+    { t:'饮食建议', html:'<p>饮食先做对血压影响最大的两件事：</p>' +
+      ul([['全程控盐','咸菜、酱油和加工食品中的盐都计入，这是血压管理的第一步'],['少外卖、少重口味','外卖的油盐普遍超标，先从减频开始'],['酒精先停','对血压和尿酸都不友好']]) +
+      '<p class="note">面诊后，营养师会结合你的降压方案给出具体食谱。</p>' },
+    { t:'运动建议', html:'<p>运动有帮助，但起步方式要跟着血压走：</p>' +
+      ul([['血压稳定前以散步为主','快走等中等强度，等医生评估后再开始'],['血压不稳定期避免憋气发力','搬重物、力量训练暂缓'],['呼吸机继续用','睡眠质量改善后，白天的精力和运动意愿会更好']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ] },
+
+/* ---------- C6 ---------- */
+{ id:'C6', name:'孙佩兰', tag:'58 岁女性 · 多重慢病用药中', tier:'offline', gender:'女', age:58, h:164, w:67, bmi:24.9,
+  key:[
+    '58 岁女性，2 型糖尿病（HbA1c 7.1% → 6.5%，二甲双胍已停）、高血压 4 年（厄贝沙坦）',
+    '血脂异常（LDL 5.43 → 3.7mmol/L，已用 PCSK9 抑制剂英克司兰 2 针）',
+    '脂肪肝伴转氨酶反复升高（已排除病毒性肝炎）；右颈动脉斑块；尿酸 468μmol/L',
+    '已开始替尔泊肽 2.5mg',
+    '画像要点：老年、多重慢病长期用药，是"需要面诊统筹"的典型代表'
+  ],
+  qa:[
+    ['女'],['58'],['身高 164cm、体重 67kg（BMI 24.9，自动计算）'],
+    ['饮食习惯、缺乏运动、更年期'],
+    ['高血压、糖尿病、高血脂、脂肪肝'],
+    ['血压偏高、血脂偏高、尿酸偏高、体检提示脂肪肝'],
+    ['没有'],['以上都没有'],['否'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）'],
+    ['“转氨酶老是高，查过不是肝炎，医生说是脂肪肝的原因”']
+  ],
+  hint:'你有糖尿病、高血压和高血脂，都长期用药，还有颈动脉斑块和反复升高的肝酶。减重对这些指标都有益，但方案必须由医生统筹。建议到内科面诊，把慢病治疗和减重纳入同一个方案。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为24.9，结合问卷信息，初步判断你当前已进入<em class="hl">慢性疾病阶段</em>，糖尿病、高血压和高血脂都需要长期用药管理。体重增加的原因是多年的饮食习惯和活动量不足，更年期后代谢变化又加快了体重上升；当下的主要任务是到内科面诊，由医生把降糖降压降脂治疗和减重纳入同一个方案。</p>' +
+      ul([['颈动脉斑块','降脂治疗按医嘱继续，减重期间照常复查'],['肝酶反复升高','在脂肪肝的背景下，减重本身就是最有效的治疗，复查肝功能的安排照常'],['居家监测血糖血压','面诊和随访时带上记录，是医生调整方案的重要参考']]) },
+    { t:'饮食建议', html:'<p>每一餐都要同时照顾血糖和血压：</p>' +
+      ul([['主食换结构','全谷物、薯类替代精制碳水，餐后血糖更平稳'],['先吃菜再吃饭','蔬菜和蛋白质垫底，延缓血糖上升'],['全程控盐','咸菜、酱油和加工食品中的盐都计入，减轻血压负担']]) +
+      '<p class="note">面诊后，营养师会结合你的降糖降压方案给出具体食谱。</p>' },
+    { t:'运动建议', html:'<p>对慢病人群，运动本身就是治疗的一部分：</p>' +
+      ul([['快走起步','每次 20–30 分钟，每周 5 天'],['留意低血糖表现','运动中出现心慌、出汗、手抖时立即停止并进食'],['血压不稳定期','避免憋气发力的动作，以快走过渡']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ] },
+
+/* ---------- C7 ---------- */
+{ id:'C7', name:'唐若琳', tag:'38 岁甲癌术后 + 血糖偏高', tier:'offline', gender:'女', age:38, h:159, w:77, bmi:30.5,
+  key:[
+    '38 岁女性，2022 年甲状腺乳头状癌手术，每日左甲状腺素（优甲乐）替代，甲功稳定',
+    '峰值体重 92.4kg（BMI 36.5）→ 77kg（BMI 30.5）',
+    '脂肪肝；HbA1c 6.7%；夜间打鼾；慢性荨麻疹',
+    '替尔泊肽已逐步加量至 10mg',
+    '画像要点：甲状腺癌术后使用 GLP-1 的安全个案，问卷中会主动补充病史'
+  ],
+  qa:[
+    ['女'],['38'],['身高 159cm、体重 77kg（BMI 30.5，自动计算）'],
+    ['饮食习惯、缺乏运动、遗传家族因素'],
+    ['血糖偏高、脂肪肝'],
+    ['血脂偏高、体检提示脂肪肝'],
+    ['不确定'],['以上都没有'],['否'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）、追求好身材，穿衣服好看'],
+    ['“甲状腺开过刀（乳头状癌），每天吃优甲乐，想问能不能和减重药一起用”']
+  ],
+  hint:'你做过甲状腺癌手术、每天服用优甲乐，血糖也已经偏高，体重还在肥胖范围，减重有必要。但 GLP-1 类药物在甲状腺手术后的使用需要医生先评估。建议到内科面诊，把甲状腺、血糖和减重一起安排。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为30.5，结合问卷信息，初步判断你当前已进入<em class="hl">慢性疾病阶段</em>，甲状腺术后需要长期药物替代，血糖偏高也需要干预。体重增加的原因是饮食习惯和活动量不足；有甲状腺手术史的情况下，减重方案尤其是用药需要更谨慎；当下的主要任务是到内科面诊，由医生把甲状腺、血糖和减重纳入同一个方案。</p>' +
+      ul([['甲状腺癌术后、服用优甲乐','药物照常服用，减重用药前需医生评估甲状腺病史的影响'],['血糖偏高','减重本身就是最有效的干预，宜早不宜迟，按随访安排复查血糖'],['确诊脂肪肝','随体脂下降会改善，按随访安排复查'],['夜间打鼾','体重下降后会改善，如白天嗜睡明显，就诊时一并告知医生']]) },
+    { t:'饮食建议', html:'<p>饮食先从血糖的直接负担下手：</p>' +
+      ul([['甜食和含糖饮料先停','这是血糖的直接负担，也是体重增加的主要来源'],['主食换一半','杂粮替换精制主食，餐后血糖更平稳'],['三餐规律，蛋白质吃够','优甲乐需空腹服用，早餐时间与服药的间隔按医嘱安排']]) +
+      '<p class="note">面诊后，营养师会结合你的情况给出具体食谱。</p>' },
+    { t:'运动建议', html:'<p>体重基数较大，运动从低冲击的方式开始：</p>' +
+      ul([['每天快走 20–30 分钟','可拆成 3 段完成，先固定频率'],['每周 2 次力量训练','从低冲击动作开始，避免因受伤而中断']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ] },
+
+/* ---------- C8 ---------- */
+{ id:'C8', name:'高铭远', tag:'33 岁男性 · 减重 18.5kg 进行中', tier:'normal', gender:'男', age:33, h:182, w:81, bmi:24.5,
+  key:[
+    '33 岁男性，峰值体重 99.5kg（BMI 30）→ 81kg，一年多减重 18.5kg',
+    '高甘油三酯、脂肪肝；颈动脉彩超提示内中膜增厚（未达斑块）',
+    '替尔泊肽已加量至 10mg，目标体重 78kg',
+    '画像要点：大基数减重成功者，指标改善进入"最后一公里"'
+  ],
+  qa:[
+    ['男'],['33'],['身高 182cm、体重 81kg（BMI 24.5，自动计算）'],
+    ['饮食习惯（外卖多）、缺乏运动、久坐'],
+    ['高血脂、脂肪肝'],
+    ['血脂偏高、体检提示脂肪肝'],
+    ['没有'],['以上都没有'],['<em>男性，跳过</em>'],
+    ['改善健康指标（血糖 / 血脂 / 血压等）'],
+    ['<em>未填写</em>']
+  ],
+  hint:'你已经减掉 18 公斤，成效显著；偏高的甘油三酯和颈动脉内中膜增厚说明继续减重仍有明确收益。建议把最后一段路走完，饮食、运动与药物配合，并稳住不反弹。',
+  mods:[
+    { t:'整体建议', html:
+      FIXED_P + chain() +
+      '<p>你当前的BMI为24.5，结合问卷信息，初步判断你当前正处于<em class="hl">指标异常向慢性疾病发展</em>的过渡期。体重增加的原因是外卖偏多的饮食习惯和久坐；你已经减掉大部分体重，当下的主要任务是继续把剩余的体重和血脂降下来，同时防止反弹。</p>' +
+      ul([['血脂偏高','继续下降的体重会带动血脂改善，按随访安排复查'],['确诊脂肪肝','随体脂下降会改善，按随访安排复查'],['颈动脉内中膜增厚','还没到斑块程度，减重加规律运动正是延缓它进展的手段，按随访复查']]) },
+    { t:'饮食建议', html:'<p>饮食延续现在的方向，把对血脂影响最大的部分管住：</p>' +
+      ul([['外卖选清淡做法','优先蒸煮和荤素搭配，少点油炸和重酱料'],['主食三分之一换粗粮','燕麦、豆类和足量蔬菜每天保证'],['酒精尽量不碰','对甘油三酯的影响最直接']]) +
+      '<p class="note">进入后续流程后，营养师会给出更具体的食谱。</p>' },
+    { t:'运动建议', html:'<p>这个阶段的运动，防反弹比多消耗更重要：</p>' +
+      ul([['每周 2–3 次力量训练','大体重减下来后，肌肉量决定你会不会反弹'],['有氧保持规律','每周累计 150 分钟中等强度，快走、慢跑均可']]) },
+    { t:'用药建议', html:'@DRUG@' }
+  ],
+  why:'你已经减掉 18 公斤，越往后体重降得越慢、也越容易松懈，而血脂和脂肪肝恰恰需要体重继续往下走才能继续改善；药物可以帮你把最后一段路走完，让指标恢复到目标范围，也把这一年的成果彻底稳住。' },
+
+/* ---------- C9 ---------- */
+{ id:'C9', name:'方晚晴', tag:'38 岁低体重 · 肿瘤术后随访', tier:'exclude', gender:'女', age:38, h:150, w:46.5, bmi:20.7,
+  key:[
+    '38 岁女性，150cm / 46.2kg（BMI 20.5），体重偏轻仍在长期使用 GLP-1 维持',
+    '乳腺癌（HER2 阳性）术后，右上肢淋巴水肿，规律随访中',
+    '糖耐量异常 / 胰岛素抵抗；甲状腺结节 + TSH 偏高（疑桥本）',
+    '长期司美格鲁肽 0.25–0.5mg，近期换替尔泊肽 2.5mg',
+    '画像要点：低体重 + 肿瘤史，属于"无需减重"档的极端个案'
+  ],
+  qa:[
+    ['女'],['38'],['身高 150cm、体重 46.5kg（BMI 20.7，自动计算）'],
+    ['缺乏运动、其他——“以前节食减肥，反弹好几次”'],
+    ['以上都没有'],['以上都没有'],['没有'],['以上都没有'],['否'],
+    ['其他——别再反弹回去'],
+    ['“两年前做过乳腺癌手术，复查都正常；之前减肥反弹过，现在打针是怕胖回去”']
+  ],
+  hint:'你的体重在正常范围，不属于也不需要减重管理。你担心的反弹问题，靠的不是继续往下压体重，而是把肌肉量和饮食习惯稳住；肿瘤随访期间的长期用药，建议先与主治医生沟通。',
+  mods:[
+    { t:'整体建议', html:
+      '<p>你的 BMI 20.7 在正常范围内，不属于需要减重的人群，不建议继续往下减。你之前节食减肥后反弹、现在靠药物维持，这个循环的出口是把方法和身体底子建立起来，而不是把体重压得更低。</p>' +
+      ul([['乳腺癌术后随访中','任何长期用药（包括减重药物）都建议先与主治医生确认，避免影响随访判断'],['节食减肥后反复反弹','反弹的根源是肌肉流失和代谢下降，方向是增肌和规律饮食，不是继续掉秤']]) },
+    { t:'运动建议', html:'<p>先把肌肉量补回来，体重才不容易回去：</p>' +
+      ul([['每周 2–3 次力量训练','深蹲、弹力带或器械均可，从轻重量开始'],['有氧保持常规量','快走等中低强度即可，为心肺健康，不为燃脂凑量'],['右上肢有淋巴水肿史','上肢训练的强度和方式先经主治医生或康复师确认']]) },
+    { t:'饮食建议', html:'<p>饮食的关键是结束节食循环：</p>' +
+      ul([['三餐固定，不再节食','白天挨饿是反弹循环的起点，规律进餐反而更稳'],['蛋白质每餐吃够','鱼、禽、蛋、豆制品优先，增肌和保肌都需要']]) },
+    { t:'用药建议', html:'@DRUG_NO@' }
+  ],
+  drugNo:'你的体重在正常范围，没有减重指征，不需要使用 GLP-1 类减重药物；而且你正在肿瘤随访期，任何长期用药都应先经主治医生评估。' },
+
+/* ---------- C10 ---------- */
+{ id:'C10', name:'顾南乔', tag:'34 岁正常体重 · 想减到 53kg', tier:'exclude', gender:'女', age:34, h:161, w:59, bmi:22.8,
+  key:[
+    '34 岁女性，161.3cm / 59.2kg（BMI 22.8），无超重、无慢病',
+    '桥本甲状腺炎（甲功正常，未治疗）；尿酸偏高',
+    '减重目标 53kg，已知情同意超适应证使用替尔泊肽 2.5mg',
+    '画像要点：正常体重追求"更瘦"，超适应证用药的代表'
+  ],
+  qa:[
+    ['女'],['34'],['身高 161cm、体重 59kg（BMI 22.8，自动计算）'],
+    ['其他——“想穿衣服更好看”'],
+    ['以上都没有'],['尿酸偏高'],['没有'],['以上都没有'],['否'],
+    ['追求好身材，穿衣服好看'],
+    ['“我想减到 53 公斤”']
+  ],
+  hint:'你的 BMI 22.8 在正常范围内，不需要减重，想减到 53 公斤没有必要。让身材更好看的方向是增肌塑形而不是继续掉秤；尿酸偏高通过调整饮食和多喝水就能改善，与减重无关。',
+  mods:[
+    { t:'整体建议', html:
+      '<p>你的 BMI 22.8 在正常范围内，没有需要通过减重解决的问题，不建议再往下减。想穿衣服更好看是体型问题：同样体重下，肌肉比例更高的人线条更紧致，塑形比掉秤更对症。</p>' +
+      ul([['尿酸偏高','先从少啤酒、少内脏海鲜和每天多喝水做起，按体检建议复查即可，不需要为它减重']]) },
+    { t:'运动建议', html:'<p>塑形的核心是力量训练，有氧保持常规量即可：</p>' +
+      ul([['每周 2–3 次力量训练','臀腿和腰腹的线条变化最明显，这是「穿衣好看」真正的来源'],['有氧保持常规','快走等中低强度即可，为健康，不为消耗凑量']]) },
+    { t:'饮食建议', html:'<p>饮食不需要刻意少吃：</p>' +
+      ul([['三餐正常吃，蛋白质吃够','训练要有效果，肌肉合成就需要原料'],['少啤酒、少内脏海鲜、多喝水','这是针对尿酸的部分，照做即可']]) },
+    { t:'用药建议', html:'@DRUG_NO@' }
+  ],
+  drugNo:'你的体重和各项情况都没有用药指征，GLP-1 类药物不会带来「更瘦更好看」，只会带来不必要的风险；把肌肉练起来，比把秤上的数字压下去更接近你想要的结果。' }
+];
+
+/* ===== 回填用药模块 ===== */
+CASES.forEach(function(c){
+  c.mods.forEach(function(m){
+    if (m.html === '@DRUG@') {
+      m.html = c.tier === 'offline' ? drugOffline() : drugFit(c, c.why);
+    } else if (m.html === '@DRUG_NO@') {
+      m.html = drugNo(c.drugNo);
+    }
+  });
+});
+
+/* ===== 左栏 ===== */
+var listEl = document.getElementById('caseList');
+var detailEl = document.getElementById('caseDetail');
+var viewEl = document.getElementById('view');
+
+CASES.forEach(function(c){
+  var b = document.createElement('button');
+  b.type = 'button'; b.className = 'case-btn'; b.dataset.id = c.id;
+  b.innerHTML = '<span class="cb__name">' + c.name + '</span><span class="cb__tag">' + c.tag + '</span>' +
+    '<span class="badge ' + TIER[c.tier].b + '">' + TIER[c.tier].cur + '档</span>';
+  b.addEventListener('click', function(){ render(c.id); });
+  listEl.appendChild(b);
+});
+
+function facts(pairs){
+  return '<table class="facts">' + pairs.map(function(p){
+    return '<tr><td>' + p[0] + '</td><td>' + p[1] + '</td></tr>';
+  }).join('') + '</table>';
+}
+
+function renderDetail(c){
+  var t = TIER[c.tier];
+  detailEl.innerHTML =
+    '<div class="dt__hd"><div class="dt__name">' + c.name + '<span class="badge ' + t.b + '">' + t.bt + '</span></div></div>' +
+    '<div class="dt__sec"><div class="dt__cap">基础信息</div>' +
+      facts([['性别 / 年龄', c.gender + ' · ' + c.age + ' 岁'],['身高 / 体重', c.h + 'cm / ' + c.w + 'kg'],['BMI', c.bmi],['一句话画像', c.tag]]) + '</div>' +
+    '<div class="dt__sec"><div class="dt__cap">关键信息（脱敏，提炼自真实服务数据）</div>' +
+      '<ul class="klist">' + c.key.map(function(k){ return '<li>' + k + '</li>'; }).join('') + '</ul></div>' +
+    '<div class="dt__sec"><div class="dt__cap">模拟问卷答案（11 题）</div>' +
+      '<ul class="qa">' + c.qa.map(function(a, i){
+        return '<li><span class="qa__q">' + (i + 1) + '. ' + Q[i] + '</span><span class="qa__a">' + a[0] + '</span></li>';
+      }).join('') + '</ul></div>' +
+    '<div class="dt__foot">问卷答案为按真实用户答题习惯的模拟：多数人凭记忆粗略作答、不会照搬病历，开放题经常留空。</div>';
+}
+
+/* ===== 右栏：评估报告（同 Assessment-report 渲染口径）===== */
+function heroHtml(c){
+  var t = TIER[c.tier], i, bars = '', axis = '';
+  for (i = 0; i < AXIS.length; i++) {
+    bars += '<i class="' + (i === t.cur - 1 ? 'is-on' : '') + '"></i>';
+    axis += '<span class="' + (i === t.cur - 1 ? 'is-on' : '') + '">' + AXIS[i] + '</span>';
+  }
+  return '<section class="hero">' +
+    '<span class="hero__name">' + c.name + '</span>' +
+    '<span class="hero__meta">' + c.gender + ' · ' + c.age + ' 岁 · ' + c.h + 'cm / ' + c.w + 'kg · BMI ' + c.bmi + '</span>' +
+    '<div class="grade"><div class="grade__h"><span>减重建议</span><b>' + t.value + '</b></div>' +
+    '<div class="grade__bar">' + bars + '</div><div class="grade__ax">' + axis + '</div></div>' +
+    '<span class="hero__hint">' + c.hint + '</span>' +
+    '</section>';
+}
+
+function render(id){
+  var c = CASES.filter(function(x){ return x.id === id; })[0];
+  document.querySelectorAll('.case-btn').forEach(function(b){
+    b.classList.toggle('is-cur', b.dataset.id === id);
+  });
+  renderDetail(c);
+  viewEl.innerHTML = heroHtml(c) +
+    c.mods.map(function(m, i){
+      return '<section class="mod card"><div class="mod__h"><span class="mod__no">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+        '<span class="mod__t">' + m.t + '</span></div>' +
+        '<div class="mod__b-in">' + m.html + '</div></section>';
+    }).join('') +
+    '<div class="disc">' + DISC + '</div>';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+render('C1');
+</script>
+</body>
+</html>
