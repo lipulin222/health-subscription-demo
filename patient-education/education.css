@@ -252,17 +252,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .grp__c.is-on { background: var(--brand-light-active); }
 .grp__c.is-on b { color: var(--brand); }
 
-/* ============================ 6.1 卓正体重管理服务介绍 ============================
-   区块移植自首诊套餐页（Treatment-package）「套餐介绍」：导语 + 两列网格 × 2 行服务卖点 */
-.svc-intro__tail { margin: 0 0 2px; font-size: var(--fs-3); font-weight: 400; line-height: 23px; color: var(--t-secondary); }
-.svc-intro__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-.svci {
-  border-radius: 12px; padding: 10px 8px 4px;
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-}
-.svci img { width: 96px; height: 96px; object-fit: contain; }
-.svci b { margin-top: 6px; font-size: 12px; font-weight: 400; color: var(--brand); line-height: 19px; }
-
 /* ============================ 7. 内容列表 ============================ */
 .al__hd { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-card-gap); padding: var(--space-module-gap) 2px var(--space-card-gap); }
 .al__hd h2 { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); }
