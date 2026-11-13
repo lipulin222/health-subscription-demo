@@ -40,7 +40,7 @@
   --radius-panel:12px;
 
   --sp-1:10px; --sp-2:15px;
-  --fs-1:11px; --fs-2:12px; --fs-3:14px; --fs-4:16px; --fs-6:20px;
+  --fs-1:11px; --fs-2:12px; --fs-3:14px; --fs-4:16px; --fs-5:17px; --fs-6:20px;
   --ease:cubic-bezier(.2,.8,.2,1);
   --font:"PingFang SC","HarmonyOS Sans SC","MiSans",-apple-system,"Microsoft YaHei",sans-serif;
 }
@@ -61,19 +61,19 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 @media (min-width:480px){.phone{margin:24px 0;min-height:calc(100vh - 48px);
   border-radius:var(--radius-panel);box-shadow:0 0 40px rgba(0,0,0,.08)}}
 
-/* ---------- 顶部导航（44px · 白底 · 标题 20px/600/#1A1A1A） ---------- */
+/* ---------- 顶部导航（44px · 白底 · 居中标题 17px/600，与科普首页一致） ---------- */
 .topbar{height:44px;display:flex;align-items:center;background:#FFFFFF;padding:0 6px;
   flex-shrink:0;position:relative;z-index:5;padding-top:env(safe-area-inset-top)}
 .topbar__back{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
   border:none;background:none;cursor:pointer;color:var(--t-primary);border-radius:50%;flex-shrink:0}
 .topbar__back svg{width:24px;height:24px}
 .topbar__back:active{background:var(--brand-light-active)}
-.topbar__spacer{flex:1;min-width:0;height:32px}
 .topbar__share{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
   border:none;background:none;cursor:pointer;color:var(--t-primary);border-radius:50%;flex-shrink:0}
 .topbar__share svg{width:22px;height:22px}
 .topbar__share:active{background:var(--brand-light-active)}
-.topbar__title{display:none}
+.topbar__title{flex:1;min-width:0;text-align:center;
+  font-size:var(--fs-5);font-weight:600;color:var(--t-title)}
 
 /* ---------- 分享轻提示 ---------- */
 .toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(8px);
@@ -149,6 +149,18 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 .ar__rv-i{flex-shrink:0;background:var(--brand);color:#FFFFFF;border-radius:var(--radius-small);
   padding:2px 6px;font-size:var(--fs-1);letter-spacing:.5px}
 
+/* ---------- 返回科普知识库（与科普首页承接卡同构） ---------- */
+.back-kb{display:flex;align-items:center;gap:10px;margin-top:var(--sp-1);background:#FFFFFF;
+  border-radius:var(--radius-card);padding:12px 15px;text-decoration:none;cursor:pointer}
+.back-kb:active{background:var(--brand-light-active)}
+.back-kb__ico{width:32px;height:32px;border-radius:var(--radius-default);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:var(--brand-light)}
+.back-kb__ico img{width:18px;height:18px;display:block}
+.back-kb__tx{flex:1;min-width:0}
+.back-kb__tx b{display:block;font-size:var(--fs-3);font-weight:500;color:var(--t-title);line-height:21px}
+.back-kb__tx s{display:block;font-size:var(--fs-1);color:var(--t-placeholder);margin-top:2px}
+.back-kb__go{flex-shrink:0;font-size:var(--fs-5);color:var(--t-placeholder);line-height:1}
+
 /* ---------- 相关阅读 ---------- */
 .rel__hd{font-size:var(--fs-4);font-weight:600;color:var(--t-title);
   padding-bottom:10px;margin-bottom:4px;border-bottom:1px solid var(--divider)}
@@ -179,7 +191,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
       <button class="topbar__back" type="button" onclick="history.back()" aria-label="返回">
         <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="topbar__spacer"></div>
+      <div class="topbar__title">减重科普</div>
       <button class="topbar__share" type="button" id="shareBtn" aria-label="分享">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 14.5V3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8.5 6.5 12 3l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10H6.8C5.8 10 5 10.8 5 11.8v7.4C5 20.2 5.8 21 6.8 21h10.4c1 0 1.8-.8 1.8-1.8v-7.4c0-1-.8-1.8-1.8-1.8H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
@@ -278,6 +290,13 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
       <div class="card info">
         <div class="ar__rv"><span class="ar__rv-i">审核</span>李医生 · 内分泌科 · 主治医师 · 更新 2026.10.15</div>
       </div>
+
+      <!-- ============ 返回科普知识库 ============ -->
+      <a class="back-kb" href="../patient-education/index.html?stage=1#/">
+        <span class="back-kb__ico"><img loading="lazy" decoding="async" src="../branding-pic/icons/卓正科普.svg" alt=""></span>
+        <span class="back-kb__tx"><b>返回科普知识库</b><s>按主题找，或看当前推荐</s></span>
+        <span class="back-kb__go">›</span>
+      </a>
     </main>
   </div>
 </div>
