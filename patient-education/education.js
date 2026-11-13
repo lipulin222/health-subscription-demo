@@ -358,7 +358,7 @@
   function picks() { return (PICKS[phase()] || PICKS.before).map(artById).filter(Boolean); }
 
   /* ===================== 4. 首页视图 =====================
-     入门卡 + 你现在可能想看 + 按主题找 + 「全部内容」入口（→ #/all 二级页）+ 承接按钮 */
+     入门卡 + 你现在可能想看 + 按主题找 + 「卓正体重管理服务介绍」入口（→ #/all）+ 承接按钮 */
   function introCard() {
     return '<button class="intro" type="button" data-act="art" data-id="glp1">' +
       '<span class="intro__tag">入门第一课</span>' +
@@ -369,9 +369,9 @@
       '</button>';
   }
 
-  /* 全部内容入口：文字链，放在「按主题找」标题右侧，点击进「全部内容」二级页 */
+  /* 服务介绍入口：文字链，放在「按主题找」标题右侧，点击进「卓正体重管理服务介绍」页 */
   function allEntryHtml() {
-    return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">全部内容 &rsaquo;</button>';
+    return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">卓正体重管理服务介绍 &rsaquo;</button>';
   }
 
   function picksHtml() {
@@ -422,10 +422,27 @@
       '<div class="cta">' + ctaHtml() + '</div>';
   }
 
-  /* 全部内容二级页：入门卡（第一部分）+ 按主题找（筛选）+ 全部列表 */
-  function viewAll() {
-    return '<div class="intro-wrap">' + introCard() + '</div>' +
-      '<div class="grp">' + groupsHtml(false) + '</div>' +
+  /* 卓正体重管理服务介绍（#/all）：区块移植自首诊套餐页「套餐介绍」区的导语 + 四张服务卖点插画 */
+  function serviceHtml() {
+    const items = [
+      ['减重套餐01-内科减重女医生科学诊断（精简版）', '专业医生的科学诊断'],
+      ['减重套餐02-循证依据充分的正规针剂', '循证充分的正规药物'],
+      ['减重套餐03-营养比例示意（无人物）', '营养师制定饮食方案'],
+      ['减重套餐04-医护助理线上1v1指导（修订）', '医护助理1v1的服务指导']
+    ].map(function (x) {
+      return '<div class="svci">' +
+        '<img src="../../assets/pkg/' + x[0] + '.png" alt="' + x[1] + '" loading="lazy" decoding="async" />' +
+        '<b>' + x[1] + '</b></div>';
+    }).join('');
+    return '<div class="al__hd"><h2>卓正体重管理服务介绍</h2></div>' +
+      '<div class="card svc-intro">' +
+      '<p class="svc-intro__tail">减重是一个复杂、系统性工程，卓正专业的服务能够帮助你的减重过程更加安全、有效。</p>' +
+      '<div class="svc-intro__grid">' + items + '</div></div>';
+  }
+
+  /* 全部内容页（#/list）：按主题找（筛选）+ 全部列表 */
+  function viewList() {
+    return '<div class="grp">' + groupsHtml(false) + '</div>' +
       '<div id="alist">' + listHtml() + '</div>';
   }
 
@@ -434,7 +451,7 @@
     const list = ARTICLES.filter(function (x) { return x.g === state.grp; });
     return '<div class="al__hd"><h2>' + esc(groupName(state.grp)) + '</h2><s>' + list.length + ' 篇</s></div>' +
       '<div class="card al__box">' + list.map(artItem).join('') + '</div>' +
-      '<button class="more" type="button" data-act="nav" data-to="#/all">看全部 ' + ARTICLES.length + ' 篇</button>';
+      '<button class="more" type="button" data-act="nav" data-to="#/list">看全部 ' + ARTICLES.length + ' 篇</button>';
   }
 
   /* ===================== 5. 文章详情视图 ===================== */
@@ -484,7 +501,7 @@
   }
 
   /* ===================== 6. 路由 ===================== */
-  /* 支持 #/education、#/、#/g/{组}（分类列表页）、#/all、#/all/g/{组}、#/a/{id}、#/education/a/{id} */
+  /* 支持 #/education、#/、#/g/{组}（分类列表页）、#/all（服务介绍）、#/list（全部列表，可带 /g/{组} 筛选）、#/a/{id}、#/education/a/{id} */
   function parseHash() {
     const raw = (location.hash || '').replace(/^#\/?/, '');
     const parts = raw.split('/').filter(Boolean);
@@ -495,7 +512,8 @@
         : { view: 'home', grp: '', art: '' };
     }
     if (parts[0] === 'g' && parts[1]) return { view: 'cat', grp: parts[1], art: '' };
-    if (parts[0] === 'all') return { view: 'all', grp: parts[1] === 'g' ? (parts[2] || '') : '', art: '' };
+    if (parts[0] === 'all') return { view: 'all', grp: '', art: '' };
+    if (parts[0] === 'list') return { view: 'list', grp: parts[1] === 'g' ? (parts[2] || '') : '', art: '' };
     if (parts[0] === 'a') return { view: 'art', grp: '', art: parts[1] || '' };
     return { view: 'home', grp: '', art: '' };
   }
@@ -513,8 +531,12 @@
       location.replace('../edu-article/index.html?a=' + encodeURIComponent(a.id));
       return;
     } else if (r.view === 'all') {
+      state.grp = '';
+      html = '<div class="intro-wrap">' + introCard() + '</div>' + serviceHtml();
+      title = '卓正体重管理服务介绍';
+    } else if (r.view === 'list') {
       state.grp = r.grp;
-      html = viewAll(); title = '全部内容';
+      html = viewList(); title = '全部内容';
     } else if (r.view === 'cat' && isGroup(r.grp)) {
       state.grp = r.grp;
       html = viewCat(); title = groupName(state.grp);
@@ -545,14 +567,14 @@
     nav: function (el) { go(el.dataset.to); },
     toast: function (el) { toast(el.dataset.msg || '演示中，功能未展开'); },
     art: function (el) { go('#/a/' + el.dataset.id); },
-    /* 主题卡：首页点 → 对应分类列表页；全部内容页点 → 切换/取消筛选 */
+    /* 主题卡：首页/服务介绍页点 → 对应分类列表页；全部列表页点 → 切换/取消筛选 */
     grp: function (el) {
       const g = el.dataset.g;
       const r = parseHash();
-      if (r.view === 'all') { go(state.grp === g ? '#/all' : '#/all/g/' + g); return; }
+      if (r.view === 'list') { go(state.grp === g ? '#/list' : '#/list/g/' + g); return; }
       go('#/g/' + g);
     },
-    'q-clear': function () { go('#/all'); },
+    'q-clear': function () { go('#/list'); },
     faq: function (el) {
       const open = el.classList.toggle('is-open');
       el.setAttribute('aria-expanded', open ? 'true' : 'false');
