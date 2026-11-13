@@ -94,14 +94,9 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 .art-hd__lead{margin-top:8px;font-size:var(--fs-2);line-height:20px;color:var(--t-secondary)}
 .page > .card:first-of-type{margin-top:var(--sp-1)}
 
-/* ---------- 节标题：编号徽标 + 青色标题 ---------- */
-.sec-h{display:flex;align-items:center;gap:8px;padding-bottom:10px;margin-bottom:12px;
-  border-bottom:1px solid var(--divider)}
-.sec-n{display:inline-flex;align-items:center;justify-content:center;
-  min-width:22px;height:18px;padding:0 5px;border-radius:var(--radius-small);
-  background:var(--brand-light);color:var(--brand);font-size:var(--fs-1);
-  letter-spacing:.4px;font-weight:600;font-feature-settings:"tnum";font-variant-numeric:tabular-nums}
-.sec-t{font-size:var(--fs-4);font-weight:600;line-height:1.45;color:var(--brand)}
+/* ---------- 节标题：纯文字（与科普首页区块标题同构，无编号） ---------- */
+.sec-h{padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--divider)}
+.sec-t{font-size:var(--fs-4);font-weight:600;line-height:1.45;color:var(--t-title)}
 
 /* ---------- 清单条目 ---------- */
 .ck{list-style:none}
@@ -207,7 +202,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
       <!-- ============ 01 ============ -->
       <div class="card">
         <div class="sec-h">
-          <span class="sec-n">01</span>
           <span class="sec-t">它作用在三个地方</span>
         </div>
           <ul class="ck">
@@ -220,7 +214,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
       <!-- ============ 02 ============ -->
       <div class="card">
         <div class="sec-h">
-          <span class="sec-n">02</span>
           <span class="sec-t">它不做什么</span>
         </div>
           <ul class="ck">
@@ -233,7 +226,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
       <!-- ============ 03 ============ -->
       <div class="card">
         <div class="sec-h">
-          <span class="sec-n">03</span>
           <span class="sec-t">用药之后先感觉到什么</span>
         </div>
           <ul class="ck">
@@ -246,7 +238,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
       <!-- ============ 04 ============ -->
       <div class="card">
         <div class="sec-h">
-          <span class="sec-n">04</span>
           <span class="sec-t">怎么配合它</span>
         </div>
           <ul class="ck">
@@ -259,7 +250,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
       <!-- ============ 05 ============ -->
       <div class="card">
         <div class="sec-h">
-          <span class="sec-n">05</span>
           <span class="sec-t">为什么不能自己买了打</span>
         </div>
           <ul class="ck">
