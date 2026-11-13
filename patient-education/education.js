@@ -358,7 +358,7 @@
   function picks() { return (PICKS[phase()] || PICKS.before).map(artById).filter(Boolean); }
 
   /* ===================== 4. 首页视图 =====================
-     入门卡 + 你现在可能想看 + 按主题找 + 「全部内容」入口（→ #/all 二级页）+ 承接按钮 */
+     入门卡 + 你现在可能想看 + 按主题找 + 「卓正体重管理服务」入口（→ #/all 二级页）+ 承接按钮 */
   function introCard() {
     return '<button class="intro" type="button" data-act="art" data-id="glp1">' +
       '<span class="intro__tag">入门第一课</span>' +
@@ -369,9 +369,9 @@
       '</button>';
   }
 
-  /* 全部内容入口：文字链，放在「按主题找」标题右侧，点击进「全部内容」二级页 */
+  /* 服务介绍入口：文字链，放在「按主题找」标题右侧，点击进「卓正体重管理服务」页 */
   function allEntryHtml() {
-    return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">全部内容 &rsaquo;</button>';
+    return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">卓正体重管理服务 &rsaquo;</button>';
   }
 
   function picksHtml() {
@@ -422,19 +422,35 @@
       '<div class="cta">' + ctaHtml() + '</div>';
   }
 
-  /* 全部内容二级页：入门卡（第一部分）+ 按主题找（筛选）+ 全部列表 */
+  /* 卓正体重管理服务：服务特色与优势（沿用文章列表样式，条目为服务项介绍） */
+  const SERVICES = [
+    { t: '专业医生的科学诊断', s: '内分泌科医生评估后定制减重方案，线上复诊与调量，方案跟着身体变化走。' },
+    { t: '循证充分的正规药物', s: '医生处方开具、正规渠道供应，冷链配送到家，用法与保存全程有指导。' },
+    { t: '营养师制定饮食方案', s: '结合用药反应调整饮食结构，吃得少也吃得对，保住该保的营养。' },
+    { t: '医护助理1v1的服务指导', s: '用药期间固定医护助理对接，体重与饮食记录、复查提醒不用自己记。' }
+  ];
+  function serviceListHtml() {
+    return '<div class="al__hd"><h2>卓正体重管理服务</h2><s>' + SERVICES.length + ' 项</s></div>' +
+      '<div class="card al__box">' +
+      SERVICES.map(function (x) {
+        return '<button class="al__i" type="button" data-act="toast" data-msg="演示中，功能未展开">' +
+          '<span class="al__t">' + esc(x.t) + '</span>' +
+          '<span class="al__s">' + esc(x.s) + '</span></button>';
+      }).join('') + '</div>';
+  }
+
+  /* 服务介绍页（原「全部内容」二级页）：入门卡（第一部分）+ 按主题找 + 卓正体重管理服务 */
   function viewAll() {
     return '<div class="intro-wrap">' + introCard() + '</div>' +
       '<div class="grp">' + groupsHtml(false) + '</div>' +
-      '<div id="alist">' + listHtml() + '</div>';
+      '<div id="alist">' + serviceListHtml() + '</div>';
   }
 
   /* 分类列表页：单一主题的文章列表（首页四张主题卡的落点） */
   function viewCat() {
     const list = ARTICLES.filter(function (x) { return x.g === state.grp; });
     return '<div class="al__hd"><h2>' + esc(groupName(state.grp)) + '</h2><s>' + list.length + ' 篇</s></div>' +
-      '<div class="card al__box">' + list.map(artItem).join('') + '</div>' +
-      '<button class="more" type="button" data-act="nav" data-to="#/all">看全部 ' + ARTICLES.length + ' 篇</button>';
+      '<div class="card al__box">' + list.map(artItem).join('') + '</div>';
   }
 
   /* ===================== 5. 文章详情视图 ===================== */
@@ -514,7 +530,7 @@
       return;
     } else if (r.view === 'all') {
       state.grp = r.grp;
-      html = viewAll(); title = '全部内容';
+      html = viewAll(); title = '卓正体重管理服务';
     } else if (r.view === 'cat' && isGroup(r.grp)) {
       state.grp = r.grp;
       html = viewCat(); title = groupName(state.grp);
