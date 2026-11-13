@@ -422,9 +422,10 @@
       '<div class="cta">' + ctaHtml() + '</div>';
   }
 
-  /* 全部内容二级页：按主题找（筛选）+ 全部列表 */
+  /* 全部内容二级页：入门卡（第一部分）+ 按主题找（筛选）+ 全部列表 */
   function viewAll() {
-    return '<div class="grp">' + groupsHtml(false) + '</div>' +
+    return '<div class="intro-wrap">' + introCard() + '</div>' +
+      '<div class="grp">' + groupsHtml(false) + '</div>' +
       '<div id="alist">' + listHtml() + '</div>';
   }
 
