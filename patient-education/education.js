@@ -2,8 +2,8 @@
    体重管理 · 患者科普知识库（patient-education）
    -----------------------------------------------------------------------------
    逻辑来源：减重/Weight-Management 可点击 Demo 的 #/education
-     ① 入门卡（什么是体重管理）② 你现在可能想看（按阶段推 3 篇）
-     ③ 按主题找（4 组）④ 全部内容 ⑤ 承接（问 AI 助理 / 测一测）
+     ① 入门卡（什么是体重管理）② 分类查找（4 组）
+     ③ 卓正体重管理服务（特色与优势）④ 承接（问 AI 助理 / 测一测）
      进入文章：正文 → FAQ → 还有疑问 → 相关阅读
    阶段（1 购前 / 2 消费决策 / 3 用药陪跑 / 4 续费跨科 / 5 品牌认可）只用于
    决定推荐侧重，产品界面不出现阶段名、编号与进度条。
@@ -35,20 +35,6 @@
     { k: 'life', n: '日常生活', d: '怎么吃 · 怎么动' },
     { k: 'run', n: '过程管理', d: '平台期 · 复查 · 维持' }
   ];
-  /* 内容三阶段：用药前 / 用药中 / 用药后（UI 不出现这三个名字） */
-  const PHASE_OF = { 1: 'before', 2: 'before', 3: 'during', 4: 'during', 5: 'after' };
-  const PICK_REASON = {
-    before: '还不了解减重方案的人，一般从这三篇开始',
-    during: '和你一样正在用药的人，最近常看这三篇',
-    after: '进入维持期的人，最关心这三件事'
-  };
-  /* 三个阶段各推三篇 */
-  const PICKS = {
-    before: ['glp1', 'who', 'journey'],
-    during: ['week1', 'noreact', 'eat'],
-    after: ['maintain', 'stop', 'recheck']
-  };
-
   const ARTICLES = [
     {
       id: 'glp1', g: 'know', min: 5,
@@ -354,8 +340,6 @@
   function groupCount(k) {
     return ARTICLES.filter(function (a) { return a.g === k; }).length;
   }
-  function phase() { return PHASE_OF[state.stage] || 'before'; }
-  function picks() { return (PICKS[phase()] || PICKS.before).map(artById).filter(Boolean); }
 
   /* ===================== 4. 首页视图 =====================
      入门卡 + 你现在可能想看 + 按主题找 + 「卓正体重管理服务」入口（→ #/all 二级页）+ 承接按钮 */
@@ -374,18 +358,9 @@
     return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">卓正体重管理服务 &rsaquo;</button>';
   }
 
-  function picksHtml() {
-    return '<div class="pck__hd"><h2>你现在可能想看</h2></div>' +
-      picks().map(function (a) {
-        return '<button class="pck__i" type="button" data-act="art" data-id="' + a.id + '">' +
-          '<span class="pck__r"><span class="pck__t">' + esc(a.t) + '</span></span>' +
-          '<span class="pck__s">' + esc(a.s) + '</span></button>';
-      }).join('');
-  }
-
-  /* showAll：是否在标题右侧显示「全部内容 ›」入口（二级页里不重复出现） */
+  /* showAll：是否在标题右侧显示「卓正体重管理服务 ›」入口（二级页里不重复出现） */
   function groupsHtml(showAll) {
-    return '<div class="grp__hd"><h2>按主题找</h2>' + (showAll ? allEntryHtml() : '') + '</div><div class="grp__g">' +
+    return '<div class="grp__hd"><h2>分类查找</h2>' + (showAll ? allEntryHtml() : '') + '</div><div class="grp__g">' +
       GROUPS.map(function (x) {
         return '<button class="grp__c grp__c--' + x.k + (state.grp === x.k ? ' is-on' : '') + '" type="button" data-act="grp" data-g="' + x.k + '">' +
           '<b>' + esc(x.n) + '</b><s>' + esc(x.d) + '</s><em>' + groupCount(x.k) + ' 篇</em></button>';
@@ -414,11 +389,11 @@
       : '<button class="btn" type="button" data-act="agent">有拿不准的？问问护士</button>';
   }
 
-  /* 首页：入门卡 + 你现在可能想看 + 按主题找（标题右侧「全部内容 ›」）+ 承接按钮 */
+  /* 首页：入门卡 + 分类查找（标题右侧「卓正体重管理服务 ›」）+ 卓正体重管理服务 + 承接按钮 */
   function viewHome() {
     return '<div class="intro-wrap">' + introCard() + '</div>' +
-      '<div class="pck">' + picksHtml() + '</div>' +
       '<div class="grp">' + groupsHtml() + '</div>' +
+      '<div class="svc-sec">' + serviceListHtml() + '</div>' +
       '<div class="cta">' + ctaHtml() + '</div>';
   }
 
