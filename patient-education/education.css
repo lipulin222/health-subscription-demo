@@ -173,7 +173,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   font-family: var(--font); border: none; padding: 16px;
   border-radius: var(--radius-card); overflow: hidden;
   min-height: 208px;
-  background: #F0F1F0 url('../branding-pic/卓正图形-亮色女士健身服站姿（去鞋）.png') no-repeat right bottom / cover;
+  background: #F0F1F0 url('../branding-pic/卓正图形-亮色女士健身服站姿（去鞋）.png') no-repeat calc(100% + 50px) bottom / cover;
   transition: filter .18s var(--ease);
 }
 .intro:active { filter: brightness(.965); }
@@ -195,7 +195,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 /* 黄色强调条：非 Token，不保留 */
 .intro__rule { display: none; }
-.intro__s { display: block; margin-top: 10px; font-size: var(--fs-3); line-height: 22px; color: var(--t-secondary); }
+.intro__s { display: block; margin-top: 10px; font-size: var(--fs-2); line-height: 20px; color: var(--t-secondary); }
 .intro__cta {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   margin-top: 15px; height: 36px; padding: 0 20px; border-radius: var(--radius-large);

@@ -346,9 +346,9 @@
   function introCard() {
     return '<button class="intro" type="button" data-act="art" data-id="glp1">' +
       '<span class="intro__tag">入门第一课</span>' +
-      '<span class="intro__t">什么是体重管理？</span>' +
+      '<span class="intro__t">体重如何影响我们的健康</span>' +
       '<span class="intro__rule"></span>' +
-      '<span class="intro__s">不是饿肚子，也不靠意志力硬扛。<br>它做的是一件更本质的事——把你身体里本来就有的「吃饱了」信号找回来，并且留得久一点。</span>' +
+      '<span class="intro__s">超重影响的不只是身材，血糖、血脂、血压和关节负担都和它相关。<br>管理好体重，是改善这些指标最直接的入口。</span>' +
       '<span class="intro__cta">开始了解 <i>&rsaquo;</i></span>' +
       '</button>';
   }
@@ -409,8 +409,7 @@
       '<div class="card al__box">' +
       SERVICES.map(function (x) {
         return '<button class="al__i" type="button" data-act="toast" data-msg="演示中，功能未展开">' +
-          '<span class="al__t">' + esc(x.t) + '</span>' +
-          '<span class="al__s">' + esc(x.s) + '</span></button>';
+          '<span class="al__t">' + esc(x.t) + '</span></button>';
       }).join('') + '</div>';
   }
 
