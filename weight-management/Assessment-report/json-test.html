@@ -201,7 +201,6 @@ body { display:flex; justify-content:center; min-height:100vh; }
 </div>
 <div class="toast" id="toast" hidden></div>
 <script>
-/* ===== 待渲染的两份 JSON（模型输出，按 wl-assessment-v1 契约） ===== */
 var CASES = [
 {
   id: 'P12',
@@ -209,7 +208,7 @@ var CASES = [
   out: {
     schemaVersion: 'wl-assessment-v1',
     reportTier: 1,
-    interpretation: '你的体重在正常范围内，目前没有明确的用药指征。需要进一步确认的是想改善的具体部位和体态，评估后再决定方向。',
+    interpretation: '你的体重在正常范围内，目前没有明确的用药指征。是否需要在体型上做进一步调整，可以结合自身需求和实际情况再评估。',
     basis: [
       { text:'BMI 20.1，体重处于正常范围', inputPaths:['/profile/bmi'] },
       { text:'问卷未勾选确诊疾病', inputPaths:['/answers/diseases'] },
@@ -217,7 +216,7 @@ var CASES = [
       { text:'减重目标为穿进特定衣服', inputPaths:['/answers/goal'] }
     ],
     modules: [
-      { title:'整体建议', markdown:'体重管理不只与体重数字有关，腰围和体脂分布同样影响健康和外观。\n\n你当前的体重在正常范围内，没有明确的用药指征，可能需要改善的不是体重，而是体型体态。常见的情况有两类：体重正常但腰围超标，这种一般是内脏脂肪偏多，也会影响健康，可以预约面诊和医生讨论改善方案；体重正常但局部位置脂肪堆积、影响美观，可以通过酷塑等手段定向优化，如有需要可以和医美医生交流。\n\n想穿进特定的衣服，这类诉求通常与腰腹、臀腿的线条关系更大，属于上面说的第二类。' },
+      { title:'整体建议', markdown:'体重、腰围和体脂分布共同决定健康风险，体重数字只是其中一项。\n\n你当前的体重在正常范围内，没有明确的用药指征，可能需要改善的不是体重，而是体型体态。\n\n第一种情况是体重正常但腰围超标，这类一般是内脏脂肪偏多，同样会影响健康，可以预约面诊和医生讨论改善方案。\n\n第二种情况是体重正常但局部位置脂肪堆积、影响美观，这类可以通过酷塑等手段定向优化，如有需要可以和医美医生交流。\n\n想穿进特定的衣服，通常和腰腹、臀腿的线条关系更大，更接近第二种情况。' },
       { title:'运动建议', markdown:'想改善线条，力量训练的优先级高于有氧。\n\n- 每周两到三次力量训练：深蹲、俯卧撑或器械都可以，重点覆盖腰腹与臀腿。\n- 有氧保持常规量：快走等中低强度即可，作用在心肺健康，不必为消耗额外加量。\n- 训练日补充蛋白质：足量蛋白质是肌肉合成的前提，摄入量可以按体重估算。' }
     ]
   }
@@ -246,7 +245,6 @@ var TIER_LABEL = { 1:'体型管理', 2:'体重管理', 3:'体重与慢病结合�
 var AXIS = ['体型管理','体重管理','体重与慢病结合管理'];
 var DISC = '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。';
 
-/* ===== 影响链图（页面固定组件） ===== */
 function chainIco(src){ return '<img loading="lazy" decoding="async" src="'+src+'" alt="" aria-hidden="true">'; }
 function chain(){
   var ROWS = [[chainIco('icons/ico-life.png'),'生活方式'],[chainIco('icons/ico-weight.png'),'体重增加'],[chainIco('icons/ico-index.png'),'指标异常'],[chainIco('icons/ico-chronic.png'),'慢性疾病']];
@@ -257,14 +255,9 @@ function chain(){
   });
   return h + '</div>';
 }
-
-/* ===== markdown（契约子集）→ HTML ===== */
-function inline(s){
-  return s.replace(/\*\*([^*]+)\*\*/g, '<em class="hl">$1</em>');
-}
+function inline(s){ return s.replace(/\*\*([^*]+)\*\*/g, '<em class="hl">$1</em>'); }
 function mdToHtml(md, isFirst){
-  var blocks = md.split('\n\n');
-  var out = '';
+  var blocks = md.split('\n\n'), out = '';
   blocks.forEach(function(b, i){
     b = inline(b.trim());
     if (/^- /.test(b)) {
@@ -282,7 +275,6 @@ function mdToHtml(md, isFirst){
   return out;
 }
 
-/* ===== 渲染 ===== */
 var view = document.getElementById('view');
 function render(id){
   var c = CASES.filter(function(x){ return x.id === id; })[0];
@@ -318,17 +310,11 @@ function render(id){
     b1.addEventListener('click', function(){ toast('样例演示：第 1 档走面诊 / 医美咨询'); });
     bar.appendChild(b1);
   }
-
   document.querySelectorAll('#dispMenu button[data-p]').forEach(function(b){
     b.classList.toggle('is-cur', b.dataset.p === id);
   });
-
-  /* 输出 JSON 预览 */
-  var jb = document.getElementById('jsonBox');
-  if (jb) jb.textContent = JSON.stringify(j, null, 2);
 }
 
-/* ===== 顶栏菜单 / toast ===== */
 var toastEl = document.getElementById('toast'), toastT;
 function toast(msg){
   toastEl.hidden = false; toastEl.textContent = msg; toastEl.classList.add('is-show');
