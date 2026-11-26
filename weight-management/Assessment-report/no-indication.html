@@ -195,7 +195,8 @@ body { display:flex; justify-content:center; min-height:100vh; }
         <span class="hero__hint">你填写的信息和已关联的健康资料中，存在不适合使用减重药物的情况，也不建议自行购买使用。体重管理可以先从非药物方式开始：调整饮食结构、增加日常活动、保持规律作息。效果取决于能否持续执行，不必追求短期速度。</span>
       </section>
 
-      <section class="mod card"><div class="mod__h mod__h--static"><span class="mod__no">01</span><span class="mod__t">生活方式建议</span></div>
+      <section class="mod card">
+        <div class="mod__h mod__h--static"><span class="mod__t">生活方式建议</span></div>
         <div class="mod__b"><div class="mod__b-in">
           <ul class="ul">
             <li><b>饮食</b>：三餐定时，主食与蛋白质搭配，减少含糖饮料，不需要刻意节食。</li>
@@ -203,28 +204,68 @@ body { display:flex; justify-content:center; min-height:100vh; }
             <li><b>作息</b>：固定入睡和起床时间，睡前减少屏幕使用。</li>
             <li><b>体重记录</b>：每周固定时间称重一次，看趋势而不看单次数字。</li>
           </ul>
-        </div></div></section>
-
-      <section class="mod card"><div class="mod__b" style="margin-top:0"><div class="mod__b-in">
-        <p>体重管理是长期过程，节奏比速度更重要。你的情况如有变化，可以重新评估，由医生判断是否适合用药。</p>
-        <p>有需要时，可以联系你的专属健康护士。</p>
-      </div></div></section>
+          <p>体重管理是长期过程，节奏比速度更重要。你的情况如有变化，可以重新评估，由医生判断是否适合用药。</p>
+          <p>有需要时，可以联系你的专属健康护士。</p>
+        </div></div>
+      </section>
 
       <div class="disc">本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。</div>
     </main>
     <footer class="paybar" id="paybar">
-      <button class="btn btn--ghost fixbar__sub" type="button" id="btnKb">看看科普内容</button>
-      <button class="btn fixbar__btn" type="button" id="btnHome">返回首页</button>
+      <button class="btn btn--ghost fixbar__sub" type="button" id="btnShare">分享给亲友评估</button>
+      <button class="btn fixbar__btn" type="button" id="btnNurse">咨询护士</button>
     </footer>
   </div>
 </div>
+
+<!-- 咨询护士 · 二维码半浮层 -->
+<div class="sheet" id="qrSheet" hidden>
+  <div class="sheet__mask" data-close="1"></div>
+  <div class="sheet__panel" role="dialog" aria-modal="true" aria-label="咨询护士">
+    <div class="sheet__bar"><span></span></div>
+    <div class="sheet__head">
+      <div class="sheet__title">咨询护士</div>
+      <button class="sheet__close" data-close="1" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="sheet__body">
+      <img loading="lazy" decoding="async" class="qr" src="qr-assistant.png" alt="专属健康护士二维码">
+      <p class="qr-s">微信扫一扫，添加你的专属健康护士</p>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 <script>
 var t = document.getElementById('toast'), tt;
 function toast(m){ t.hidden=false; t.textContent=m; t.classList.add('is-show'); clearTimeout(tt); tt=setTimeout(function(){ t.classList.remove('is-show'); },1800); }
 document.getElementById('backBtn').addEventListener('click', function(){ toast('样例演示：未接返回'); });
-document.getElementById('btnKb').addEventListener('click', function(){ toast('样例演示：跳科普知识库'); });
-document.getElementById('btnHome').addEventListener('click', function(){ toast('样例演示：回服务首页'); });
+
+/* 咨询护士：弹二维码 */
+document.getElementById('btnNurse').addEventListener('click', function(){
+  document.getElementById('qrSheet').hidden = false;
+});
+document.getElementById('qrSheet').addEventListener('click', function(e){
+  if (e.target.getAttribute('data-close')) document.getElementById('qrSheet').hidden = true;
+});
+
+/* 分享给亲友评估：系统分享不可用时复制文案 */
+var SHARE_TITLE = '邀请你完成健康体重管理评估';
+var SHARE_TEXT = '10个小问题，快速了解自己是否需要进行体重管理';
+document.getElementById('btnShare').addEventListener('click', function(){
+  var url = location.origin + location.pathname.replace(//[^/]*$/, '/') + '../Medication-eligibility-assessment/index.html?state=new';
+  if (navigator.share) {
+    navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url: url }).catch(function(){});
+    return;
+  }
+  var copy = SHARE_TITLE + '\n' + SHARE_TEXT + '\n' + url;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(copy).then(function(){ toast('分享文案已复制，可粘贴给亲友'); }, function(){ toast('样例演示：分享未接入'); });
+  } else {
+    toast('样例演示：分享未接入');
+  }
+});
 </script>
 </body>
 </html>
