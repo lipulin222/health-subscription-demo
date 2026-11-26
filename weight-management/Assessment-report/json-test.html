@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>减重评估报告 · JSON 契约试跑（第 1 档 体型管理）</title>
+<style>
+/* 视觉对齐：weight-management/Assessment-report（DistinctUI 3.0，375px 壳） */
+:root {
+  --bg-page:#F2F5F6; --stroke:#E1E1E1; --divider:#E8E8E8;
+  --t-title:#1A1A1A; --t-primary:#333333; --t-secondary:#666666; --t-placeholder:#999999;
+  --brand:#009BBF; --brand-focus:#CAECF3; --brand-light:#EDFAFC; --brand-light-active:#DEF3F7; --brand-active:#007C99;
+  --btn-default-border:#DCDCDC;
+  --radius-small:2px; --radius-default:4px; --radius-large:6px; --radius-card:8px; --radius-panel:12px;
+  --space-card-gap:10px; --space-module-gap:15px;
+  --fs-1:11px; --fs-2:12px; --fs-3:14px; --fs-4:16px; --fs-5:17px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --font:"PingFang SC","HarmonyOS Sans SC","MiSans",-apple-system,"Microsoft YaHei",sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+[hidden] { display:none !important; }
+html, body { font-family:var(--font); color:var(--t-primary); background:var(--bg-page); -webkit-font-smoothing:antialiased; line-height:1.7; scrollbar-width:none; -ms-overflow-style:none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { width:0; height:0; display:none; }
+body { display:flex; justify-content:center; min-height:100vh; }
+
+.shell { display:flex; justify-content:center; width:100%; }
+.phone { width:100%; max-width:375px; height:100vh; height:100dvh; position:relative; display:flex; flex-direction:column; overflow:hidden; background:var(--bg-page); }
+@media (min-width:480px) { .phone { margin:24px 0; height:calc(100vh - 48px); height:calc(100dvh - 48px); border-radius:var(--radius-panel); box-shadow:0 0 40px rgba(0,0,0,.08); } }
+
+.topbar { height:44px; display:flex; align-items:center; background:#FFF; padding:0 6px; flex-shrink:0; position:relative; z-index:5; }
+.topbar__back, .topbar__more { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:none; background:none; cursor:pointer; color:var(--t-primary); border-radius:50%; flex-shrink:0; }
+.topbar__back svg { width:24px; height:24px; }
+.topbar__back:active, .topbar__more:active { background:var(--brand-light-active); }
+.topbar__more { gap:2.5px; }
+.topbar__more span { width:3.5px; height:3.5px; border-radius:50%; background:currentColor; display:block; }
+.topbar__title { flex:1; text-align:center; font-size:var(--fs-5); font-weight:600; color:var(--t-title); }
+
+.page { flex:1; min-height:0; overflow-y:auto; padding:0 15px var(--space-module-gap); -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none; }
+.page::-webkit-scrollbar { width:0; height:0; display:none; }
+
+.card { background:#FFF; border-radius:var(--radius-card); }
+.btn { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; height:40px; cursor:pointer; font-family:var(--font); background:var(--brand); color:#FFF; border:none; border-radius:var(--radius-large); font-size:var(--fs-4); font-weight:600; transition:background .15s var(--ease); }
+.btn:active { background:var(--brand-active); }
+.btn--ghost { background:#FFF; color:var(--t-primary); border:1px solid var(--btn-default-border); }
+.btn--ghost:active { background:var(--bg-page); }
+
+@keyframes viewIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.view-in { animation:viewIn .26s var(--ease); }
+
+/* 结论头 */
+.hero { margin-top:10px; border-radius:var(--radius-card); padding:15px; background:#FFF; }
+.hero__hd { position:relative; }
+.hero__name { display:block; font-size:17px; font-weight:600; color:var(--t-title); line-height:24px; }
+.hero__meta { display:block; margin-top:4px; padding-right:32px; font-size:var(--fs-2); color:var(--t-placeholder); line-height:17px; }
+.hero__info { position:absolute; top:1px; right:0; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:none; background:none; border-radius:50%; color:var(--t-placeholder); cursor:pointer; transition:color .16s var(--ease); }
+.hero__info:active { color:var(--brand); }
+.hero__info svg { width:17px; height:17px; display:block; }
+.hero__tip { position:absolute; top:32px; right:0; z-index:5; background:rgba(26,26,26,.88); color:#FFF; font-size:var(--fs-1); line-height:16px; padding:7px 11px; border-radius:8px; white-space:nowrap; }
+.hero__tip::before { content:""; position:absolute; top:-4px; right:9px; width:8px; height:8px; background:inherit; transform:rotate(45deg); border-radius:1px; }
+
+/* 建议等级刻度 */
+.grade { margin-top:12px; background:var(--brand-light); border-radius:var(--radius-default); padding:11px 13px 12px; }
+.grade__h { display:flex; align-items:center; gap:8px; font-size:var(--fs-1); line-height:1.4; color:var(--t-secondary); }
+.grade__h b { font-size:var(--fs-3); color:var(--brand); font-weight:600; }
+.grade__bar { display:flex; gap:4px; margin-top:9px; }
+.grade__bar i { flex:1; height:3px; border-radius:2px; background:var(--brand-focus); transition:background .3s var(--ease); }
+.grade__bar i.is-on { background:var(--brand); }
+.grade__ax { display:flex; gap:4px; margin-top:6px; }
+.grade__ax span { flex:1; text-align:center; font-size:10px; color:var(--t-placeholder); line-height:1.35; }
+.grade__ax span.is-on { color:var(--brand); font-weight:500; }
+.hero__hint { display:block; margin-top:10px; font-size:var(--fs-3); line-height:23px; color:var(--t-secondary); text-align:left; }
+
+/* 模块卡（可折叠） */
+.mod { margin-top:var(--space-card-gap); overflow:hidden; }
+.mod__h { display:flex; align-items:center; gap:9px; width:100%; cursor:pointer; font-family:var(--font); text-align:left; background:none; border:none; padding:12px 15px; transition:background .18s var(--ease); }
+.mod__h:active { background:var(--brand-light-active); }
+.mod__h--static { cursor:auto; }
+.mod__h--static:active { background:none; }
+.mod__mbar { padding:0 15px 0; }
+/* 用药建议 · 底部居中「查看详情 + 下拉箭头」（收起时向下，展开时向上） */
+.mod__pull { display:flex; align-items:center; justify-content:center; gap:4px; width:100%; padding:0 0 10px; border:none; background:none; cursor:pointer; font-family:var(--font); font-size:var(--fs-3); line-height:20px; color:var(--brand); }
+.mod__pull svg { width:16px; height:16px; transition:transform .24s var(--ease); }
+.mod:not(.is-fold) .mod__pull svg { transform:rotate(180deg); }
+.mod__no { flex-shrink:0; font-size:10px; font-weight:500; letter-spacing:.04em; color:#FFF; background:var(--brand); border-radius:var(--radius-small); padding:2px 6px; line-height:1.5; }
+.mod__t { flex:1; min-width:0; font-size:15px; font-weight:600; color:var(--t-title); line-height:22px; }
+.mod__arw { flex-shrink:0; width:22px; height:22px; color:var(--t-placeholder); display:flex; align-items:center; justify-content:center; transition:transform .24s var(--ease); }
+.mod__arw svg { width:16px; height:16px; }
+.mod.is-fold .mod__arw { transform:rotate(-90deg); }
+.mod__b { overflow:hidden; max-height:none; opacity:1; transition:max-height .32s var(--ease), opacity .22s var(--ease); }
+.mod.is-fold .mod__b { max-height:0; opacity:0; }
+.mod__b-in { padding:0 15px 15px; }
+.mod__b-in p { font-size:var(--fs-3); line-height:24px; color:var(--t-secondary); }
+.mod__b-in > * + * { margin-top:10px; }
+.mod__b-in .note { font-size:var(--fs-2); line-height:19px; color:var(--t-placeholder); }
+
+.ul { list-style:none; }
+.ul li { position:relative; padding-left:16px; font-size:var(--fs-3); color:var(--t-secondary); line-height:24px; }
+.ul li + li { margin-top:0; }
+.ul li::before { content:""; position:absolute; left:4px; top:.72em; width:4px; height:4px; border-radius:50%; background:var(--brand); }
+.ul b { color:inherit; font-weight:400; }
+
+/* 匹配度条 */
+.mbar { display:flex; align-items:center; gap:10px; }
+.mbar__lab { font-size:var(--fs-2); color:var(--t-secondary); flex-shrink:0; }
+.mbar__lv { font-size:var(--fs-3); font-weight:600; color:var(--brand); flex-shrink:0; }
+.mbar__tr { flex:1; min-width:0; height:4px; border-radius:2px; background:var(--stroke); overflow:hidden; }
+.mbar__tr i { display:block; height:100%; border-radius:2px; background:var(--brand); }
+
+/* 表格 */
+.tb { width:100%; border-collapse:separate; border-spacing:0; margin-top:var(--space-card-gap); font-size:13px; }
+.tb th, .tb td { padding:9px 11px; text-align:left; vertical-align:top; line-height:1.7; }
+.tb th { background:var(--bg-page); color:var(--t-secondary); font-size:var(--fs-1); font-weight:500; }
+.tb th:first-child { border-radius:var(--radius-default) 0 0 0; }
+.tb th:last-child { border-radius:0 var(--radius-default) 0 0; }
+.tb td { border-bottom:1px solid var(--divider); color:var(--t-primary); }
+.tb tr:last-child td { border-bottom:none; }
+.tb td:first-child { width:76px; color:var(--t-primary); }
+
+.disc { margin-top:var(--space-card-gap); padding:0 2px 4px; font-size:var(--fs-1); color:var(--t-placeholder); line-height:18px; text-align:left; }
+
+/* 吸底按钮 */
+.paybar { flex-shrink:0; display:flex; align-items:center; gap:14px; background:#FFF; border-top:1px solid var(--divider); padding:12px 15px calc(12px + env(safe-area-inset-bottom,0px)); position:relative; z-index:6; }
+.paybar .fixbar__btn { flex:1 1 auto; width:100%; }
+.paybar .fixbar__sub { flex:0 0 auto; width:auto; padding:0 16px; }
+.paybar .fixbar__half { flex:1 1 0; width:auto; padding:0 8px; }
+
+/* 顶栏 ⋯ 切换菜单 */
+.disp-sw { position:absolute; top:46px; right:8px; z-index:60; }
+.disp-sw__menu { display:none; min-width:132px; padding:4px; background:#FFF; border-radius:var(--radius-card); box-shadow:0 4px 16px rgba(0,0,0,.12); }
+.disp-sw.is-open .disp-sw__menu { display:block; animation:viewIn .18s var(--ease); }
+.disp-sw__cap { display:block; padding:6px 12px 2px; font-size:10px; color:var(--t-placeholder); }
+.disp-sw__menu button { display:block; width:100%; text-align:left; cursor:pointer; border:none; background:none; border-radius:var(--radius-large); font-family:var(--font); font-size:var(--fs-2); color:var(--t-primary); padding:8px 12px; }
+.disp-sw__menu button:active { background:var(--brand-light); }
+.disp-sw__menu button.is-cur { color:var(--brand); font-weight:600; }
+.disp-sw__menu button[data-re] { margin-bottom:2px; border-bottom:1px solid var(--stroke); border-radius:var(--radius-large) var(--radius-large) 0 0; }
+
+.toast { position:fixed; left:50%; bottom:92px; transform:translateX(-50%) translateY(8px); background:rgba(26,26,26,.88); color:#FFF; font-family:var(--font); font-size:var(--fs-2); padding:10px 16px; border-radius:var(--radius-panel); z-index:300; opacity:0; transition:opacity .22s var(--ease), transform .22s var(--ease); max-width:84vw; text-align:center; line-height:17px; }
+.toast.is-show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* 线上咨询二维码半浮层 */
+.sheet { position:fixed; inset:0; z-index:200; display:flex; align-items:flex-end; justify-content:center; }
+.sheet[hidden] { display:none; }
+.sheet__mask { position:absolute; inset:0; background:rgba(0,0,0,.45); animation:sheetMaskIn .2s var(--ease); }
+@keyframes sheetMaskIn { from { opacity:0; } to { opacity:1; } }
+.sheet__panel { position:relative; width:100%; max-width:375px; background:#FFF; border-radius:var(--radius-panel) var(--radius-panel) 0 0; box-shadow:0 -8px 30px rgba(17,20,24,.12); animation:sheetPanelIn .28s var(--ease); }
+@keyframes sheetPanelIn { from { transform:translateY(24px); opacity:.6; } to { transform:none; opacity:1; } }
+.sheet__bar { display:flex; justify-content:center; padding:8px 0 0; }
+.sheet__bar span { width:36px; height:4px; border-radius:999px; background:var(--divider); }
+.sheet__head { display:flex; align-items:center; justify-content:space-between; padding:8px 18px 7px; border-bottom:1px solid var(--divider); }
+.sheet__title { font-size:15px; font-weight:600; color:var(--t-title); }
+.sheet__close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:none; background:none; cursor:pointer; border-radius:50%; color:var(--t-secondary); }
+.sheet__close svg { width:16px; height:16px; }
+.sheet__close:active { background:var(--bg-page); }
+.sheet__body { padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px)); }
+.qr { display:block; width:208px; height:auto; margin:10px auto 12px; }
+.qr-s { text-align:center; font-size:var(--fs-2); line-height:20px; color:var(--t-placeholder); }
+
+/* 亲友退出 · 登录保存提示弹层（居中对话框） */
+.dlg { position:fixed; inset:0; z-index:210; display:flex; align-items:center; justify-content:center; padding:0 32px; }
+.dlg[hidden] { display:none; }
+.dlg__mask { position:absolute; inset:0; background:rgba(0,0,0,.45); animation:sheetMaskIn .2s var(--ease); }
+.dlg__panel { position:relative; width:100%; max-width:300px; background:#FFF; border-radius:var(--radius-panel); padding:20px 18px 14px; text-align:center; animation:sheetPanelIn .28s var(--ease); }
+.dlg__t { font-size:16px; font-weight:600; color:var(--t-title); line-height:24px; }
+.dlg__d { margin-top:8px; font-size:13px; color:var(--t-secondary); line-height:21px; text-align:left; }
+.dlg__btns { display:flex; gap:10px; margin-top:16px; }
+.dlg__btns .btn { flex:1; }
+
+@media (max-width:360px) { .page { padding-left:var(--space-card-gap); padding-right:var(--space-card-gap); } .hero { padding:12px; } }
+@media (prefers-reduced-motion:reduce) { * { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+
+/* ===== 整体建议 · 健康影响链（横版：四节点一行排开，节点间「关联词 >」文字衔接，置于模块顶部） ===== */
+.chain { margin-bottom:14px; display:flex; align-items:flex-start; }
+.chain__col { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; }
+.chain__ico { width:100%; max-width:46px; aspect-ratio:1/1; }
+.chain__ico img { width:100%; height:100%; display:block; }
+.chain__t { margin-top:5px; font-size:12px; font-weight:400; color:#1F8CA8; line-height:17px; white-space:nowrap; }
+.chain__lk { flex:0 0 auto; padding-top:14px; color:#999999; font-size:12px; line-height:17px; white-space:nowrap; }
+.hl { font-style:normal; color:var(--brand); }
+
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="phone">
+    <header class="topbar">
+      <button class="topbar__back" id="backBtn" aria-label="返回">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="topbar__title">减重评估报告 · 试跑</div>
+      <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      <div class="disp-sw" id="dispSw">
+        <div class="disp-sw__menu" id="dispMenu">
+          <button data-re type="button">重新评估</button>
+          <span class="disp-sw__cap">切换样本</span>
+        </div>
+      </div>
+    </header>
+    <main class="page" id="view"></main>
+    <footer class="paybar" id="paybar" hidden></footer>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script>
+/* ===== 待渲染的两份 JSON（模型输出，按 wl-assessment-v1 契约） ===== */
+var CASES = [
+{
+  id: 'P12',
+  profile: { name:'苏晴', gender:'女', age:37, height:164, weight:54, bmi:20.1 },
+  out: {
+    schemaVersion: 'wl-assessment-v1',
+    reportTier: 1,
+    interpretation: '你的体重在正常范围内，目前没有明确的用药指征。需要进一步确认的是想改善的具体部位和体态，评估后再决定方向。',
+    basis: [
+      { text:'BMI 20.1，体重处于正常范围', inputPaths:['/profile/bmi'] },
+      { text:'问卷未勾选确诊疾病', inputPaths:['/answers/diseases'] },
+      { text:'问卷未勾选指标异常', inputPaths:['/answers/indicators'] },
+      { text:'减重目标为穿进特定衣服', inputPaths:['/answers/goal'] }
+    ],
+    modules: [
+      { title:'整体建议', markdown:'体重管理不只与体重数字有关，腰围和体脂分布同样影响健康和外观。\n\n你当前的体重在正常范围内，没有明确的用药指征，可能需要改善的不是体重，而是体型体态。常见的情况有两类：体重正常但腰围超标，这种一般是内脏脂肪偏多，也会影响健康，可以预约面诊和医生讨论改善方案；体重正常但局部位置脂肪堆积、影响美观，可以通过酷塑等手段定向优化，如有需要可以和医美医生交流。\n\n想穿进特定的衣服，这类诉求通常与腰腹、臀腿的线条关系更大，属于上面说的第二类。' },
+      { title:'运动建议', markdown:'想改善线条，力量训练的优先级高于有氧。\n\n- 每周两到三次力量训练：深蹲、俯卧撑或器械都可以，重点覆盖腰腹与臀腿。\n- 有氧保持常规量：快走等中低强度即可，作用在心肺健康，不必为消耗额外加量。\n- 训练日补充蛋白质：足量蛋白质是肌肉合成的前提，摄入量可以按体重估算。' }
+    ]
+  }
+},
+{
+  id: 'P10',
+  profile: { name:'唐子睿', gender:'男', age:17, height:174, weight:85.8, bmi:28.3 },
+  out: {
+    schemaVersion: 'wl-assessment-v1',
+    reportTier: 1,
+    interpretation: '你的体重高于同龄人的建议范围，现阶段更适合由儿科医生评估后再确定方向。饮食和作息由全家一起调整，会更容易坚持。',
+    basis: [
+      { text:'年龄 17 岁', inputPaths:['/profile/age'] },
+      { text:'BMI 28.3', inputPaths:['/profile/bmi'] },
+      { text:'体检提示胰岛素水平偏高，伴有黑棘皮征', inputPaths:['/health/indicators'] }
+    ],
+    modules: [
+      { title:'整体建议', markdown:'体重管理与生活方式、作息和活动量都有关系，青少年阶段的情况和成人不同。\n\n目前未满 18 岁，减重安排需要先由儿科医生评估，体检提示的胰岛素水平偏高也需要确认程度；饮食和作息可以现在开始调整，全家一起执行比一个人克制更容易坚持。\n\n- 体检提示胰岛素水平偏高，伴有黑棘皮征：需要儿科医生评估程度，日常先避开含糖饮料和夜间加餐。' },
+      { title:'饮食建议', markdown:'饮食调整的目标是稳定血糖、减少额外摄入，不需要刻意节食。\n\n- 含糖饮料和夜宵先从家里去掉：这两类是血糖波动最直接的来源。\n- 三餐定时，主食搭配蛋白质：鱼、蛋、豆制品和杂粮一起安排，饱腹感更持久。\n- 全家采用同一套吃法：家长一起执行，配合度会高很多。' },
+      { title:'运动建议', markdown:'活动量对改善胰岛素敏感性有直接帮助，重点是能长期坚持。\n\n- 每天累计一小时中高强度活动：球类、跑步、骑行都可以，拆成两段也行。\n- 减少连续久坐：写作业每小时起身活动几分钟。\n- 固定就寝时间：睡眠不足会放大食欲，作息稳定后更容易执行。' }
+    ]
+  }
+}
+];
+var TIER_LABEL = { 1:'体型管理', 2:'体重管理', 3:'体重与慢病结合管理' };
+var AXIS = ['体型管理','体重管理','体重与慢病结合管理'];
+var DISC = '本页内容基于你填写的问卷与已关联的健康数据生成，为初步评估建议，不构成诊断和处方。';
+
+/* ===== 影响链图（页面固定组件） ===== */
+function chainIco(src){ return '<img loading="lazy" decoding="async" src="'+src+'" alt="" aria-hidden="true">'; }
+function chain(){
+  var ROWS = [[chainIco('icons/ico-life.png'),'生活方式'],[chainIco('icons/ico-weight.png'),'体重增加'],[chainIco('icons/ico-index.png'),'指标异常'],[chainIco('icons/ico-chronic.png'),'慢性疾病']];
+  var LINKS = ['影响','导致','发展'], h = '<div class="chain">';
+  ROWS.forEach(function(r,i){
+    h += '<div class="chain__col"><span class="chain__ico">'+r[0]+'</span><b class="chain__t">'+r[1]+'</b></div>';
+    if (i < LINKS.length) h += '<div class="chain__lk">'+LINKS[i]+' &gt;</div>';
+  });
+  return h + '</div>';
+}
+
+/* ===== markdown（契约子集）→ HTML ===== */
+function inline(s){
+  return s.replace(/\*\*([^*]+)\*\*/g, '<em class="hl">$1</em>');
+}
+function mdToHtml(md, isFirst){
+  var blocks = md.split('\n\n');
+  var out = '';
+  blocks.forEach(function(b, i){
+    b = inline(b.trim());
+    if (/^- /.test(b)) {
+      var items = b.split('\n').filter(function(l){ return /^- /.test(l); });
+      out += '<ul class="ul">' + items.map(function(l){
+        var t = l.replace(/^- /, '');
+        var m = t.match(/^([^：:]{1,24})[：:]([\s\S]*)$/);
+        return m ? '<li><b>'+m[1]+'</b>：'+m[2]+'</li>' : '<li>'+t+'</li>';
+      }).join('') + '</ul>';
+    } else {
+      out += '<p>' + b.replace(/\n/g, '') + '</p>';
+    }
+    if (i === 0 && isFirst) out += chain();
+  });
+  return out;
+}
+
+/* ===== 渲染 ===== */
+var view = document.getElementById('view');
+function render(id){
+  var c = CASES.filter(function(x){ return x.id === id; })[0];
+  var p = c.profile, j = c.out, tier = j.reportTier;
+  var bars = '', axis = '';
+  for (var i = 0; i < 3; i++) {
+    bars += '<i class="' + (i === tier - 1 ? 'is-on' : '') + '"></i>';
+    axis += '<span class="' + (i === tier - 1 ? 'is-on' : '') + '">' + AXIS[i] + '</span>';
+  }
+  var html = '<section class="hero view-in"><div class="hero__hd">' +
+    '<span class="hero__name">' + p.name + '</span>' +
+    '<span class="hero__meta">' + p.gender + ' · ' + p.age + ' 岁 · ' + p.height + 'cm / ' + p.weight + 'kg · BMI ' + p.bmi + '</span>' +
+    '</div><div class="grade"><div class="grade__h"><span>减重建议</span><b>' + TIER_LABEL[tier] + '</b></div>' +
+    '<div class="grade__bar">' + bars + '</div><div class="grade__ax">' + axis + '</div></div>' +
+    '<span class="hero__hint">' + j.interpretation + '</span></section>';
+
+  html += j.modules.map(function(m, i){
+    var body = m.markdown.replace(/\{\{BMI\}\}/g, p.bmi);
+    return '<section class="mod card"><div class="mod__h mod__h--static">' +
+      '<span class="mod__no">' + ('0' + (i + 1)).slice(-2) + '</span><span class="mod__t">' + m.title + '</span></div>' +
+      '<div class="mod__b"><div class="mod__b-in">' + mdToHtml(body, i === 0) + '</div></div></section>';
+  }).join('');
+
+  html += '<div class="disc">' + DISC + '</div>';
+  view.innerHTML = html;
+  view.scrollTop = 0;
+
+  var bar = document.getElementById('paybar');
+  bar.hidden = false; bar.innerHTML = '';
+  if (tier === 1) {
+    var b1 = document.createElement('button');
+    b1.className = 'btn fixbar__btn'; b1.type = 'button'; b1.textContent = '预约面诊';
+    b1.addEventListener('click', function(){ toast('样例演示：第 1 档走面诊 / 医美咨询'); });
+    bar.appendChild(b1);
+  }
+
+  document.querySelectorAll('#dispMenu button[data-p]').forEach(function(b){
+    b.classList.toggle('is-cur', b.dataset.p === id);
+  });
+
+  /* 输出 JSON 预览 */
+  var jb = document.getElementById('jsonBox');
+  if (jb) jb.textContent = JSON.stringify(j, null, 2);
+}
+
+/* ===== 顶栏菜单 / toast ===== */
+var toastEl = document.getElementById('toast'), toastT;
+function toast(msg){
+  toastEl.hidden = false; toastEl.textContent = msg; toastEl.classList.add('is-show');
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.classList.remove('is-show'); }, 1800);
+}
+var menu = document.getElementById('dispMenu'), sw = document.getElementById('dispSw');
+CASES.forEach(function(c){
+  var b = document.createElement('button');
+  b.type = 'button'; b.dataset.p = c.id; b.textContent = c.id + ' ' + c.profile.name;
+  b.addEventListener('click', function(){ sw.classList.remove('is-open'); render(c.id); });
+  menu.appendChild(b);
+});
+document.getElementById('moreBtn').addEventListener('click', function(e){
+  e.stopPropagation(); sw.classList.toggle('is-open');
+});
+document.addEventListener('click', function(e){
+  if (!sw.contains(e.target)) sw.classList.remove('is-open');
+});
+menu.querySelector('button[data-re]').addEventListener('click', function(){
+  sw.classList.remove('is-open'); toast('样例演示：未接评估问卷');
+});
+document.getElementById('backBtn').addEventListener('click', function(){ toast('样例演示：未接返回'); });
+render('P12');
+</script>
+</body>
+</html>
