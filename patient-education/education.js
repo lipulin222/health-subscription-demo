@@ -30,9 +30,9 @@
   /* ===================== 2. 内容库 ===================== */
   /* 分组：4 组（不用平铺标签） */
   const GROUPS = [
-    { k: 'know', n: '认识减重', d: '适合谁 · 效果 · 流程' },
-    { k: 'safe', n: '用药与安全', d: '常见反应 · 漏服' },
-    { k: 'life', n: '日常生活', d: '怎么吃 · 怎么动' },
+    { k: 'know', n: '认识药物减重', d: '适合谁 · 效果 · 流程' },
+    { k: 'safe', n: '用药安全', d: '常见反应 · 漏服' },
+    { k: 'life', n: '生活方式', d: '怎么吃 · 怎么动' },
     { k: 'run', n: '过程管理', d: '平台期 · 复查 · 维持' }
   ];
   const ARTICLES = [
@@ -345,22 +345,21 @@
      入门卡 + 你现在可能想看 + 按主题找 + 「卓正体重管理服务」入口（→ #/all 二级页）+ 承接按钮 */
   function introCard() {
     return '<button class="intro" type="button" data-act="art" data-id="glp1">' +
-      '<span class="intro__tag">入门第一课</span>' +
-      '<span class="intro__t">体重如何影响我们的健康</span>' +
+      '<span class="intro__t">如何科学管理我们的体重</span>' +
       '<span class="intro__rule"></span>' +
-      '<span class="intro__s">超重影响的不只是身材，血糖、血脂、血压和关节负担都和它相关。<br>管理好体重，是改善这些指标最直接的入口。</span>' +
+      '<span class="intro__s">体重和健康、美丽息息相关，你可能常年和体重秤上的数字斗争，心力交瘁。一篇科普，告诉你科学、健康的控制体重的方法。</span>' +
       '<span class="intro__cta">开始了解 <i>&rsaquo;</i></span>' +
       '</button>';
   }
 
   /* 服务介绍入口：文字链，放在「按主题找」标题右侧，点击进「卓正体重管理服务」页 */
   function allEntryHtml() {
-    return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">卓正体重管理服务 &rsaquo;</button>';
+    return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">健康减重，选择卓正 &rsaquo;</button>';
   }
 
   /* showAll：是否在标题右侧显示「卓正体重管理服务 ›」入口（二级页里不重复出现） */
   function groupsHtml(showAll) {
-    return '<div class="grp__hd"><h2>分类查找</h2>' + (showAll ? allEntryHtml() : '') + '</div><div class="grp__g">' +
+    return '<div class="grp__hd"><h2>文章分类</h2>' + (showAll ? allEntryHtml() : '') + '</div><div class="grp__g">' +
       GROUPS.map(function (x) {
         return '<button class="grp__c grp__c--' + x.k + (state.grp === x.k ? ' is-on' : '') + '" type="button" data-act="grp" data-g="' + x.k + '">' +
           '<b>' + esc(x.n) + '</b><s>' + esc(x.d) + '</s><em>' + groupCount(x.k) + ' 篇</em></button>';
@@ -385,8 +384,8 @@
 
   function ctaHtml() {
     return state.stage <= 2
-      ? '<button class="btn" type="button" data-act="assess">体重管理评估</button>'
-      : '<button class="btn" type="button" data-act="agent">有拿不准的？问问护士</button>';
+      ? '<button class="btn" type="button" data-act="assess">免费评估</button>'
+      : '<button class="btn" type="button" data-act="agent">免费评估</button>';
   }
 
   /* 首页：入门卡 + 分类查找（标题右侧「卓正体重管理服务 ›」）+ 卓正体重管理服务 + 承接按钮 */
@@ -397,20 +396,23 @@
       '<div class="cta">' + ctaHtml() + '</div>';
   }
 
-  /* 卓正体重管理服务：服务特色与优势（沿用文章列表样式，条目为服务项介绍） */
+  /* 健康减重，选择卓正：导语 + 四张服务卖点插画（复制自 1120 首诊套餐页） */
   const SERVICES = [
-    { t: '专业医生的科学诊断', s: '内分泌科医生评估后定制减重方案，线上复诊与调量，方案跟着身体变化走。' },
-    { t: '循证充分的正规药物', s: '医生处方开具、正规渠道供应，冷链配送到家，用法与保存全程有指导。' },
-    { t: '营养师制定饮食方案', s: '结合用药反应调整饮食结构，吃得少也吃得对，保住该保的营养。' },
-    { t: '医护助理1v1的服务指导', s: '用药期间固定医护助理对接，体重与饮食记录、复查提醒不用自己记。' }
+    { img: 'package-doctor.png', t: '专业医生的科学诊断' },
+    { img: 'package-medication.png', t: '循证充分的正规药物' },
+    { img: 'package-nutrition.png', t: '营养师制定饮食方案' },
+    { img: 'package-guidance.png', t: '医护助理1v1的服务指导' }
   ];
   function serviceListHtml() {
-    return '<div class="al__hd"><h2>卓正体重管理服务</h2><s>' + SERVICES.length + ' 项</s></div>' +
-      '<div class="card al__box">' +
+    return '<div class="al__hd"><h2>健康减重，选择卓正</h2></div>' +
+      '<div class="card svc-intro">' +
+      '<p class="svc-intro__tail">减重是一个复杂、系统性工程，卓正专业的服务能够帮助你的减重过程更加安全、有效。</p>' +
+      '<div class="svc-grid">' +
       SERVICES.map(function (x) {
-        return '<button class="al__i" type="button" data-act="toast" data-msg="演示中，功能未展开">' +
-          '<span class="al__t">' + esc(x.t) + '</span></button>';
-      }).join('') + '</div>';
+        return '<div class="svc"><img src="../assets/pkg/' + x.img + '" alt="' + x.t +
+          '" loading="lazy" decoding="async" /><b>' + x.t + '</b></div>';
+      }).join('') +
+      '</div></div>';
   }
 
   /* 服务介绍页（原「全部内容」二级页）：入门卡（第一部分）+ 按主题找 + 卓正体重管理服务 */
@@ -504,13 +506,13 @@
       return;
     } else if (r.view === 'all') {
       state.grp = r.grp;
-      html = viewAll(); title = '卓正体重管理服务';
+      html = viewAll(); title = '健康减重，选择卓正';
     } else if (r.view === 'cat' && isGroup(r.grp)) {
       state.grp = r.grp;
       html = viewCat(); title = groupName(state.grp);
     } else {
       state.grp = '';
-      html = viewHome(); title = '减重科普';
+      html = viewHome(); title = '体重管理科普';
     }
     view.innerHTML = html;
     document.getElementById('topTitle').textContent = title;

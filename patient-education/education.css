@@ -252,6 +252,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .grp__c.is-on { background: var(--brand-light-active); }
 .grp__c.is-on b { color: var(--brand); }
 
+/* ============================ 6.1 健康减重，选择卓正 ============================
+   导语 + 两列服务卖点插画网格，复制自 1120 首诊套餐页「套餐介绍」区 */
+.svc-intro__tail { margin: 0 0 2px; font-size: var(--fs-3); font-weight: 400; line-height: 23px; color: var(--t-secondary); }
+.svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 2px; }
+.svc {
+  border-radius: 12px; padding: 10px 0 4px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.svc img { width: 92%; max-width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+.svc b { margin-top: 8px; font-size: 14px; font-weight: 400; color: var(--t-secondary); line-height: 22px; }
+
 /* ============================ 7. 内容列表 ============================ */
 .al__hd { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-card-gap); padding: var(--space-module-gap) 2px var(--space-card-gap); }
 .al__hd h2 { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); }
