@@ -190,8 +190,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   border: 1px solid rgba(0, 155, 191, .32); background: rgba(255, 255, 255, .78);
 }
 .intro__t {
-  display: block; margin-top: 12px; font-size: var(--fs-6); font-weight: 600;
-  line-height: 28px; color: var(--t-title);
+  display: block; max-width: 100%; margin-top: 12px; font-size: var(--fs-6); font-weight: 600;
+  line-height: 28px; white-space: nowrap; color: var(--t-title);
 }
 /* 黄色强调条：非 Token，不保留 */
 .intro__rule { display: none; }

@@ -384,8 +384,8 @@
 
   function ctaHtml() {
     return state.stage <= 2
-      ? '<button class="btn" type="button" data-act="assess">免费评估</button>'
-      : '<button class="btn" type="button" data-act="agent">免费评估</button>';
+      ? '<button class="btn" type="button" data-act="assess">免费领取体质评估报告</button>'
+      : '<button class="btn" type="button" data-act="agent">免费领取体质评估报告</button>';
   }
 
   /* 首页：入门卡 + 分类查找（标题右侧「卓正体重管理服务 ›」）+ 卓正体重管理服务 + 承接按钮 */
