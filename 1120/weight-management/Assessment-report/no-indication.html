@@ -216,10 +216,16 @@ body { display:flex; justify-content:center; min-height:100vh; }
         <div class="hero__hd">
           <img class="hero__avatar" src="../../design-assets/report-profile-avatar.png" width="46" height="46" alt="">
           <div class="hero__identity">
-            <span class="hero__name">这次不使用减重药物</span>
-            <span class="hero__meta"><span class="hero__meta-field">根据你的评估资料，目前不适合用药</span></span>
+            <span class="hero__name" id="pName">陈静</span>
+            <span class="hero__meta" id="pMeta">
+              <span class="hero__meta-field">女</span>
+              <span class="hero__meta-field">31 岁</span>
+              <span class="hero__meta-field">165cm / 63kg</span>
+              <span class="hero__meta-field">BMI 23.1</span>
+            </span>
           </div>
         </div>
+        <div style="margin-top:12px;font-size:16px;font-weight:600;color:#1A1A1A;line-height:24px">这次不使用减重药物</div>
         <span class="hero__hint">你填写的信息和已关联的健康资料中，存在不适合使用减重药物的情况，也不建议自行购买使用。体重管理可以先从非药物方式开始：调整饮食结构、增加日常活动、保持规律作息。效果取决于能否持续执行，不必追求短期速度。</span>
       </section>
 
@@ -265,6 +271,15 @@ body { display:flex; justify-content:center; min-height:100vh; }
 
 <div class="toast" id="toast" hidden></div>
 <script>
+/* 档案行：正式接入时由服务端渲染 profile，这里仅做演示数据填充 */
+var PROFILE = { name:'陈静', gender:'女', age:31, height:165, weight:63, bmi:23.1 };
+document.getElementById('pName').textContent = PROFILE.name;
+document.getElementById('pMeta').innerHTML =
+  '<span class="hero__meta-field">' + PROFILE.gender + '</span>' +
+  '<span class="hero__meta-field">' + PROFILE.age + ' 岁</span>' +
+  '<span class="hero__meta-field">' + PROFILE.height + 'cm / ' + PROFILE.weight + 'kg</span>' +
+  '<span class="hero__meta-field">BMI ' + PROFILE.bmi + '</span>';
+
 var t = document.getElementById('toast'), tt;
 function toast(m){ t.hidden=false; t.textContent=m; t.classList.add('is-show'); clearTimeout(tt); tt=setTimeout(function(){ t.classList.remove('is-show'); },1800); }
 document.getElementById('backBtn').addEventListener('click', function(){ toast('样例演示：未接返回'); });
