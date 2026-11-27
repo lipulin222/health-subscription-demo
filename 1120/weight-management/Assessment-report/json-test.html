@@ -222,6 +222,24 @@ body { display:flex; justify-content:center; min-height:100vh; }
     <footer class="paybar" id="paybar" hidden></footer>
   </div>
 </div>
+
+<div class="sheet" id="qrSheet" hidden>
+  <div class="sheet__mask" data-close="1"></div>
+  <div class="sheet__panel" role="dialog" aria-modal="true" aria-label="咨询护士">
+    <div class="sheet__bar"><span></span></div>
+    <div class="sheet__head">
+      <div class="sheet__title">咨询护士</div>
+      <button class="sheet__close" data-close="1" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="sheet__body">
+      <img loading="lazy" decoding="async" class="qr" src="qr-assistant.png" alt="专属健康护士二维码">
+      <p class="qr-s">微信扫一扫，添加你的专属健康护士</p>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 <script>
 var CASE = {
@@ -325,7 +343,7 @@ function render(){
     return b;
   }
   bar.appendChild(mkBtn('邀请亲友评估', true, shareAssess));
-  bar.appendChild(mkBtn('预约面诊', false, function(){ toast('样例演示：预约面诊'); }));
+  bar.appendChild(mkBtn('咨询护士', false, function(){ document.getElementById('qrSheet').hidden = false; }));
 }
 
 /* 分享 / 返回 / toast */
@@ -342,6 +360,9 @@ function shareAssess(){
   else toast('样例演示：分享未接入');
 }
 document.getElementById('backBtn').addEventListener('click', function(){ toast('样例演示：未接返回'); });
+document.getElementById('qrSheet').addEventListener('click', function(e){
+  if (e.target.getAttribute('data-close')) document.getElementById('qrSheet').hidden = true;
+});
 document.getElementById('moreBtn').addEventListener('click', function(e){
   e.stopPropagation(); document.getElementById('dispSw').classList.toggle('is-open');
 });
