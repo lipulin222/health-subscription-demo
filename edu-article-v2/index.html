@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>减肥总失败，打减肥针管用吗？</title>
+<link rel="icon" href="../branding-pic/icon.png">
+<style>
+/* 体重管理 · 科普文章详情页 v2
+   与 patient-education 首页同源：DistinctUI 3.0 / 375px 壳 / 无三件套 */
+:root{
+  --bg-page:#F2F5F6;
+  --stroke:#E1E1E1;
+  --divider:#E8E8E8;
+  --t-title:#1A1A1A;
+  --t-primary:#333333;
+  --t-secondary:#666666;
+  --t-placeholder:#999999;
+  --brand:#009BBF;
+  --brand-light:#EDFAFC;
+  --brand-light-active:#DEF3F7;
+  --brand-deep:#007C99;
+  --radius-small:4px;
+  --radius-default:6px;
+  --radius-card:8px;
+  --radius-panel:12px;
+  --sp-1:10px;
+  --sp-2:15px;
+  --fs-1:11px;
+  --fs-2:12px;
+  --fs-3:14px;
+  --fs-4:16px;
+  --fs-5:17px;
+  --fs-6:20px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --font:"PingFang SC","HarmonyOS Sans SC","MiSans",-apple-system,"Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+s{text-decoration:none}
+[hidden]{display:none !important}
+html,body{font-family:var(--font);color:var(--t-primary);background:var(--bg-page);line-height:1.7;-webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center;min-height:100vh}
+html,body{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
+
+.shell{display:flex;justify-content:center;width:100%}
+.phone{width:100%;max-width:375px;min-height:100vh;position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-page)}
+@media (min-width:480px){.phone{margin:24px 0;min-height:calc(100vh - 48px);border-radius:var(--radius-panel);box-shadow:0 0 40px rgba(0,0,0,.08)}}
+
+.topbar{height:44px;display:flex;align-items:center;gap:4px;padding:env(safe-area-inset-top) 6px 0;background:#FFFFFF;flex-shrink:0;position:relative;z-index:5}
+.topbar__back,.topbar__share{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:none;color:var(--t-primary);border-radius:50%;cursor:pointer;flex-shrink:0}
+.topbar__back svg{width:24px;height:24px}
+.topbar__share svg{width:22px;height:22px}
+.topbar__back:active,.topbar__share:active{background:var(--brand-light-active)}
+.topbar__title{flex:1;min-width:0;text-align:center;font-size:var(--fs-5);font-weight:600;color:var(--t-title)}
+
+.page{flex:1;min-height:0;overflow-y:auto;padding:10px 15px calc(16px + env(safe-area-inset-bottom));scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.page::-webkit-scrollbar{width:0;height:0;display:none}
+.card{background:#FFFFFF;border-radius:var(--radius-card);padding:16px}
+.card + .card{margin-top:var(--sp-1)}
+
+/* 版头：分类 + 标题 + 导语结论块 */
+.hero__chip{display:inline-block;font-size:var(--fs-1);font-weight:500;line-height:16px;color:var(--brand);background:var(--brand-light);border-radius:var(--radius-small);padding:2px 8px}
+.hero__t{margin-top:12px;font-size:var(--fs-6);font-weight:600;line-height:28px;color:var(--t-title)}
+.lead{margin-top:14px;background:var(--brand-light);border-radius:var(--radius-default);padding:12px}
+.lead__lb{display:block;font-size:var(--fs-1);font-weight:600;line-height:16px;color:var(--brand);letter-spacing:.02em}
+.lead__tx{display:block;margin-top:3px;font-size:var(--fs-3);line-height:22px;color:var(--t-primary)}
+
+/* 节标题：品牌色短竖条 + 无编号标题 */
+.sec__hd{display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--divider)}
+.sec__bar{width:3px;height:16px;border-radius:2px;background:var(--brand);flex-shrink:0}
+.sec__t{font-size:var(--fs-4);font-weight:600;line-height:22px;color:var(--t-title)}
+
+/* 要点：关键词加粗，说明另起一行，条目间细分割线 */
+.pt{display:grid;grid-template-columns:12px 1fr;gap:6px;padding:14px 0}
+.pt + .pt{border-top:1px solid var(--divider)}
+.pt__dot{width:6px;height:6px;margin:8px auto 0;border-radius:1px;background:var(--brand);transform:rotate(45deg)}
+.pt__t{font-size:var(--fs-3);font-weight:600;line-height:21px;color:var(--t-title)}
+.pt__p{margin-top:4px;font-size:var(--fs-3);line-height:23px;color:var(--t-primary)}
+.read-more{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;border-radius:var(--radius-default);background:var(--brand-light);color:var(--brand);font-size:var(--fs-3);font-weight:500;line-height:21px;text-decoration:none}
+.read-more:active{background:var(--brand-light-active)}
+.read-more__go{font-size:var(--fs-5);line-height:1;flex-shrink:0}
+
+/* 继续了解 */
+.more__hd{font-size:var(--fs-4);font-weight:600;line-height:22px;color:var(--t-title);padding-bottom:10px;border-bottom:1px solid var(--divider)}
+.rel{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;font-size:var(--fs-3);color:var(--t-primary);text-decoration:none}
+.rel + .rel{border-top:1px solid var(--divider)}
+.rel:active{color:var(--brand)}
+.rel__go{color:var(--t-placeholder);font-size:var(--fs-5);line-height:1;flex-shrink:0}
+
+.disclaimer{margin:14px 2px 0;font-size:var(--fs-1);line-height:18px;color:var(--t-placeholder)}
+.back-kb{display:flex;align-items:center;gap:10px;margin-top:var(--sp-1);background:#FFFFFF;border-radius:var(--radius-card);padding:12px 15px;text-decoration:none;cursor:pointer}
+.back-kb:active{background:var(--brand-light-active)}
+.back-kb__ico{width:32px;height:32px;border-radius:var(--radius-default);flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--brand-light)}
+.back-kb__ico img{width:18px;height:18px;display:block}
+.back-kb__tx{flex:1;min-width:0}
+.back-kb__tx b{display:block;font-size:var(--fs-3);font-weight:500;color:var(--t-title);line-height:21px}
+.back-kb__tx s{display:block;font-size:var(--fs-1);color:var(--t-placeholder);margin-top:2px}
+.back-kb__go{flex-shrink:0;font-size:var(--fs-5);color:var(--t-placeholder);line-height:1}
+
+/* 吸底承接按钮：与科普首页一致 */
+.cta-bar{flex-shrink:0;background:#FFFFFF;border-top:1px solid var(--divider);padding:8px 15px calc(8px + env(safe-area-inset-bottom))}
+.btn{width:100%;height:40px;border:none;border-radius:var(--radius-default);background:var(--brand);color:#FFFFFF;font-family:var(--font);font-size:var(--fs-4);font-weight:600;cursor:pointer}
+.btn:active{background:var(--brand-deep)}
+
+.toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(8px);background:rgba(26,26,26,.88);color:#FFFFFF;font-family:var(--font);font-size:var(--fs-2);padding:10px 16px;border-radius:var(--radius-panel);z-index:300;opacity:0;transition:opacity .22s var(--ease),transform .22s var(--ease);max-width:84vw;text-align:center;line-height:17px}
+.toast.is-show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes zzUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.page > .card{animation:zzUp .36s var(--ease) both}
+.page > .card:nth-child(2){animation-delay:.06s}
+.page > .card:nth-child(3){animation-delay:.12s}
+.page > .card:nth-child(4){animation-delay:.18s}
+@media (prefers-reduced-motion:reduce){.page > .card{animation:none}}
+@media (max-width:360px){.page{padding-left:10px;padding-right:10px}.cta-bar{padding-left:10px;padding-right:10px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="phone">
+    <header class="topbar">
+      <button class="topbar__back" id="backBtn" type="button" aria-label="返回">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="topbar__title">减重科普</div>
+      <button class="topbar__share" id="shareBtn" type="button" aria-label="分享">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 14.5V3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8.5 6.5 12 3l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10H6.8C5.8 10 5 10.8 5 11.8v7.4C5 20.2 5.8 21 6.8 21h10.4c1 0 1.8-.8 1.8-1.8v-7.4c0-1-.8-1.8-1.8-1.8H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <main class="page">
+      <section class="card hero">
+        <span class="hero__chip">认识药物减重</span>
+        <h1 class="hero__t">减肥总失败，打减肥针管用吗？</h1>
+        <div class="lead">
+          <span class="lead__lb">导语</span>
+          <span class="lead__tx">打减肥针很可能管用，但要先评估自己是否适合用。</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sec__hd"><span class="sec__bar"></span><h2 class="sec__t">为什么减肥总失败</h2></div>
+        <div class="pt">
+          <span class="pt__dot"></span>
+          <div><h3 class="pt__t">方法很难长期坚持</h3><p class="pt__p">吃得太少、运动安排太满，可能短期有效，但这些习惯很难融入日常生活，恢复原来的吃法和活动量后，体重就容易回升。</p></div>
+        </div>
+        <div class="pt">
+          <span class="pt__dot"></span>
+          <div><h3 class="pt__t">瘦下来后更难保持</h3><p class="pt__p">体重下降后，身体需要的热量会减少，饥饿感也可能增加。同样的吃法和运动量，未必还能让体重继续下降，保持减重效果也会更费力。</p></div>
+        </div>
+        <div class="pt">
+          <span class="pt__dot"></span>
+          <div><h3 class="pt__t">影响体重的不只有吃和动</h3><p class="pt__p">睡眠、压力、遗传、某些疾病和某些药物也会影响体重。反复减重失败，需要分析具体原因，不能单纯认为是自己不够自律。</p></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sec__hd"><span class="sec__bar"></span><h2 class="sec__t">打减肥针管用吗</h2></div>
+        <div class="pt">
+          <span class="pt__dot"></span>
+          <div><h3 class="pt__t">能提供额外帮助</h3><p class="pt__p">对符合用药条件的人，减肥针可以减轻饥饿感、增加饱腹感，让人能少吃，且更容易坚持。</p></div>
+        </div>
+        <div class="pt">
+          <span class="pt__dot"></span>
+          <div><h3 class="pt__t">要不要用，先看是否适合</h3><p class="pt__p">需要医生结合体重和健康情况评估。</p></div>
+        </div>
+        <a class="read-more" href="../patient-education/index.html?stage=1#/g/know">
+          <span>详细内容请看「哪些人适合打减肥针？」</span><span class="read-more__go">›</span>
+        </a>
+      </section>
+
+      <section class="card">
+        <div class="more__hd">继续了解</div>
+        <a class="rel" href="../patient-education/index.html?stage=1#/g/know"><span>什么样的人适合医疗级减重</span><span class="rel__go">›</span></a>
+        <a class="rel" href="../patient-education/index.html?stage=1#/g/know"><span>GLP-1 是怎么帮你减重的</span><span class="rel__go">›</span></a>
+      </section>
+
+      <p class="disclaimer">本页内容为健康科普，不构成诊断或用药建议。是否适合用药，以医生评估为准。</p>
+
+      <a class="back-kb" href="../patient-education/index.html?stage=1#/">
+        <span class="back-kb__ico"><img loading="lazy" decoding="async" src="../branding-pic/icons/卓正科普.svg" alt=""></span>
+        <span class="back-kb__tx"><b>返回科普知识库</b><s>按主题找，或看当前推荐</s></span>
+        <span class="back-kb__go">›</span>
+      </a>
+    </main>
+
+    <footer class="cta-bar">
+      <button class="btn" id="assessBtn" type="button">免费领取体质评估报告</button>
+    </footer>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<script>
+(function () {
+  var stage = Math.min(6, Math.max(1, parseInt((location.search.match(/[?&]stage=(\d+)/) || [])[1], 10) || 1));
+  var assessUrl = stage <= 2
+    ? '../weight-management/Medication-eligibility-assessment/index.html?state=new'
+    : '../weight-management/Follow-up-assessment/index.html';
+
+  document.getElementById('backBtn').addEventListener('click', function () { history.back(); });
+  document.getElementById('assessBtn').addEventListener('click', function () { location.href = assessUrl; });
+
+  var btn = document.getElementById('shareBtn');
+  var toast = document.getElementById('toast');
+  var timer = null;
+  function show(msg) {
+    toast.textContent = msg;
+    toast.hidden = false;
+    toast.classList.add('is-show');
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      toast.classList.remove('is-show');
+      setTimeout(function () { toast.hidden = true; }, 240);
+    }, 1800);
+  }
+  btn.addEventListener('click', function () {
+    var url = location.href;
+    if (navigator.share) {
+      navigator.share({ title: document.title, url: url }).catch(function () {});
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { show('链接已复制'); }, function () { show('复制失败，请长按地址栏复制'); });
+      return;
+    }
+    show('当前浏览器不支持分享');
+  });
+})();
+</script>
+</body>
+</html>
