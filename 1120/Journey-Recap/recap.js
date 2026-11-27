@@ -353,7 +353,7 @@
     /* 一行说明右对齐二维码右边缘 */
     c.textAlign = 'right';
     c.fillStyle = '#006F8A';
-    c.font = '10px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.font = '12px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
     c.fillText('免费领取 体质评估与减重方案', qx + qs, 651);
     c.textAlign = 'left';
 
