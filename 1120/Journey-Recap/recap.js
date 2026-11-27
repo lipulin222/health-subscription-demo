@@ -344,7 +344,7 @@
       c.font = '13px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
       c.fillText(SHARE_NICKNAME, 70, 352);
     }
-    var qx = 294, qy = 556, qs = 67;
+    var qx = 294, qy = 546, qs = 67;
     if (a.qr && a.qr.naturalWidth) {
       c.fillStyle = '#FFFFFF';
       c.fillRect(qx - 3, qy - 3, qs + 6, qs + 6);
@@ -354,8 +354,8 @@
     c.textAlign = 'right';
     c.fillStyle = '#006F8A';
     c.font = '12px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-    c.fillText('免费领取', qx + qs, 642);
-    c.fillText('体重评估报告和管理方案', qx + qs, 658);
+    c.fillText('免费领取', qx + qs, 632);
+    c.fillText('体重评估报告和管理方案', qx + qs, 648);
     c.textAlign = 'left';
 
     function done(url) { if (onDone) onDone(url); }
