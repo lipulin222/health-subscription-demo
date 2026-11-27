@@ -337,23 +337,24 @@
     var lines = wrapLines(c, p.share || p.why(DATA), 327), y = 510;
     lines.slice(0, 4).forEach(function (ln) { c.fillText(ln, 24, y); y += 24; });
 
-    /* 蓝框：左侧头像与昵称，右侧二维码 */
+    /* 头像与昵称移到插画下半部（原左下角留空），右侧二维码与说明 */
     if (!hide) {
-      drawAvatar(c, a.avatar, 24, 600, 36);
+      drawAvatar(c, a.avatar, 26, 338, 36);
       c.fillStyle = '#595757';
       c.font = '13px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-      c.fillText(SHARE_NICKNAME, 68, 624);
+      c.fillText(SHARE_NICKNAME, 70, 362);
     }
-    var qx = 299, qy = 592;
+    var qx = 294, qy = 570, qs = 67;
     if (a.qr && a.qr.naturalWidth) {
       c.fillStyle = '#FFFFFF';
-      c.fillRect(qx - 3, qy - 3, 56, 56);
-      c.drawImage(a.qr, qx, qy, 50, 50);
+      c.fillRect(qx - 3, qy - 3, qs + 6, qs + 6);
+      c.drawImage(a.qr, qx, qy, qs, qs);
     }
-    c.textAlign = 'center';
-    c.fillStyle = '#8B8B88';
-    c.font = '12px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-    c.fillText('扫码了解', qx + 25, 656);
+    /* 一行说明右对齐二维码右边缘 */
+    c.textAlign = 'right';
+    c.fillStyle = '#006F8A';
+    c.font = '10px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.fillText('免费领取 体质评估与减重方案', qx + qs, 651);
     c.textAlign = 'left';
 
     function done(url) { if (onDone) onDone(url); }
