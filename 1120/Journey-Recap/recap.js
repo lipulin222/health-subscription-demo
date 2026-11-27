@@ -304,7 +304,7 @@
     c.shadowColor = 'rgba(255,255,255,.95)'; c.shadowBlur = 6;
     c.fillStyle = '#006F8A';
     c.font = '12px "ZZ-Myriad", Helvetica, sans-serif';
-    c.fillText('科学减重 · 结营回顾', 24, 34);
+    c.fillText('卓正医疗体重管理', 24, 34);
     c.shadowBlur = 0;
 
     var p = curPersona || PERSONAS[PERSONAS.length - 1];
@@ -312,7 +312,7 @@
 
     c.fillStyle = '#006F8A';
     c.font = '12px "ZZ-Myriad", Helvetica, sans-serif';
-    c.fillText((screenOf('s6Num').querySelector('.eyebrow').textContent || '你的减重人格是').trim(), 24, 388);
+    c.fillText('你的减重人格是', 24, 388);
 
     c.fillStyle = '#33393B';
     c.font = '27px "ZZ-CuYuan", "PingFang SC", sans-serif';
@@ -339,10 +339,10 @@
 
     /* 头像与昵称移到插画下半部（原左下角留空），右侧二维码与说明 */
     if (!hide) {
-      drawAvatar(c, a.avatar, 26, 338, 36);
+      drawAvatar(c, a.avatar, 26, 328, 36);
       c.fillStyle = '#595757';
       c.font = '13px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-      c.fillText(SHARE_NICKNAME, 70, 362);
+      c.fillText(SHARE_NICKNAME, 70, 352);
     }
     var qx = 294, qy = 570, qs = 67;
     if (a.qr && a.qr.naturalWidth) {
