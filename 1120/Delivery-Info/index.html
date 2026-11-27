@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>订单详情 · 体重管理首诊套餐</title>
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="delivery.css?v=4" />
+  <link rel="stylesheet" href="../subpage-spacing.css" />
+</head>
+<body data-subpage="Delivery-Info">
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">订单详情</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <!-- 进度环节：JS 按当前环节渲染（已支付→医生评估→填写物流→发货→完成） -->
+      <nav class="steps" id="steps" aria-label="订单进度"></nav>
+
+      <main class="page" id="view"></main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../shared.js"></script>
+  <script src="delivery.js?v=4"></script>
+</body>
+</html>

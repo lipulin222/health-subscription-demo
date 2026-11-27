@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>减重月报 · 体重管理</title>
+  <meta name="description" content="体重管理月报：按月的减重数据分析与饮食、运动建议。" />
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="monthly.css?v=3" />
+  <style>
+  /* 顶栏 ⋯ 切换患者菜单：与评估报告页（weight-management/Assessment-report）一致 */
+  .disp-sw { position:absolute; top:46px; right:8px; z-index:60; }
+  .disp-sw__menu {
+    display:none; min-width:152px; max-height:70vh; overflow-y:auto; padding:4px;
+    background:#FFF; border-radius:var(--radius-card); box-shadow:0 4px 16px rgba(0,0,0,.12);
+  }
+  .disp-sw.is-open .disp-sw__menu { display:block; animation:viewIn .18s var(--ease); }
+  .disp-sw__cap { display:block; padding:6px 12px 2px; font-size:10px; color:var(--ink-3); }
+  .disp-sw__menu button {
+    display:block; width:100%; text-align:left; cursor:pointer; border:none; background:none;
+    border-radius:var(--radius-large); font-family:var(--font); font-size:var(--fs-2, 12px);
+    color:var(--ink); padding:8px 12px;
+  }
+  .disp-sw__menu button:active { background:var(--brand-light); }
+  .disp-sw__menu button.is-cur { color:var(--accent); font-weight:600; }
+  /* 透顶配图上把 ⋯ 做成白底深点，保证「切换患者」入口可见；顶栏转实底后恢复 */
+  .phone.has-hero .topbar__more { color:var(--ink); background:rgba(255,255,255,.82); filter:none; }
+  .phone.has-hero .topbar.solid .topbar__more { background:none; }
+  @keyframes viewIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  </style>
+  <link rel="stylesheet" href="../subpage-spacing.css" />
+</head>
+<body data-subpage="Monthly-Report">
+  <div class="shell">
+    <div class="phone has-hero" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">减重月报</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+        <div class="disp-sw" id="dispSw">
+          <div class="disp-sw__menu" id="dispMenu">
+            <span class="disp-sw__cap">切换患者</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 月报正文：结构与 Monthly-Report/index.html 完全一致 -->
+      <main class="page page--hero" id="report"></main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="../shared.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    /* ==========================================================================
+       减重月报 · 患者样例合集
+       --------------------------------------------------------------------------
+       页面 UI、渲染函数、样式全部沿用 Monthly-Report（monthly.css / monthly.js），
+       这里只做两件事：
+         1) 把 REPORTS 换成 11 位可减重患者各一期的文案与数据
+         2) 顶栏 ⋯ 接成「切换患者」，交互与评估报告页一致
+       患者基础信息与分流结论来自评估报告页样例（P1/P2/P3/P4/P5/P6/P8/P9/P11/P13/P14）；
+       体重轨迹与快问快答为演示模拟数据。analysis / diet / sport 按《减重月报生成提示词》生成：
+       全篇用具体月份；analysis 2–3 段（当月一段、次月一段），因果链固定（本期数据结论 → 本期具体原因及作用机制 →
+       逐条回应原因的下一步），先判走势性质，可变的是段数／起笔／连接词／收尾，相邻期次只换表达不换链；
+       按预期下降的期次须有一句落在具体行为上的肯定；禁通用常识、术语缩写与生造搭配，
+       不用「走」描述体重变化，不写同义复述补句，不把指南建议写成已发生的事实，
+       复查句要写明看什么、由医生判断什么；
+       diet / sport 承接分析段定下的本期原因，再叠周段、人群与走势边界，四要素只是内容检查、
+       不套句式，个体化数值留给复查 / 面诊，由医生确认。
+       不适宜减重的 P7（先核实激素方案）、P10（未成年）、P12（BMI 正常）不在本页。
+       深链：?id=P1 … ?id=P14 指定患者；?m=1..11 指定月份；默认 P1。
+       ========================================================================== */
+    var PIC = 'img/';
+    var BACK_URL = '../online-service.html?stage=3';
+
+    /* ------------------------------------------------------------ 月报数据 ---- */
+    var REPORTS = [
+      /* 01 · 开始减重 · 用药启动期 */
+      {
+        id:'P1', name:'王雅静', no:1, month:1, tag:'用药启动期',
+        title:'1月减重月报',
+        range:'2026年1月6日 – 2月3日', span:'第 1–4 周 · 28 天',
+        weeks:[86.5, 85.7, 85.1, 84.2, 83.5], weekLabels:['开始','W1','W2','W3','W4'],
+        end:83.5, delta:-3.0, total:-3.0, bmi:31.8, waist:89,
+        analysis:'1月体重从 86.5kg 到 83.5kg，一个月减了 3.0kg，四周都在下降，这个开局值得高兴。胃口变小以后你把一顿拆成两三次，做菜改清淡，饭后照常走一段，也没有另外加训练，一个月里每顿都这样安排，挺不容易的。你吃的量少了，走动和以前一样，体重才一点一点降下来。\n2月你不用改什么，仍把一顿拆成两三次，饭后照常走一段；恶心明显、吃不下或持续呕吐时先联系医生。',
+        diet:[
+          '2月胃口小就把一顿拆成两三次，每次小半碗，恶心上来先放一放，缓过来再补，全天总量不减',
+          '做菜以蒸煮为主，蛋羹、豆腐、煮软的青菜轮着上，油炸和气味冲的先避开',
+          '随身带水杯，小口多次喝，一天凑到 1.5–2 L，恶心明显时一次别喝太多'
+        ],
+        sport:[
+          '2月不安排训练，只在饭后沿固定路线走一段，走到身体发热就回，路程按当天状态定',
+          '乏力或胃胀那天，走动减半或直接休息，不用第二天补回来',
+          '走动只到饭后这一段为止，2月先不排力量或快走，反应过去之前不加内容'
+        ]
+      },
+      /* 02 · 开始减重 · 稳步推进 */
+      {
+        id:'P2', name:'李婷', no:2, month:2, tag:'稳步推进',
+        title:'2月减重月报',
+        range:'2026年2月6日 – 3月3日', span:'第 5–8 周 · 28 天',
+        weeks:[70.4, 69.9, 69.4, 68.9, 68.4], weekLabels:['W4','W5','W6','W7','W8'],
+        end:68.4, delta:-2.0, total:-4.6, bmi:25.7, waist:79,
+        analysis:'2月这一期减了 2.0kg，体重从 70.4kg 到 68.4kg，四周都在下降，每周减的量都差不多。你每顿先吃一份蛋、鱼或豆制品，主食按家里原来的量，饭后也照常走动；一个月里每顿都按这个量吃，挺难得的。\n3月你不用改饭量，主食仍按家里原来的量，每顿先吃一份蛋、鱼或豆制品，饭后照常走动；忙的日子也按这个量吃，不为了追速度加运动。',
+        diet:[
+          '3月每顿先吃一份蛋、鱼或豆制品，早中晚各一次，别把蛋白都留到晚饭',
+          '挑一天把下周杂粮饭按份煮好分装，忙的时候热一份就能当主食，主食按一拳起点',
+          '外食先点一份绿叶菜和一份清蒸或白灼的荤菜，主食最后再要，量按半份起点'
+        ],
+        sport:[
+          '3月在原有走动之外加靠墙俯卧撑或坐姿抬腿，每周 2 次、一次只做一种，2 组、每组 8 次',
+          '快走以能完整说一句话为准，说不出整句就把速度降下来，不为了凑时长临时加速',
+          '忙到排不开的那天，只做 2 组靠墙俯卧撑就收，不补到第二天'
+        ]
+      },
+      /* 03 · 开始减重 · 稳步推进 */
+      {
+        id:'P3', name:'许雯', no:3, month:3, tag:'稳步推进',
+        title:'3月减重月报',
+        range:'2026年3月6日 – 4月3日', span:'第 9–12 周 · 28 天',
+        weeks:[69.9, 69.4, 68.9, 68.5, 68.2], weekLabels:['W8','W9','W10','W11','W12'],
+        end:68.2, delta:-1.7, total:-5.8, bmi:26.6, waist:84,
+        analysis:'3月后两周减得比前两周少，整期体重从 69.9kg 到 68.2kg，减了 1.7kg。你这一期外食点得多，常点重酱料和油炸的菜，含糖饮料也一直喝，吃进去的量比前两周上去了；你也没有另外增加运动。\n4月你先减少外食和含糖饮料，把吃进去的量降下来，体重才有继续下降的空间；运动你按原来的安排来，不跟着加量。',
+        diet:[
+          '4月外食先点一份绿叶菜和一份蒸、煮或白灼的荤菜，主食最后再要，按半份起点',
+          '酱汁和勾芡另装小碟，油炸、红烧、肥肉这一个月先不点',
+          '想喝甜的时候先倒一杯白水，还想要味道就换无糖茶，含糖饮料不进家门'
+        ],
+        sport:[
+          '4月运动仍按原来的次数排，快走或骑车每次 10–20 分钟，不因为这一期减得少就加量',
+          '力量仍是每周 2 次、一次只做一种，深蹲或臀桥轮着来，2 组、每组 8 次',
+          '力量和有氧分开排在不同天，一天只做一样；喘起来就把当次时间缩短，不补到第二天'
+        ]
+      },
+      /* 04 · 减重中期 · 遇到平台 */
+      {
+        id:'P11', name:'郑磊', no:4, month:4, tag:'遇到平台',
+        title:'4月减重月报',
+        range:'2026年4月6日 – 5月3日', span:'第 13–16 周 · 28 天',
+        weeks:[87.5, 87.3, 87.2, 87.2, 87.0], weekLabels:['W12','W13','W14','W15','W16'],
+        end:87.0, delta:-0.5, total:-8.0, bmi:26.9, waist:96,
+        analysis:'4月四周几乎没动，体重从 87.5kg 到 87.0kg，只减了 0.5kg。你这一期饮酒 3 次以上、睡眠常不足 6 小时，夜里还常吃甜食或夜宵，吃进去的量上去了；你白天久坐的时间长，也没有安排运动，消耗没有跟着增加。\n5月你先不吃夜宵和甜食，也不喝酒，睡眠尽量补足，运动按每周 2 次安排；吃进去的量少了、动起来的次数多了，体重才有继续下降的空间；如果 5月还是没动，复查时由医生对照 5月的记录判断要不要调整用药。',
+        diet:[
+          '5月饭量不用再往下压，三餐照常，每顿留一掌蛋白和一捧蔬菜，主食按一拳起点；忙起来凑不齐，就先把蛋白和蔬菜吃了',
+          '夜里那顿甜食和夜宵先停；饿得睡不着时先喝一杯 200 ml 温水，炸物和糖水这一个月先不吃',
+          '应酬先减到每周 1 次以内，推不掉时桌上点蒸、白灼或清蒸，油焖、避风塘、红烧少点，酒每次不超过 1 杯'
+        ],
+        sport:[
+          '5月运动先把次数定在每周 2 次、每次 10 分钟，这一期不往上加；排不开就顺延一次，不补',
+          '力量一次只做一种，扶椅坐站或弹力带划船，2 组、每组 8 次，全程能说完整句子，没力气就只做 1 组',
+          '下午坐久了就起身走 10 分钟，走完接着坐下，不临时加跑跳'
+        ]
+      },
+      /* 05 · 减重中期 · 速度放缓 */
+      {
+        id:'P13', name:'宋岩', no:5, month:5, tag:'速度放缓',
+        title:'5月减重月报',
+        range:'2026年5月6日 – 6月3日', span:'第 17–20 周 · 28 天',
+        weeks:[83.4, 83.1, 82.9, 82.7, 82.5], weekLabels:['W16','W17','W18','W19','W20'],
+        end:82.5, delta:-0.9, total:-7.5, bmi:24.4, waist:92,
+        analysis:'5月体重从 83.4kg 到 82.5kg，减了 0.9kg，第一周减得多一些，后面三周都减得少。这一期你压力大时容易靠吃缓解，下午久坐的时间也长，吃进去的量多了、动的量少了，体重就减得慢。幅度变小不等于趋势逆转。\n6月你先少吃下午那几次加餐，久坐时起身走动也重新开始，让吃进去的少一些、动起来的多一些；饭量和用药先不动，一个月后再看速度。',
+        diet:[
+          '6月下午想吃点东西时先喝一杯温水、等十分钟，还饿就吃一份无糖酸奶或鸡蛋，不攒到夜里',
+          '外食选蒸、煮、白灼，主食按半份起点，酱汁另装，不够再加',
+          '应酬桌上先要一杯白水或无糖茶，酒和含糖饮料这一个月先不点'
+        ],
+        sport:[
+          '6月把运动次数往上提，每次仍是原来的 10 分钟；下午久坐了就起身走 10 分钟，算进当天的运动里',
+          '力量排弹力带划船或臀桥，一次只做一种，2 组、每组 8 次，吃力就停',
+          '运动要加多少，复查时由医生按 5月的记录来定；忙到排不开的那天顺延一次，不补'
+        ]
+      },
+      /* 06 · 减重中期 · 体重回升 */
+      {
+        id:'P8', name:'周凯', no:6, month:6, tag:'需要拉回来',
+        title:'6月减重月报',
+        range:'2026年6月6日 – 7月3日', span:'第 21–24 周 · 28 天',
+        weeks:[93.6, 93.2, 93.5, 94.1, 94.8], weekLabels:['W20','W21','W22','W23','W24'],
+        end:94.8, delta:1.2, total:-6.2, bmi:31.0, waist:105,
+        analysis:'6月体重从 93.6kg 到 94.8kg，增加了 1.2kg，第二周还在下降，之后三周连着回升。你这一期睡眠不足，情绪上来时靠吃缓解，运动也有几回没做，吃进去的量多了、动的量少了，体重就跟着回升。回升是不是还有别的原因，面诊时由医生结合 6月这三周的记录来判断。\n7月你先把三餐时间定下来，晚饭后再照常步行，让体重不再回升。',
+        diet:[
+          '7月三餐按固定时段吃，下午饿了补一份无糖酸奶或鸡蛋，不攒到夜里一起吃',
+          '饭量先不压，外食、酒、夜宵和甜饮当天打勾记一下，一周后看集中在哪几顿',
+          '外食主食要半份，先点蔬菜和清淡荤菜，含糖饮料换白水'
+        ],
+        sport:[
+          '7月力量排弹力带划船或臀桥，每周 2 次、一次只做一种，不急着加次数',
+          '7月把晚饭后的步行重新做起来，每周 2 次，身体暖起来就回，暂不做跑步、跳操',
+          '运动先按原来的次数和强度做，不因为体重回升临时加量或减量'
+        ]
+      },
+      /* 07 · 减重中期 · 稳步推进（慢病结合管理） */
+      {
+        id:'P4', name:'张建国', no:7, month:7, tag:'稳步推进',
+        title:'7月减重月报',
+        range:'2026年7月6日 – 8月3日', span:'第 25–28 周 · 28 天',
+        weeks:[94.4, 94.0, 93.6, 93.1, 92.6], weekLabels:['W24','W25','W26','W27','W28'],
+        end:92.6, delta:-1.8, total:-10.4, bmi:31.3, waist:100,
+        analysis:'7月后两周比前两周减得还快，整期体重从 94.4kg 到 92.6kg，减了 1.8kg；你的血糖血压这一期也一直正常。你在主食里掺了全谷和薯类，做菜少放盐，甜饮料也停了；你每周快走 5 天，隔天做一次弹力带。这一个月你一直这么吃、这么动，挺不容易的。\n8月你不用改什么，吃和动都按 7月的做法来，不另加量；复查时把 7月的血糖血压记录带给医生，由医生判断要不要调整用药。',
+        diet:[
+          '8月三餐照常开，主食掺全谷和薯类，按一拳起点，白米白面减量，不跳餐',
+          '先吃绿叶菜和鱼蛋豆再动主食，酱汁另放，咸菜、酱油和加工食品里的盐都算进去',
+          '酒和甜饮料先停，桌上换白水，一天分几次喝够'
+        ],
+        sport:[
+          '8月快走每次 20–30 分钟、每周 5 天，弹力带隔天轮一次，呼吸不乱、能说完一句话就收',
+          '运动前测一次血糖，随身带含糖食物，心慌出汗就停下吃点并联系医生',
+          '快走和弹力带排在不同天，一天只做一样；运动当天的身体反应记在血糖旁边'
+        ]
+      },
+      /* 08 · 减重中期 · 速度放缓（胰岛素） */
+      {
+        id:'P5', name:'刘桂芳', no:8, month:8, tag:'速度放缓',
+        title:'8月减重月报',
+        range:'2026年8月6日 – 9月3日', span:'第 29–32 周 · 28 天',
+        weeks:[85.8, 85.6, 85.4, 85.2, 85.0], weekLabels:['W28','W29','W30','W31','W32'],
+        end:85.0, delta:-0.8, total:-9.0, bmi:34.1, waist:105,
+        analysis:'8月体重从 85.8kg 到 85.0kg，减了 0.8kg，四周都在下降，每周降得少。你胆囊切除术后一直吃得清淡，油重的菜不做了，每顿留一份主食，饭量这一个月没有变化；你的膝盖吃不消跑跳，只能做水中行走和卧式功率车，每周 2 次，也没法再增加。\n9月你每顿仍留一份主食，做菜继续清淡，不额外减少饭量；低冲击运动按每周 2 次安排，先不增加次数，让体重接着降。进餐时间或用药时间如果要改，把改动的那几天记下来，复查时带给医生，由医生判断要不要调整胰岛素剂量。',
+        diet:[
+          '9月每顿留一份主食，按一拳起点，不整餐砍掉也不临时加甜食',
+          '吃不下时把一顿拆成几次小份，蛋、豆腐、煮软的青菜轮着上',
+          '做菜先蒸煮再调味，油重的菜不进锅，蛋和豆腐用蒸或煮，青菜煮软再上桌'
+        ],
+        sport:[
+          '9月运动选水中行走或卧式功率车，每周 2 次、每次 10–15 分钟，不安排跑跳',
+          '运动前先垫一点东西，兜里放几粒糖，心慌出汗就停下吃点并联系医生',
+          '运动量这一期先不动，仍按每周 2 次、每次 10–15 分钟；做不完的那次顺延，不补到第二天'
+        ]
+      },
+      /* 09 · 接近结营 · 遇到平台（冠心病） */
+      {
+        id:'P6', name:'赵德海', no:9, month:9, tag:'遇到平台',
+        title:'9月减重月报',
+        range:'2026年9月6日 – 10月3日', span:'第 33–36 周 · 28 天',
+        weeks:[96.5, 96.4, 96.3, 96.2, 96.1], weekLabels:['W32','W33','W34','W35','W36'],
+        end:96.1, delta:-0.4, total:-7.9, bmi:33.2, waist:104,
+        analysis:'9月体重从 96.5kg 到 96.1kg，减了 0.4kg，四周几乎没动。你有冠心病，运动强度一直按医生划定的上限来；你做菜时把油、酱汁和糖另装小碟自己蘸，主食也按原量吃。这一个月你一直按这些做法吃和动，饭量和运动强度都没有变化，体重就停在 96kg 附近。\n10月你不用改饭量，也不自己加运动强度；运动在医生给的范围内换一换方式，做的时候留意有没有胸闷、气促、头晕或心悸，并把 9月的体重和身体反应记下来。能不能放宽运动强度，复查时由医生对照这份记录来判断。',
+        diet:[
+          '10月做菜时油、酱汁和糖各装小碟，吃时自己蘸，主食按原量，不额外压饭量',
+          '每顿留一份鱼、蛋或豆腐，绿叶菜和杂粮照常上桌',
+          '把酒先停，菜里的盐按家里现在的量，不再往上加'
+        ],
+        sport:[
+          '10月运动在医生划定的范围内轮换，水中行走、卧式功率车、坐姿抗阻只换方式，不增加强度',
+          '运动前后留意身体，胸闷、气促、头晕、心悸任一样出现就停下并联系医生，心率不作强度参考',
+          '一次只做一样，做完坐下来缓几分钟再起身；强度上限这一期不自己往上调'
+        ]
+      },
+      /* 10 · 接近结营 · 速度放缓（70 岁慢病） */
+      {
+        id:'P14', name:'陈国栋', no:10, month:10, tag:'速度放缓',
+        title:'10月减重月报',
+        range:'2026年10月6日 – 11月3日', span:'第 37–40 周 · 28 天',
+        weeks:[75.6, 75.4, 75.2, 75.1, 75.0], weekLabels:['W36','W37','W38','W39','W40'],
+        end:75.0, delta:-0.6, total:-9.0, bmi:24.5, waist:90,
+        analysis:'10月四周都在下降，越到后面减得越少：体重从 75.6kg 到 75.0kg，减了 0.6kg。你三餐里照常吃鱼、蛋、豆制品和奶，饭量没有再减少；你一直做平地慢走、八段锦和弹力带，也没有加量。这一期没有找到需要改动的地方。\n11月你每顿仍留一份鱼、蛋、豆制品或奶，运动仍排平地慢走、八段锦和弹力带，膝盖不舒服就少做一点，让这些动作照常做得下来；体重每周记一次，血压血糖按原来的频率记，复查时把这几项记录带给医生，由医生对照 10月的身体状态判断要不要调整。',
+        diet:[
+          '11月三餐照常，鱼、蛋、豆制品和奶轮着上，每顿一掌蛋白',
+          '菜做软一点、口味淡一点，主食掺些杂粮，甜食和夜宵这一个月先不吃',
+          '把一天的水量分成四五次喝完，总量按医生给的 1500–1700 ml 来'
+        ],
+        sport:[
+          '11月运动排平地慢走、八段锦或太极，弹力带、坐姿抬腿、单脚站各占几分钟',
+          '穿软底防滑鞋，膝盖一疼就停下，避开硬地长走、爬楼和跳绳',
+          '起身或转身时扶一下稳的地方，头晕就先坐下，不硬撑着做完'
+        ]
+      },
+      /* 11 · 接近结营 · 速度放缓（备孕，仅生活方式） */
+      {
+        id:'P9', name:'沈佳怡', no:11, month:11, tag:'速度放缓',
+        title:'11月减重月报',
+        range:'2026年11月6日 – 12月3日', span:'第 41–44 周 · 28 天',
+        weeks:[80.3, 80.1, 79.9, 79.8, 79.7], weekLabels:['W40','W41','W42','W43','W44'],
+        end:79.7, delta:-0.6, total:-8.3, bmi:30.8, waist:94,
+        analysis:'11月这一期只做记录：体重从 80.3kg 到 79.7kg，减了 0.6kg，四周都在小幅下降。备孕阶段营养充足优先，体重只作随访参考，你不必拿它来增减饭量，也不设热量缺口。\n12月你按产科给的方案来吃和动，体重、腰围和餐后的身体感受按原来的频率记，下次产检把这份记录带给产科，由产科判断营养够不够。',
+        diet:[
+          '12月三餐分量听产科的，不为了秤上的数字减饭，也不自行加补剂',
+          '每顿吃了什么、餐后有没有胀或不舒服，随手记一行，产检时带给产科，由产科判断要不要调整饮食',
+          '体重每周记一次、腰围每月记一次，日期写清楚'
+        ],
+        sport:[
+          '12月运动照产科给的范围，做了什么、哪天做的随手记下，不自行加次数',
+          '一旦头晕、腹痛或别的难受，先停下手里的运动，再联系产科',
+          '运动要不要改，产检时由产科对照这份记录来定'
+        ]
+      }
+    ];
+
+    /* ---------------------------------------------------------- 渲染工具 ---- */
+    var esc = (window.ZZ && window.ZZ.esc) || function (s) { return String(s == null ? '' : s); };
+    function byId(id) {
+      for (var i = 0; i < REPORTS.length; i++) if (REPORTS[i].id === id) return REPORTS[i];
+      return null;
+    }
+    function byMonth(m) {
+      for (var i = 0; i < REPORTS.length; i++) if (REPORTS[i].month === m) return REPORTS[i];
+      return null;
+    }
+
+    /* 本期区间：解析 range 文本「2026年9月7日 – 10月4日」→ 起止时间戳
+       （用 UTC 计数，避开夏令时/时区带来的天数误差） */
+    function parseRange(range) {
+      var m = String(range || '').match(/(\d{4})年(\d{1,2})月(\d{1,2})日\s*[–—-]\s*(\d{1,2})月(\d{1,2})日/);
+      if (!m) return null;
+      var y = +m[1];
+      var start = Date.UTC(y, +m[2] - 1, +m[3]);
+      var end = Date.UTC(y, +m[4] - 1, +m[5]);
+      if (end < start) end = Date.UTC(y + 1, +m[4] - 1, +m[5]);   /* 跨年 */
+      return { start: start, end: end };
+    }
+
+    /* X 轴日期：按周采样（前 n−1 点每 7 天一步），最后一点落在区间结束日；格式 M/D */
+    function axisDates(r) {
+      var rg = parseRange(r.range);
+      var n = (r.weeks && r.weeks.length) || 5;
+      if (!rg) return r.weekLabels || [];
+      var DAY = 86400000;
+      var span = rg.end - rg.start;
+      var step = 7 * DAY;
+      /* 区间短到装不下 n−2 个周步时，退化为区间内均分 */
+      if (span < step * (n - 2)) step = span / (n - 1);
+      var out = [];
+      for (var i = 0; i < n; i++) {
+        var t = new Date(i === n - 1 ? rg.end : rg.start + step * i);
+        out.push((t.getUTCMonth() + 1) + '/' + t.getUTCDate());
+      }
+      return out;
+    }
+
+    /* 体重曲线（SVG，5 个描点，首尾标数字）—— 与 monthly.js 一致 */
+    function chart(r) {
+      var W = 320, H = 132, pl = 8, pr = 8, pt = 20, pb = 30;
+      var v = r.weeks, n = v.length;
+      var min = Math.min.apply(null, v), max = Math.max.apply(null, v);
+      var span = Math.max(max - min, 0.8);
+      min -= span * 0.18; max += span * 0.18;
+      var iw = W - pl - pr, ih = H - pt - pb;
+      var X = function (i) { return pl + iw * (i / (n - 1)); };
+      var Y = function (a) { return pt + ih * (1 - (a - min) / (max - min)); };
+
+      var pts = [], i, line = '', dots = '', ax = '';
+      var dates = axisDates(r);
+      for (i = 0; i < n; i++) pts.push([X(i), Y(v[i])]);
+      for (i = 0; i < n; i++) line += (i ? ' L' : 'M') + pts[i][0].toFixed(1) + ' ' + pts[i][1].toFixed(1);
+      var area = line + ' L' + pts[n - 1][0].toFixed(1) + ' ' + (H - pb) + ' L' + pts[0][0].toFixed(1) + ' ' + (H - pb) + ' Z';
+      for (i = 0; i < n; i++) {
+        var big = (i === 0 || i === n - 1);
+        dots += '<circle class="dt' + (big ? ' dt-lg' : '') + '" cx="' + pts[i][0].toFixed(1) +
+          '" cy="' + pts[i][1].toFixed(1) + '" r="' + (big ? 4 : 3) + '"/>';
+        var labelX = i === 0 ? 0 : (i === n - 1 ? W : pts[i][0]);
+        var labelAnchor = i === 0 ? 'start' : (i === n - 1 ? 'end' : 'middle');
+        ax += '<text class="ax" x="' + labelX.toFixed(1) + '" y="' + (H - 11) + '" text-anchor="' + labelAnchor + '">' + esc(dates[i]) + '</text>';
+      }
+      var labs = '<text class="vl" x="' + (pts[0][0] - 2) + '" y="' + (pts[0][1] - 11) + '" text-anchor="start">' + v[0].toFixed(1) + '</text>' +
+        '<text class="vl" x="' + (pts[n - 1][0] + 2) + '" y="' + (pts[n - 1][1] - 11) + '" text-anchor="end">' + v[n - 1].toFixed(1) + '</text>';
+
+      return '<div class="chart"><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="本期体重变化折线图">' +
+        '<defs><linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#009BBF" stop-opacity=".12"/>' +
+        '<stop offset="100%" stop-color="#009BBF" stop-opacity="0"/></linearGradient></defs>' +
+        '<path class="ar" d="' + area + '"/><path class="ln" d="' + line + '"/>' + dots + labs + ax + '</svg></div>';
+    }
+
+    /* 本期配图：按月份取图（img/1.png … 12.png） */
+    function hero(r) {
+      return '<figure class="hero' + (r.month === 1 || r.month === 5 || r.month === 7 || r.month === 10 ? ' is-flipped' : '') + '"><img loading="lazy" decoding="async" src="' + PIC + (r.month || r.no) + '.png" alt="' + r.month + '月配图" width="750" height="328"></figure>';
+    }
+
+    /* 节：编号 + 标题 + 条目组 */
+    function section(no, title, groups) {
+      var h = '<section class="sec">' +
+        '<h2 class="sec__t">' + title + '</h2>';
+      groups.forEach(function (g) {
+        if (g.label) h += '<div class="blk__lbl">' + g.label + '</div>';
+        h += '<ul class="ul' + (g.num ? ' num' : '') + '">';
+        g.items.forEach(function (t) { h += '<li>' + esc(t) + '</li>'; });
+        h += '</ul>';
+      });
+      return h + '</section>';
+    }
+
+    function reportHTML(r) {
+      var h = '<div class="rp">' + hero(r);
+
+      h += '<div class="rp__hd">' +
+        '<div class="rp__eyebrow">体重管理 · 第 ' + r.no + ' 期月报</div>' +
+        '<h1 class="rp__t">' + esc(r.title) + '</h1>' +
+        '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) + '</div></div>';
+
+      h += '<section class="card ov">' +
+        '<div class="ov__hd"><span class="ov__lbl">本期概览</span><span class="ov__sub">' + esc(r.span) + '</span></div>' +
+        chart(r) + '</section>';
+
+      var nextMonth = (r.month % 12) + 1;
+      h += '<section class="sec">' +
+        '<h2 class="sec__t">减重数据分析</h2>' +
+        String(r.analysis).split('\n').filter(Boolean).map(function (t) {
+          return '<p class="p">' + esc(t) + '</p>';
+        }).join('') + '</section>';
+      h += section('02', nextMonth + '月的饮食与运动', [
+        { label: '饮食', items: r.diet, num: true },
+        { label: '运动', items: r.sport, num: true }
+      ]);
+
+      h += '<div class="fine"><p>体重为晨起空腹测量，腰围为肚脐水平呼气末测量，体成分来自 InBody。本页为健康管理服务记录，不构成诊疗建议。</p></div></div>';
+      return h;
+    }
+
+    /* ------------------------------------------------------------ 页面逻辑 ---- */
+    var reportEl = document.getElementById('report');
+    var topbarEl = document.getElementById('topbar');
+    var phoneEl = document.getElementById('phone');
+    var menuEl = document.getElementById('dispMenu');
+    var swEl = document.getElementById('dispSw');
+    var curId = '';
+
+    function show(id) {
+      var r = byId(id);
+      if (!r) return;
+      curId = id;
+      reportEl.innerHTML = reportHTML(r);
+      reportEl.scrollTop = 0;
+      document.getElementById('topTitle').textContent = '减重月报';
+      phoneEl.classList.add('has-hero');
+      reportEl.classList.add('page--hero');
+      topbarEl.classList.remove('solid');
+
+      syncMenu();
+    }
+
+    function syncMenu() {
+      var id = curId || '';
+      [].slice.call(menuEl.querySelectorAll('button[data-p]')).forEach(function (b) {
+        b.classList.toggle('is-cur', b.getAttribute('data-p') === id);
+      });
+    }
+
+    /* 顶栏 ⋯ 菜单：与评估报告页一致 */
+    REPORTS.forEach(function (r) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-p', r.id);
+      b.textContent = r.id + ' ' + r.name + ' · ' + r.month + '月';
+      b.addEventListener('click', function () { swEl.classList.remove('is-open'); show(r.id); });
+      menuEl.appendChild(b);
+    });
+    document.getElementById('moreBtn').addEventListener('click', function (e) {
+      e.stopPropagation(); swEl.classList.toggle('is-open');
+    });
+    document.addEventListener('click', function (e) {
+      if (!swEl.contains(e.target)) swEl.classList.remove('is-open');
+    });
+
+    document.getElementById('backBtn').addEventListener('click', function () {
+      if (history.length > 1) history.back();
+      else location.href = BACK_URL;
+    });
+    reportEl.addEventListener('scroll', function () {
+      topbarEl.classList.toggle('solid', reportEl.scrollTop > 140);
+    });
+
+    /* 深链：?id=Pxx 指定患者，?m=1..11 指定月份，?disp= 兼容评估报告口径 */
+    var Q = new URLSearchParams(location.search);
+    var DISP2PID = { normal:'P1', mild:'P3', chronic:'P4' };
+    var init = (Q.get('id') && byId(Q.get('id'))) ? Q.get('id') :
+      (byMonth(parseInt(Q.get('m'), 10)) || byId(DISP2PID[Q.get('disp')]) || REPORTS[0]).id;
+    show(init);
+  })();
+  </script>
+</body>
+</html>

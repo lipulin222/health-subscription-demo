@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>减重月报 · 体重管理</title>
+  <meta name="description" content="体重管理月报：按月的减重数据分析与饮食、运动建议。" />
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="monthly.css?v=11" />
+  <link rel="stylesheet" href="../subpage-spacing.css?v=13" />
+</head>
+<body data-subpage="Monthly-Report">
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">减重月报</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <!-- 空状态：还没有第一期月报 -->
+      <main class="er" id="empty" hidden>
+        <img loading="lazy" decoding="async" class="er__i" src="../assets/empty-states/empty-no-file.png" alt="" aria-hidden="true">
+        <p class="er__t">还没有减重月报</p>
+      </main>
+
+      <!-- 月报列表页（默认落地页，JS 渲染） -->
+      <main class="page" id="listView" hidden></main>
+
+      <!-- 列表页吸底：生成最新月报 → 进入快问快答 -->
+      <div class="mlist-cta" id="listCta" hidden>
+        <button type="button" id="genBtn">生成最新月报</button>
+      </div>
+
+      <!-- 月报正文（JS 渲染） -->
+      <main class="page" id="report" hidden></main>
+
+      <!-- 第一步：状态快问快答 -->
+      <section class="gate" id="gate" hidden>
+        <div class="gate__bd" id="gateBody"></div>
+        <div class="gate__ft">
+          <button type="button" class="gate__next" id="gateNext">生成月报</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="../shared.js"></script>
+  <script src="monthly.js?v=11"></script>
+</body>
+</html>

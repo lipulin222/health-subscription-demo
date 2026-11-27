@@ -1,0 +1,223 @@
+/* =============================================================================
+   体重管理 · 查看更多（More）
+   无参数：入口页（评估报告 / 减重月报 / 相关订单）；
+   ?type=report|monthly|orders：对应内容的瀑布流汇总，
+   每张卡片可点进相关页面（demo 口径：李蔓，数据为示意）。
+   ============================================================================= */
+(function () {
+  'use strict';
+
+  var HOME_URL = '../../online-service.html';
+
+  var toast = ZZ.toast;
+  var esc = ZZ.esc;
+
+  function $(id) { return document.getElementById(id); }
+
+  /* ------------------------------------------------------------ 图标 */
+  var ICONS = {
+    report: 'icons/report.png',
+    monthly: 'icons/monthly.png',
+    orders: 'icons/orders.png'
+  };
+  function ico(kind) {
+    return '<img src=\"' + ICONS[kind] + '\" alt=\"\" />';
+  }
+
+  var ARW = '<svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* ------------------------------------------------------------ 汇总数据（demo 示意） */
+  var SUMMARIES = {
+    report: {
+      title: '评估报告',
+      /* 评估报告只有一种：减重评估报告，差异只在评估时间；副标题=结论性结果 */
+      items: [
+        { d: '2026-10-27', t: '减重评估报告', s: '需要体重和慢病结合管理', href: '../Assessment-report/index.html?disp=chronic' },
+        { d: '2026-10-20', t: '减重评估报告', s: '需要体重管理', href: '../Assessment-report/index.html?disp=normal' },
+        { d: '2026-10-13', t: '减重评估报告', s: '需要体重管理', href: '../Assessment-report/index.html?disp=mild' },
+        { d: '2026-09-29', t: '减重评估报告', s: '无需减重', href: '../Assessment-report/index.html?disp=adapt' }
+      ]
+    },
+    monthly: {
+      title: '减重月报',
+      items: [
+        { d: '2026-10-23', t: '第 4 个月月报', s: '本月减重 1.4kg，腰围继续下降，运动打卡 21 次，复查 1 次指标正常。', href: '../../Monthly-Report/index.html' },
+        { d: '2026-09-23', t: '第 3 个月月报', s: '进入剂量爬坡期，食欲下降明显，蛋白质摄入需要额外注意。', href: '../../Monthly-Report/index.html' },
+        { d: '2026-08-23', t: '第 2 个月月报', s: '体重下降速度放缓，属正常平台期，腰围再减 1.5cm。', href: '../../Monthly-Report/index.html' },
+        { d: '2026-07-23', t: '第 1 个月月报', s: '首个疗程月：体重 71.6kg → 68.4kg，已建立饮食记录与步行习惯。', href: '../../Monthly-Report/index.html' }
+      ]
+    },
+    orders: {
+      title: '相关订单'
+    }
+  };
+
+  /* 订单列表（参考「我的订单」结构）：编号+状态 / 商品行 / 合计 / 操作按钮
+     商品名与金额取自 shared.js 的 ZZ.CFG（改价只需改一处） */
+  var PRICE_PKG = ZZ.money(ZZ.CFG.PKG_PRICE);
+  var PRICE_RENEW = ZZ.money(ZZ.CFG.RENEW_PRICE);
+  var ORDERS = [
+    {
+      no: 'O2026102600000013', st: '配送中', cls: 'doing',
+      name: ZZ.CFG.GOODS_NAME, price: PRICE_PKG,
+      spec: '医生线上定制方案 + 替尔泊肽 + 护士线上服务', qty: '× 1', sum: PRICE_PKG,
+      btns: [{ t: '查看物流', href: '../../Delivery-Info/index.html' }]
+    },
+    {
+      no: 'O2026102300000012', st: '已完成', cls: 'done',
+      name: ZZ.CFG.GOODS_NAME, price: PRICE_PKG,
+      spec: '医生线上定制方案 + 替尔泊肽 + 护士线上服务', qty: '× 1', sum: PRICE_PKG,
+      btns: [{ t: '再次续订', href: '../../Payment-Page/index.html' }, { t: '评价', toast: '示例 Demo：评价入口待接入' }]
+    },
+    {
+      no: 'O2026101900000011', st: '已取消', cls: 'cancel',
+      name: '替尔泊肽单月续订装', price: PRICE_RENEW,
+      spec: '2.5mg/周 × 4 周', qty: '× 1', sum: PRICE_RENEW,
+      btns: [{ t: '再次续订', href: '../../Payment-Page/index.html' }]
+    }
+  ];
+
+  var ENTRIES = [
+    { type: 'report', name: '评估报告', desc: '历次评估结论建议汇总', n: SUMMARIES.report.items.length + ' 份' },
+    { type: 'monthly', name: '减重月报', desc: '每月减重小结及后续建议', n: SUMMARIES.monthly.items.length + ' 期' },
+    { type: 'orders', name: '相关订单', desc: '套餐订单记录', n: ORDERS.length + ' 条' }
+  ];
+
+  /* 月报待办红点：与 portal 卡「查看更多」按钮同源（sessionStorage zz:monthlyBadge）
+     draft=生成月报（上月过完、快问快答未做）→ 点进快问快答；
+     unread=新月报（已生成未读）→ 点进最新一期月报内容 */
+  function monthlyTodo() {
+    try {
+      var v = sessionStorage.getItem('zz:monthlyBadge');
+      if (v === null) { v = 'draft'; sessionStorage.setItem('zz:monthlyBadge', v); }
+      return v;
+    } catch (e) { return ''; }
+  }
+
+  /* ------------------------------------------------------------ 渲染：入口页 */
+  function renderEntries() {
+    $('topTitle').textContent = '查看更多';
+    var todo = monthlyTodo();
+    return '<section class="card">' + ENTRIES.map(function (en) {
+      var dot = '', href = '?type=' + en.type;
+      if (en.type === 'monthly' && todo === 'draft') {
+        dot = '<i class="entry__dot">生成月报</i>';
+        href = '../../Monthly-Report/index.html';
+      } else if (en.type === 'monthly' && todo === 'unread') {
+        dot = '<i class="entry__dot">new</i>';
+        href = '../../Monthly-Report/index.html?report=1';
+      }
+      return '<a class="entry" href="' + href + '">' +
+        '<span class="entry__ico">' + ico(en.type) + '</span>' +
+        '<span class="entry__b">' +
+        '<span class="entry__t">' + esc(en.name) + dot + '</span>' +
+        '<span class="entry__d" style="display:block">' + esc(en.desc) + '</span>' +
+        '</span>' +
+        '<span class="entry__meta">' +
+        '<span class="entry__n">' + en.n + '</span>' +
+        '<span class="entry__arw">' + ARW + '</span>' +
+        '</span>' +
+        '</a>';
+    }).join('') + '</section>';
+  }
+
+  /* ------------------------------------------------------------ 渲染：汇总列表 */
+  function fallHtml(it, type) {
+    var s = it.s ? '<p class="fall__s">' + esc(it.s) + '</p>' : '';
+    var cal = '';
+    if (type === 'report' && it.d) {
+      var parts = String(it.d).split('-');
+      var ym = parts.length >= 2 ? parts[0] + '.' + parts[1] : it.d;
+      var day = parts.length >= 3 ? parts[2] : '';
+      cal = '<span class="fall__cal" aria-label="' + esc(it.d) + '">' +
+        '<span class="fall__cal__ym">' + esc(ym) + '</span>' +
+        '<strong class="fall__cal__day">' + esc(day) + '</strong>' +
+        '</span>';
+    }
+    return '<a class="fall' + (cal ? ' fall--report' : '') + '" href="' + it.href + '">' +
+      (cal ? cal : '<div class="fall__d">' + it.d + '</div>') +
+      '<div class="fall__t">' + esc(it.t) + '</div>' +
+      s +
+      '<div class="fall__go">查看详情<span class="fall__arrow">' + ARW + '</span></div>' +
+      '</a>';
+  }
+
+  function renderSummary(type) {
+    var data = SUMMARIES[type];
+    $('topTitle').textContent = data.title;
+    if (type === 'orders') return renderOrders();
+    if (!data.items.length) return '<p class="empty">暂无内容</p>';
+    return '<div class="falls">' + data.items.map(function (it) { return fallHtml(it, type); }).join('') + '</div>';
+  }
+
+  /* ------------------------------------------------------------ 渲染：订单列表 */
+  var COVER = '../../branding-pic/icon.png';
+
+  function ordBtn(b) {
+    if (b.toast) return '<button class="ord__btn" type="button" data-otoast="' + esc(b.toast) + '">' + esc(b.t) + '</button>';
+    return '<a class="ord__btn" href="' + b.href + '">' + esc(b.t) + '</a>';
+  }
+
+  function renderOrders() {
+    return ORDERS.map(function (o) {
+      return '<div class="ord">' +
+        '<div class="ord__hd">' +
+        '<span class="ord__no">订单编号：' + o.no + '</span>' +
+        '<span class="ord__st ord__st--' + o.cls + '">' + o.st + '</span>' +
+        '</div>' +
+        '<div class="ord__bd">' +
+        '<span class="ord__cover"><img loading="lazy" decoding="async" src="' + COVER + '" alt="" /></span>' +
+        '<div class="ord__b">' +
+        '<div class="ord__r1"><span class="ord__n">' + esc(o.name) + '</span><span class="ord__p">' + o.price + '</span></div>' +
+        '<div class="ord__spec"><span>' + esc(o.spec) + '</span><span class="ord__qty">' + o.qty + '</span></div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="ord__ft">' +
+        '<span class="ord__sum">共 1 件，合计:<b>' + o.sum + '</b></span>' +
+        '<span class="ord__btns">' + o.btns.map(ordBtn).join('') + '</span>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* ------------------------------------------------------------ 初始化 */
+  function init() {
+    var type = (location.search.match(/[?&]type=(report|monthly|orders)(?:&|$)/) || [])[1];
+
+    var back = $('backBtn');
+    if (back) {
+      back.addEventListener('click', function () {
+        /* 汇总页返回上一页 = 回入口页；入口页返回 = 首页 */
+        if (type && history.length > 1) history.back();
+        else if (type) location.href = 'index.html';
+        else if (history.length > 1) history.back();
+        else location.href = HOME_URL;
+      });
+    }
+    var more = $('moreBtn');
+    if (more) {
+      more.addEventListener('click', function () {
+        toast('示例数据 · 李蔓（女 · 32 岁）');
+      });
+    }
+
+    /* 吸底按钮：仅评估报告列表页有「新增评估」→ 随访评估；入口页不放吸底按钮 */
+    var bar = $('paybar');
+    if (bar && type === 'report') {
+      bar.hidden = false;
+      $('assessBtn').addEventListener('click', function () {
+        location.href = '../Follow-up-assessment/index.html';
+      });
+    }
+
+    var view = $('view');
+    view.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-otoast]');
+      if (b) toast(b.getAttribute('data-otoast'));
+    });
+    view.innerHTML = type ? renderSummary(type) : renderEntries();
+    view.classList.add('view-in');
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();

@@ -1,0 +1,241 @@
+/* Content section headings: 20px before, 10px after (CSS pixels). */
+:root {
+  --section-title-before: 20px;
+  --section-title-after: 10px;
+}
+
+/* Knowledge library: put all vertical spacing on the heading row. */
+[data-subpage="patient-education"] :is(.pck, .grp) { margin-top: 0; }
+[data-subpage="patient-education"] :is(.pck__hd, .grp__hd, .al__hd) {
+  padding-top: var(--section-title-before);
+  padding-bottom: var(--section-title-after);
+}
+[data-subpage="patient-education"] .ar__h {
+  margin-top: var(--section-title-before);
+  margin-bottom: var(--section-title-after);
+}
+[data-subpage="patient-education"] .ar__h + * { margin-top: 0; }
+
+/* Article sections: card inset provides the space before the title. */
+[data-subpage="edu-article"] .art-hd { padding-top: var(--section-title-before); }
+[data-subpage="edu-article"] .art-hd__lead { margin-top: var(--section-title-after); }
+[data-subpage="edu-article"] .card:has(> .sec-h, > .rel__hd) {
+  padding-top: var(--section-title-before);
+}
+[data-subpage="edu-article"] :is(.sec-h, .rel__hd) {
+  /* Keep the existing 1px divider within the 10px space. */
+  padding-bottom: calc(var(--section-title-after) - 1px);
+  margin-bottom: 0;
+}
+[data-subpage="edu-article"] .rel__hd + .rel__i { padding-top: 0; }
+
+/* Assessment report and treatment package: editable accordion headers. */
+:is([data-subpage="Assessment-report"], [data-subpage="Treatment-package"]) .mod__h {
+  padding-top: var(--section-title-before);
+  padding-bottom: var(--section-title-after);
+}
+/* Balance report header insets to center its contents vertically. */
+[data-subpage="Assessment-report"] .mod__h {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+[data-subpage="Assessment-report"] .sub__h {
+  margin-top: var(--section-title-before);
+  margin-bottom: var(--section-title-after);
+}
+[data-subpage="Assessment-report"] .sub__h + * { margin-top: 0; }
+
+/* Question cards: use the card inset, avoiding a second top margin. */
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .qb {
+  padding-top: 10px;
+}
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .qb__t {
+  margin-bottom: var(--section-title-after);
+}
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .qb__t + * {
+  margin-top: 0;
+}
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .rb__ico {
+  margin-bottom: var(--section-title-before);
+}
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .rb__t {
+  margin-bottom: var(--section-title-after);
+}
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .rb__t + .rb__d { margin-top: -4px; }
+[data-subpage="Follow-up-assessment"] .tips__h {
+  margin-top: var(--section-title-before);
+  margin-bottom: var(--section-title-after);
+}
+[data-subpage="Follow-up-assessment"] .tips__h + * { margin-top: 0; }
+
+/* Monthly report: numbered heading groups and inner section headings. */
+[data-subpage="Monthly-Report"] .rp__hd {
+  padding-top: var(--section-title-before);
+  padding-bottom: var(--section-title-after);
+}
+[data-subpage="Monthly-Report"] .sec { margin-top: 10px; }
+[data-subpage="Monthly-Report"] .sec__t { margin-top: 0; margin-bottom: var(--section-title-after); }
+[data-subpage="Monthly-Report"] .sec__t + * { margin-top: 0; }
+[data-subpage="Monthly-Report"] .blk__lbl {
+  margin-top: var(--section-title-before);
+  margin-bottom: var(--section-title-after);
+}
+[data-subpage="Monthly-Report"] .blk__lbl + * { margin-top: 0; }
+
+/* Patient picker and payment section titles. */
+[data-subpage="Patient-select"] .who { padding-top: var(--section-title-before); }
+[data-subpage="Patient-select"] .who__hd { margin-bottom: var(--section-title-after); }
+[data-subpage="Patient-select"] .who__row { margin-top: 0; }
+[data-subpage="Payment-Page"] .blk__h {
+  padding-top: var(--section-title-before);
+  padding-bottom: var(--section-title-after);
+}
+
+/* Assistant-generated content uses the same section heading rhythm. */
+[data-subpage="Weight-loss-assistant"] :is(.chat__bubble-text, .sheet__body) :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: var(--section-title-before);
+  margin-bottom: var(--section-title-after);
+}
+[data-subpage="Weight-loss-assistant"] :is(.chat__bubble-text, .sheet__body) :is(h1, h2, h3, h4, h5, h6) + * {
+  margin-top: 0;
+}
+
+/* Shared form controls: visible field surfaces are 50px tall with 6px corners. */
+[data-subpage] {
+  --form-control-height: 50px;
+  --form-control-radius: 6px;
+}
+[data-subpage] :is(
+  input:not([type]), input[type="text"], input[type="number"], input[type="tel"],
+  input[type="email"], input[type="password"], input[type="search"],
+  input[type="url"], input[type="date"], input[type="time"],
+  select, textarea, .num, .inp, .ta, .input-bar__wrap
+) {
+  box-sizing: border-box;
+  height: var(--form-control-height);
+  min-height: var(--form-control-height);
+  border-radius: var(--form-control-radius);
+}
+/* Compound fields put dimensions on the outer surface only. */
+[data-subpage] :is(.num, .inp) { padding-top: 0; padding-bottom: 0; }
+[data-subpage] :is(.num, .inp, .input-bar__wrap) input {
+  height: 100%;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 0;
+}
+/* Wrapped option labels grow while single-line controls remain 50px tall. */
+[data-subpage] :is(.opt, .option-list__item, .picker, .pill) {
+  box-sizing: border-box;
+  height: auto;
+  min-height: var(--form-control-height);
+  border-radius: var(--form-control-radius);
+  align-items: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+[data-subpage] .ta { padding: 8px 12px 18px; }
+[data-subpage] .ta textarea {
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  overflow-y: auto;
+}
+
+/* Open question input: double the previous writing area while keeping the
+   surrounding surface height in sync. */
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .ta {
+  height: auto;
+  min-height: 224px;
+}
+:is([data-subpage="Medication-eligibility-assessment"], [data-subpage="Follow-up-assessment"]) .ta textarea {
+  height: auto;
+  min-height: 198px;
+}
+
+/* Open question field: override the shared 50px form-control rule. */
+[data-subpage="Medication-eligibility-assessment"] .ta:has(> #inOpen) {
+  height: auto !important;
+  min-height: 224px !important;
+}
+[data-subpage="Medication-eligibility-assessment"] #inOpen {
+  height: 198px !important;
+  min-height: 198px !important;
+  font-size: 15px !important;
+}
+[data-subpage="Medication-eligibility-assessment"] #inOpen::placeholder {
+  font-size: 15px !important;
+}
+
+/* Equal report actions, including the new inline report implementation. */
+[data-subpage="Assessment-report"] .paybar:has(> .fixbar__sub) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+[data-subpage="Assessment-report"] .paybar :is(.fixbar__btn, .fixbar__sub) {
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+/* New patient summary headings follow the same section spacing. */
+[data-subpage="patient-ai-summary"] .sec-title {
+  margin-top: var(--section-title-before);
+  margin-bottom: var(--section-title-after);
+}
+
+/* Monthly report detail refinements from visual review. */
+[data-subpage="Monthly-Report"] .fine {
+  margin-top: 12px;
+  padding-top: 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+[data-subpage="Monthly-Report"] .blk__lbl {
+  font-size: 15px;
+  line-height: 1.5;
+}
+[data-subpage="Monthly-Report"] .blk__lbl::before {
+  background: var(--accent);
+}
+[data-subpage="Monthly-Report"] .ul li {
+  line-height: 1.7;
+}
+[data-subpage="Monthly-Report"] .ul li::before {
+  background: var(--accent);
+}
+/* Monthly report quiz: keep question titles aligned with the shared 15px body style. */
+[data-subpage="Monthly-Report"] .q__t {
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 400;
+}
+/* Monthly report quiz fields: 45px tall with one shared neutral surface color. */
+[data-subpage="Monthly-Report"] {
+  --form-control-height: 45px;
+  --input-bg: #F2F5F6;
+}
+[data-subpage="Monthly-Report"] .inp {
+  height: 45px;
+  min-height: 45px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+[data-subpage="Monthly-Report"] .pill {
+  background: var(--input-bg);
+}
+
+/* Monthly report quiz: MasterGo service-filter option geometry (375px scale). */
+[data-subpage="Monthly-Report"] .pill {
+  box-sizing: border-box;
+  height: auto;
+  min-height: 30px;
+  padding: 4px 6px;
+  border-radius: var(--form-control-radius);
+}
+[data-subpage="Monthly-Report"] .pill--wide {
+  grid-column: span 2;
+}
